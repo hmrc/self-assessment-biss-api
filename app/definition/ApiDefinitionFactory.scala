@@ -45,6 +45,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         name = "Business Income Source Summary (MTD)",
         description = "An API for providing Business Income Source Summary data",
         context = appConfig.apiGatewayContext,
+        categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
           APIVersion(version = VERSION_1, access = buildWhiteListingAccess(), status = buildAPIStatus(VERSION_1), endpointsEnabled = true)
           //          ,
