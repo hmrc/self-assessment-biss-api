@@ -1,0 +1,31 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeExceeded
+  - errors.ruleSelfEmploymentId
+  - queryParameters.taxYear
+  - queryParameters.selfEmploymentId
+displayName: Retrieve a Self Employment Business Income Source Summary [test only]
+description: This endpoint allows the user to get a running (year-to date) summary of the income and expenditure for a specified self employment business during a tax tear. When no tax year is specified, then it will default to the current tax year.
+(annotations.sandboxData): !include scenarios/biss_get.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+responses:
+  200:
+      body:
+          application/json:
+              type: !include schemas/biss_response.json
+              examples:
+                  example-1:
+                      description: Self-employment summary
+                      value: !include examples/biss/self_employed_response.json
+      headers:
+        X-CorrelationId:
+          example: c75f40a6-a3df-4429-a697-471eeec46435
+          description: Unique ID for operation tracking <br> String, 36 characters.

@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Business Income Source Summary",
+  "description": "Business Income Source Summary",
+  "type": "object",
+  "Properties": {
+    "total": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "total of business income source summary",
+        "properties": {
+          "income": {
+            "description": "income of total of business income source summary",
+            "type": "number",
+            "example": "100.00"
+          },
+          "expenses": {
+            "description": "expenses of total of business income source summary",
+            "type": "number",
+            "example": "50.00"
+          },
+          "additions":{
+            "description": "additions of total of business income source summary",
+            "type": "number",
+            "example": "5.00"
+          },
+          "deductions":{
+            "description": "deductions of total of business income source summary",
+            "type": "number",
+            "example": "60.00"
+          }
+        }
+      }
+    },
+    "accountingAdjustments":{
+      "description": "accountingAdjustments of business income source summary",
+      "type": "number",
+      "example": "-30.00"
+    },
+    "profit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "profit of business income source summary",
+        "properties": {
+          "net":{
+            "description": "net of profit of business income source summary",
+            "type": "number",
+            "example": "20.00"
+          },
+          "taxable":{
+            "description": "taxable of profit of business income source summary",
+            "type": "number",
+            "example": "0.00"
+          }
+        }
+      }
+    },
+    "loss": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource",
+        "properties": {
+          "net":{
+            "description": "net of loss of business income source summary",
+            "type": "number",
+            "example": "0.00"
+          },
+          "taxable":{
+            "description": "taxable of loss of business income source summary",
+            "type": "number",
+            "example": "35.00"
+          }
+        }
+      }
+    }
+  },
+  "required": ["total", "profit", "loss"]
+}

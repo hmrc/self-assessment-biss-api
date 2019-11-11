@@ -1,0 +1,18 @@
+#%RAML 1.0 Library
+
+uses:
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+traits:
+  taxYear:
+    queryParameters:
+      taxYear:
+        description: 'The tax year to which the data applies, in the format YYYY-YY For example: 2017-18'
+        example: "2019-20"
+        required: true
+  selfEmploymentId:
+    queryParameters:
+      selfEmploymentId:
+        description: 'An identifier for the self-employment business, unique to the customer. Must conform to the regular expression ^X[A-Z0-9]{1}IS[0-9]{11}$'
+        example: "X9IS98470026982"
+        required: true
