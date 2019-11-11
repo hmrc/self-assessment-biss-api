@@ -26,7 +26,9 @@ object AppDependencies {
     "uk.gov.hmrc"   %% "domain"            % "5.6.0-play-26",
     "uk.gov.hmrc"   %% "play-hmrc-api"     % "3.6.0-play-26",
     "org.typelevel" %% "cats-core"         % "2.0.0",
-    "com.chuusai"   %% "shapeless"         % "2.3.3"
+    "com.chuusai"   %% "shapeless"         % "2.3.3",
+    "org.json4s" %% "json4s-native" % "3.6.3",
+    "org.json4s" %% "json4s-ext" % "3.6.3"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(

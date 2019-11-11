@@ -50,44 +50,44 @@ class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
     }
   }
 
-  "JSON Writes" should {
+  "toJsonString" should {
     "return valid JSON" when {
       "a case class with all fields present is provided" in {
         val model = RetrieveSelfEmploymentBISSResponse(Total(totalIncome, Some(totalExpenses), Some(totalAdditions), Some(totalDeductions)), Some(accountingAdjustments), Some(Profit(Some(netProfit), Some(taxableProfit))), Some(Loss(Some(netLoss), Some(taxableLoss))))
 
-        Json.toJson(model) shouldBe Json.parse(
+        model.toJsonString.replaceAll("\\s", "") shouldBe
           s"""
              |{
              |  "total": {
-             |    "income": $totalIncome,
-             |    "expenses": $totalExpenses,
-             |    "additions": $totalAdditions,
-             |    "deductions": $totalDeductions
+             |    "income": ${totalIncome.setScale(2)},
+             |    "expenses": ${totalExpenses.setScale(2)},
+             |    "additions": ${totalAdditions.setScale(2)},
+             |    "deductions": ${totalDeductions.setScale(2)}
              |  },
-             |  "accountingAdjustments": $accountingAdjustments,
+             |  "accountingAdjustments": ${accountingAdjustments.setScale(2)},
              |  "profit": {
-             |    "net": $netProfit,
-             |    "taxable": $taxableProfit
+             |    "net": ${netProfit.setScale(2)},
+             |    "taxable": ${taxableProfit.setScale(2)}
              |  },
              |  "loss": {
-             |    "net": $netLoss,
-             |    "taxable": $taxableLoss
+             |    "net": ${netLoss.setScale(2)},
+             |    "taxable": ${taxableLoss.setScale(2)}
              |  }
              |}
-             |""".stripMargin)
+             |""".stripMargin.replaceAll("\\s", "")
       }
 
       "a case class with only mandatory fields present is provided" in {
         val model = RetrieveSelfEmploymentBISSResponse(Total(totalIncome, None, None, None), None, None, None)
 
-        Json.toJson(model) shouldBe Json.parse(
+        model.toJsonString.replaceAll("\\s", "") shouldBe
           s"""
              |{
              |  "total": {
-             |    "income": $totalIncome
+             |    "income": ${totalIncome.setScale(2)}
              |  }
              |}
-             |""".stripMargin)
+             |""".stripMargin.replaceAll("\\s", "")
       }
     }
   }

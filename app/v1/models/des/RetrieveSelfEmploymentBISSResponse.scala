@@ -17,25 +17,40 @@
 package v1.models.des
 
 import play.api.libs.json._
+import org.json4s.JsonAST._
+import org.json4s.native.Serialization
+import org.json4s.{CustomSerializer, DefaultFormats, Formats}
 
 case class RetrieveSelfEmploymentDesResponse(totalIncome: BigDecimal, totalExpenses: Option[BigDecimal], totalAdditions: Option[BigDecimal], totalDeductions: Option[BigDecimal], accountingAdjustments: Option[BigDecimal], netProfit: Option[BigDecimal], taxableProfit: Option[BigDecimal], netLoss: Option[BigDecimal], taxableLoss: Option[BigDecimal])
 
-case class RetrieveSelfEmploymentBISSResponse(total: Total, accountingAdjustments: Option[BigDecimal], profit: Option[Profit], loss: Option[Loss])
+case class RetrieveSelfEmploymentBISSResponse(total: Total, accountingAdjustments: Option[BigDecimal], profit: Option[Profit], loss: Option[Loss]) {
+  def toJsonString: String = {
+    implicit val formats: Formats = DefaultFormats ++ Seq(BigDecimalSerializer)
+    Serialization.write(this)
+  }
+}
+
+private object BigDecimalSerializer extends CustomSerializer[BigDecimal](format => ( {
+  case jde: JDecimal => jde.num
+}, {
+  case bd: BigDecimal => JDecimal(bd.setScale(2))
+}
+))
 
 object RetrieveSelfEmploymentBISSResponse {
   implicit val reads: Reads[RetrieveSelfEmploymentBISSResponse] = Json.reads[RetrieveSelfEmploymentDesResponse].map(response =>
     RetrieveSelfEmploymentBISSResponse(
       Total(response.totalIncome, response.totalExpenses, response.totalAdditions, response.totalDeductions),
       response.accountingAdjustments,
-      if(response.netProfit.isDefined || response.taxableProfit.isDefined) Some(Profit(response.netProfit, response.taxableProfit)) else None,
-      if(response.netLoss.isDefined || response.taxableLoss.isDefined) Some(Loss(response.netLoss, response.taxableLoss)) else None
+      if (response.netProfit.isDefined || response.taxableProfit.isDefined) Some(Profit(response.netProfit, response.taxableProfit)) else None,
+      if (response.netLoss.isDefined || response.taxableLoss.isDefined) Some(Loss(response.netLoss, response.taxableLoss)) else None
     )
   )
 
-  implicit val writesTotal: Writes[Total] = Json.writes[Total]
-  implicit val writesProfit: Writes[Profit] = Json.writes[Profit]
-  implicit val writesLoss: Writes[Loss] = Json.writes[Loss]
-  implicit val writes: Writes[RetrieveSelfEmploymentBISSResponse] = Json.writes[RetrieveSelfEmploymentBISSResponse]
+  //  implicit val writesTotal: Writes[Total] = Json.writes[Total]
+  //  implicit val writesProfit: Writes[Profit] = Json.writes[Profit]
+  //  implicit val writesLoss: Writes[Loss] = Json.writes[Loss]
+  //  implicit val writes: Writes[RetrieveSelfEmploymentBISSResponse] = Json.writes[RetrieveSelfEmploymentBISSResponse]
 }
 
 case class Total(income: BigDecimal, expenses: Option[BigDecimal], additions: Option[BigDecimal], deductions: Option[BigDecimal])
