@@ -33,7 +33,7 @@ case class RetrieveSelfEmploymentBISSResponse(total: Total, accountingAdjustment
 private object BigDecimalSerializer extends CustomSerializer[BigDecimal](format => ( {
   case jde: JDecimal => jde.num
 }, {
-  case bd: BigDecimal => JDecimal(bd.setScale(2))
+  case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
 }
 ))
 
@@ -46,11 +46,6 @@ object RetrieveSelfEmploymentBISSResponse {
       if (response.netLoss.isDefined || response.taxableLoss.isDefined) Some(Loss(response.netLoss, response.taxableLoss)) else None
     )
   )
-
-  //  implicit val writesTotal: Writes[Total] = Json.writes[Total]
-  //  implicit val writesProfit: Writes[Profit] = Json.writes[Profit]
-  //  implicit val writesLoss: Writes[Loss] = Json.writes[Loss]
-  //  implicit val writes: Writes[RetrieveSelfEmploymentBISSResponse] = Json.writes[RetrieveSelfEmploymentBISSResponse]
 }
 
 case class Total(income: BigDecimal, expenses: Option[BigDecimal], additions: Option[BigDecimal], deductions: Option[BigDecimal])

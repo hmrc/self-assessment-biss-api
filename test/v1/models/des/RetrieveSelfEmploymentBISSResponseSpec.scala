@@ -89,6 +89,84 @@ class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
              |}
              |""".stripMargin.replaceAll("\\s", "")
       }
+
+      "a case class with a value to more than 2 decimal places is provided (round up)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.1254, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.13
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
+
+      "a case class with a value to more than 2 decimal places is provided (round down)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.1234, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.12
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
+
+      "a case class with a value to 1 decimal place is provided (zero)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.0, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.00
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
+
+      "a case class with a value to 1 decimal place is provided (non-zero)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.1, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.10
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
+
+      "a case class with a value to 2 decimal places is provided (zero)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.00, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.00
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
+
+      "a case class with a value to 2 decimal places is provided (non-zero)" in {
+        val model = RetrieveSelfEmploymentBISSResponse(Total(100.04, None, None, None), None, None, None)
+
+        model.toJsonString.replaceAll("\\s", "") shouldBe
+          s"""
+             |{
+             |  "total": {
+             |    "income": 100.04
+             |  }
+             |}
+             |""".stripMargin.replaceAll("\\s", "")
+      }
     }
   }
 
