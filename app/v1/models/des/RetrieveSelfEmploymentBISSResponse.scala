@@ -21,7 +21,15 @@ import org.json4s.JsonAST._
 import org.json4s.native.Serialization
 import org.json4s.{CustomSerializer, DefaultFormats, Formats}
 
-case class RetrieveSelfEmploymentDesResponse(totalIncome: BigDecimal, totalExpenses: Option[BigDecimal], totalAdditions: Option[BigDecimal], totalDeductions: Option[BigDecimal], accountingAdjustments: Option[BigDecimal], netProfit: Option[BigDecimal], taxableProfit: Option[BigDecimal], netLoss: Option[BigDecimal], taxableLoss: Option[BigDecimal])
+case class RetrieveSelfEmploymentDesResponse(totalIncome: BigDecimal,
+                                             totalExpenses: Option[BigDecimal],
+                                             totalAdditions: Option[BigDecimal],
+                                             totalDeductions: Option[BigDecimal],
+                                             accountingAdjustments: Option[BigDecimal],
+                                             netProfit: Option[BigDecimal],
+                                             taxableProfit: Option[BigDecimal],
+                                             netLoss: Option[BigDecimal],
+                                             taxableLoss: Option[BigDecimal])
 
 case class RetrieveSelfEmploymentBISSResponse(total: Total, accountingAdjustments: Option[BigDecimal], profit: Option[Profit], loss: Option[Loss]) {
   def toJsonString: String = {
