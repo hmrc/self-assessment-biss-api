@@ -19,7 +19,8 @@ package v1.models.response.selfEmployment
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
 
-case class Profit(net: Option[BigDecimal], taxable: Option[BigDecimal])
+case class Profit(net: Option[BigDecimal],
+                  taxable: Option[BigDecimal])
 
 object Profit {
 

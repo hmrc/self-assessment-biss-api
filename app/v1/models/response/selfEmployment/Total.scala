@@ -19,7 +19,10 @@ package v1.models.response.selfEmployment
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
 
-case class Total(income: BigDecimal, expenses: Option[BigDecimal], additions: Option[BigDecimal], deductions: Option[BigDecimal])
+case class Total(income: BigDecimal,
+                 expenses: Option[BigDecimal],
+                 additions: Option[BigDecimal],
+                 deductions: Option[BigDecimal])
 
 object Total {
 

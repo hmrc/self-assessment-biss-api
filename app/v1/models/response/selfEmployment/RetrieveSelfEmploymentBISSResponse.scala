@@ -22,21 +22,28 @@ import org.json4s.JsonAST._
 import org.json4s.native.Serialization
 import org.json4s.{CustomSerializer, DefaultFormats, Formats}
 
-case class RetrieveSelfEmploymentBISSResponse(total: Total, accountingAdjustments: Option[BigDecimal], profit: Option[Profit], loss: Option[Loss]) {
+case class RetrieveSelfEmploymentBISSResponse(total: Total,
+                                              accountingAdjustments: Option[BigDecimal],
+                                              profit: Option[Profit],
+                                              loss: Option[Loss]) {
+
   def toJsonString: String = {
     implicit val formats: Formats = DefaultFormats ++ Seq(BigDecimalSerializer)
     Serialization.write(this)
   }
 }
 
-private object BigDecimalSerializer extends CustomSerializer[BigDecimal](format => ( {
-  case jde: JDecimal => jde.num
-}, {
-  case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
-}
-))
+private object BigDecimalSerializer extends CustomSerializer[BigDecimal](format =>
+  ({
+     case jde: JDecimal => jde.num
+   },
+   {
+     case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
+   })
+)
 
 object RetrieveSelfEmploymentBISSResponse {
+
   implicit val reads: Reads[RetrieveSelfEmploymentBISSResponse] = (
     JsPath.read[Total] and
       (JsPath \ "accountingAdjustments").readNullable[BigDecimal] and
