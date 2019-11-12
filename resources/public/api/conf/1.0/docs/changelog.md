@@ -1,1 +1,1 @@
-You can find the changelog in the [mtd-api](https://github.com/hmrc/mtd-api/wiki/Changelog) GitHub wiki.
+You can find the changelog in the [self-assessment-biss-api](https://github.com/hmrc/self-assessment-biss-api/wiki/Changelog) GitHub wiki.
