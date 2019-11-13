@@ -19,7 +19,6 @@ package v1.models.des
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v1.models.des.IncomeSourceType._
-import v1.models.domain.TypeOfBusiness
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
