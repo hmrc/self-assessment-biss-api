@@ -16,8 +16,11 @@
 
 package v1.controllers.requestParsers
 
+import java.time.Year
+
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
+import utils.DateUtils
 import v1.mocks.validators.MockRetrieveSelfEmploymentBISSValidator
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRawData, RetrieveSelfEmploymentBISSRequest}
@@ -39,7 +42,13 @@ class RetrieveSelfEmploymentBISSRequestDataParserSpec extends UnitSpec {
       "valid data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), Some(DesTaxYear.fromMtd(taxYear)), selfEmploymentId))
+        parser.parseRequest(inputData) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), selfEmploymentId))
+      }
+
+      "valid data is provided without tax year" in new Test {
+        MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
+
+        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), DateUtils.getTaxYear(None), selfEmploymentId))
       }
     }
 

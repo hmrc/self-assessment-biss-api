@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package utils
 
-import uk.gov.hmrc.domain.Nino
+import java.time.{LocalDateTime, Year}
 
-case class RetrieveSelfEmploymentBISSRequest(nino: Nino, taxYear: DesTaxYear, selfEmploymentId: String)
+import v1.models.requestData.DesTaxYear
+
+object DateUtils {
+
+  def getTaxYear(taxYear: Option[String]): DesTaxYear = {
+    taxYear.fold({
+      if(LocalDateTime.now().getMonthValue <= 3)
+        DesTaxYear(Year.now().toString)
+      else DesTaxYear(Year.now().getValue.+(1).toString)
+    })(DesTaxYear.fromMtd)
+  }
+}
