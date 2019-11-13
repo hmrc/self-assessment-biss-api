@@ -37,10 +37,10 @@ class SelfEmploymentBISSConnector @Inject()(val http: HttpClient,
 
     val nino = request.nino.nino
     val taxYear = request.taxYear.toString
-    val pathParameter = Map("incomesourceid" -> request.selfEmploymentId)
+    val queryParams = Map("incomesourceid" -> request.selfEmploymentId)
 
     get(
-      DesUri[RetrieveSelfEmploymentBISSResponse](s"income-tax/income-sources/nino/$nino/self-employment/$taxYear/biss"), pathParameter.toSeq
+      DesUri[RetrieveSelfEmploymentBISSResponse](s"income-tax/income-sources/nino/$nino/self-employment/$taxYear/biss"), queryParams.toSeq
     )
   }
 }
