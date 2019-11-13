@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response.common
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Profit(net: Option[BigDecimal],
-                  taxable: Option[BigDecimal])
+case class Total(income: BigDecimal,
+                 expenses: Option[BigDecimal],
+                 additions: Option[BigDecimal],
+                 deductions: Option[BigDecimal])
 
-object Profit {
+object Total {
 
-  implicit val reads: Reads[Profit] = (
-    (JsPath \ "netProfit").readNullable[BigDecimal] and
-      (JsPath \ "taxableProfit").readNullable[BigDecimal]
-    )(Profit.apply _)
+  implicit val reads: Reads[Total] = (
+    (JsPath \ "totalIncome").read[BigDecimal] and
+      (JsPath \ "totalExpenses").readNullable[BigDecimal] and
+      (JsPath \ "totalAdditions").readNullable[BigDecimal] and
+      (JsPath \ "totalDeductions").readNullable[BigDecimal]
+    )(Total.apply _)
 
-  implicit val writes: OWrites[Profit] = Json.writes[Profit]
+  implicit val writes: OWrites[Total] = Json.writes[Total]
 }

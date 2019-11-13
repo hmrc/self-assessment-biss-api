@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.des
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import utils.enums.Enums
+import v1.models.domain.TypeOfBusiness
 
-case class Loss(net: Option[BigDecimal],
-                taxable: Option[BigDecimal])
-
-object Loss {
-
-  implicit val reads: Reads[Loss] = (
-    (JsPath \ "netLoss").readNullable[BigDecimal] and
-      (JsPath \ "taxableLoss").readNullable[BigDecimal]
-    )(Loss.apply _)
-
-  implicit val writes: OWrites[Loss] = Json.writes[Loss]
+sealed trait IncomeSourceType {
+  def toTypeOfBusiness: TypeOfBusiness
 }
 
+object IncomeSourceType {
+  case object `uk-property` extends IncomeSourceType {
+    override def toTypeOfBusiness: TypeOfBusiness = TypeOfBusiness.`uk-property-non-fhl`
+  }
+
+  case object `fhl-property-uk` extends IncomeSourceType {
+    override def toTypeOfBusiness: TypeOfBusiness = TypeOfBusiness.`uk-property-fhl`
+  }
+
+  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
+}
