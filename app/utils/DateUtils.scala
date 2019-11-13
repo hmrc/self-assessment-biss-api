@@ -22,7 +22,7 @@ import v1.models.requestData.DesTaxYear
 
 object DateUtils {
 
-  def getTaxYear(taxYear: Option[String]): DesTaxYear = {
+  def getDesTaxYear(taxYear: Option[String]): DesTaxYear = {
     taxYear.fold({
       if(LocalDateTime.now().getMonthValue <= 3)
         DesTaxYear(Year.now().toString)

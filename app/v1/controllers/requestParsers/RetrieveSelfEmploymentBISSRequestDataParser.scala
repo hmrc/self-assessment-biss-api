@@ -27,6 +27,6 @@ class RetrieveSelfEmploymentBISSRequestDataParser @Inject()(val validator: Retri
 
   override protected def requestFor(data: RetrieveSelfEmploymentBISSRawData): RetrieveSelfEmploymentBISSRequest =
     RetrieveSelfEmploymentBISSRequest(Nino(data.nino),
-      DateUtils.getTaxYear(data.taxYear),
+      DateUtils.getDesTaxYear(data.taxYear),
       data.selfEmploymentId)
 }
