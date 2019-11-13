@@ -16,4 +16,4 @@
 
 package v1.models.requestData
 
-case class RetrieveUKPropertyBISSRawData(nino: String, taxYear: String, typeOfBusiness: String) extends RawData
+case class RetrieveUKPropertyBISSRawData(nino: String, taxYear: Option[String], typeOfBusiness: String) extends RawData
