@@ -19,20 +19,9 @@ package v1.models.des
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 import v1.models.des.IncomeSourceType._
-import v1.models.domain.TypeOfBusiness
 
 class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
   testRoundTrip[IncomeSourceType](("uk-property", `uk-property`), ("fhl-property-uk", `fhl-property-uk`))
 
-  "IncomeSourceType" should {
-    "convert to TypeOfBusiness" when {
-      "provided uk-property" in {
-        IncomeSourceType.`uk-property`.toTypeOfBusiness shouldBe TypeOfBusiness.`uk-property-non-fhl`
-      }
-      "provided fhl-property-uk" in {
-        IncomeSourceType.`fhl-property-uk`.toTypeOfBusiness shouldBe TypeOfBusiness.`uk-property-fhl`
-      }
-    }
-  }
 }
