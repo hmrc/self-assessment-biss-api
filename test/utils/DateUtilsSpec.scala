@@ -23,30 +23,22 @@ import v1.models.requestData.DesTaxYear
 
 class DateUtilsSpec extends UnitSpec{
 
-  "getDesTaxYear" should {
+  "getDesTaxYear with tax year param" should {
     "return a valid DesTaxYear" when {
       "mtd formatted string tax year is supplied" in {
-        DateUtils.getDesTaxYear(Some("2018-19")) shouldBe DesTaxYear("2019")
-      }
-
-      "no tax year is supplied in the first quarter" in {
-        DateUtils.getDesTaxYear(None) shouldBe DesTaxYear(Year.now().getValue.toString)
+        DateUtils.getDesTaxYear("2018-19") shouldBe DesTaxYear("2019")
       }
     }
   }
 
   "getDesTaxYear with date param" should {
     "return a valid DesTaxYear" when {
-      "mtd formatted string tax year is supplied" in {
-        DateUtils.getDesTaxYear(Some("2018-19"), LocalDate.now()) shouldBe DesTaxYear("2019")
-      }
-
       "no tax year is supplied when the date is 5th April of the current year" in {
-        DateUtils.getDesTaxYear(None, LocalDate.parse(s"${Year.now().toString}-04-05")) shouldBe DesTaxYear(Year.now().getValue.toString)
+        DateUtils.getDesTaxYear(LocalDate.parse(s"2019-04-05")) shouldBe DesTaxYear("2019")
       }
 
       "no tax year is supplied when the date is 6th April of the current year" in {
-        DateUtils.getDesTaxYear(None, LocalDate.parse(s"${Year.now().toString}-04-06")) shouldBe DesTaxYear(Year.now().getValue.+(1).toString)
+        DateUtils.getDesTaxYear(LocalDate.parse("2019-04-06")) shouldBe DesTaxYear("2020")
       }
     }
   }
