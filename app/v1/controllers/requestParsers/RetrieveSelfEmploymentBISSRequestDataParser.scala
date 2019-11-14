@@ -16,6 +16,8 @@
 
 package v1.controllers.requestParsers
 
+import java.time.LocalDate
+
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import utils.DateUtils
@@ -27,6 +29,6 @@ class RetrieveSelfEmploymentBISSRequestDataParser @Inject()(val validator: Retri
 
   override protected def requestFor(data: RetrieveSelfEmploymentBISSRawData): RetrieveSelfEmploymentBISSRequest =
     RetrieveSelfEmploymentBISSRequest(Nino(data.nino),
-      DateUtils.getDesTaxYear(data.taxYear),
+      DateUtils.getDesTaxYear(data.taxYear, LocalDate.now()),
       data.selfEmploymentId)
 }
