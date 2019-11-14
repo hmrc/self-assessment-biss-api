@@ -20,12 +20,18 @@ import play.api.libs.json._
 import utils.enums.Enums
 import v1.models.domain.TypeOfBusiness
 
-sealed trait IncomeSourceType
+sealed trait IncomeSourceType {
+  def toTypeOfBusiness: TypeOfBusiness
+}
 
 object IncomeSourceType {
-  case object `uk-property` extends IncomeSourceType
+  case object `uk-property` extends IncomeSourceType {
+    override def toTypeOfBusiness: TypeOfBusiness = TypeOfBusiness.`uk-property-non-fhl`
+  }
 
-  case object `fhl-property-uk` extends IncomeSourceType
+  case object `fhl-property-uk` extends IncomeSourceType {
+    override def toTypeOfBusiness: TypeOfBusiness = TypeOfBusiness.`uk-property-fhl`
+  }
 
   implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
 }

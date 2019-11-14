@@ -20,7 +20,7 @@ import org.json4s.CustomSerializer
 import org.json4s.JsonAST.JDecimal
 
 package object response {
-  object BigDecimalSerializer extends CustomSerializer[BigDecimal](_ =>
+  object BigDecimalSerializer extends CustomSerializer[BigDecimal](format =>
     ({
       case jde: JDecimal => jde.num
     },
