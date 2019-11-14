@@ -48,7 +48,7 @@ class RetrieveSelfEmploymentBISSRequestDataParserSpec extends UnitSpec {
       "valid data is provided without tax year" in new Test {
         MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
 
-        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), DateUtils.getDesTaxYear(None, LocalDate.now()), selfEmploymentId))
+        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), selfEmploymentId))
       }
     }
 

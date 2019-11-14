@@ -22,17 +22,12 @@ import v1.models.requestData.DesTaxYear
 
 object DateUtils {
 
-  def getDesTaxYear(taxYear: Option[String]): DesTaxYear = {
-    taxYear.fold({
-      DesTaxYear(Year.now().getValue.toString)
-    })(DesTaxYear.fromMtd)
-  }
+  def getDesTaxYear(taxYear: String): DesTaxYear = DesTaxYear.fromMtd(taxYear)
 
-  def getDesTaxYear(taxYear: Option[String], current: LocalDate): DesTaxYear = {
+  def getDesTaxYear(current: LocalDate): DesTaxYear = {
     val fiscalYearStartDate = LocalDate.parse(s"${Year.now().toString}-04-05")
-    taxYear.fold({
-      if(current.isAfter(fiscalYearStartDate)) DesTaxYear(Year.now().getValue.+(1).toString)
+
+    if(current.isAfter(fiscalYearStartDate)) DesTaxYear(Year.now().getValue.+(1).toString)
       else DesTaxYear(Year.now().getValue.toString)
-    })(DesTaxYear.fromMtd)
   }
 }
