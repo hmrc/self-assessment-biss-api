@@ -16,8 +16,11 @@
 
 package v1.controllers.requestParsers
 
+import java.time.LocalDate
+
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
+import utils.DateUtils
 import v1.mocks.validators.MockRetrieveUKPropertyBISSValidator
 import v1.models.des.IncomeSourceType
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
@@ -41,13 +44,21 @@ class RetrieveUKPropertyBISSRequestParserSpec extends UnitSpec {
       "valid data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), Some(DesTaxYear.fromMtd(taxYear)), typeOfBusiness match {
+        parser.parseRequest(inputData) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), typeOfBusiness match {
           case "uk-property-fhl" => IncomeSourceType.`fhl-property-uk`
           case "uk-property-non-fhl" => IncomeSourceType.`uk-property`
         }))
       }
     }
 
+    "valid data is provided without tax year" in new Test {
+      MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
+
+      parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), typeOfBusiness match {
+        case "uk-property-fhl" => IncomeSourceType.`fhl-property-uk`
+        case "uk-property-non-fhl" => IncomeSourceType.`uk-property`
+      }))
+    }
     "return an ErrorWrapper" when {
       "a single error is found" in new Test {
         MockValidator.validate(inputData).returns(List(NinoFormatError))
