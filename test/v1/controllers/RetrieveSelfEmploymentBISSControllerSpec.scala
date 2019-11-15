@@ -16,7 +16,8 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import fixtures.RetrieveSelfEmploymentBISSFixture._
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,7 +26,6 @@ import v1.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, Moc
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRawData, RetrieveSelfEmploymentBISSRequest}
-import v1.models.response.selfEmployment.{Loss, Profit, RetrieveSelfEmploymentBISSResponse, Total}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,53 +57,11 @@ class RetrieveSelfEmploymentBISSControllerSpec
   private val selfEmploymentId = "123456789"
   private val correlationId = "X-123"
 
-
-  val json: JsValue = Json.parse(
-    """
-      |{
-      |  "total": {
-      |    "income": 100.00,
-      |    "expenses": 50.00,
-      |    "additions": 5.00,
-      |    "deductions": 60.00
-      |  },
-      |  "accountingAdjustments": -30.00,
-      |  "profit": {
-      |    "net": 20.00,
-      |    "taxable": 10.00
-      |  },
-      |  "loss": {
-      |    "net": 10.00,
-      |    "taxable": 35.00
-      |  }
-      |}
-    """.stripMargin)
-
-  val response =
-    RetrieveSelfEmploymentBISSResponse (
-      Total(
-        income = 100.00,
-        expenses = Some(50.00),
-        additions = Some(5.00),
-        deductions = Some(60.00)
-      ),
-      accountingAdjustments = Some(-30.00),
-      Some(Profit(
-        net = Some(20.00),
-        taxable = Some(10.00)
-      )),
-      Some(Loss(
-        net = Some(10.00),
-        taxable = Some(35.00)
-      ))
-    )
-
-
   private val rawData     = RetrieveSelfEmploymentBISSRawData(nino, taxYear, selfEmploymentId)
   private val requestData = RetrieveSelfEmploymentBISSRequest(Nino(nino), DesTaxYear("2019"), selfEmploymentId)
 
-  "handleRequest" should {
-    "return OK with list of calculations" when {
+  "retrieveBiss" should {
+    "return successful response with status OK" when {
       "happy path" in new Test {
 
         MockRetrieveSelfEmploymentBISSRequestDataParser
@@ -112,12 +70,12 @@ class RetrieveSelfEmploymentBISSControllerSpec
 
         MockSelfEmploymentBISSService
           .retrieveBiss(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
 
-        val result: Future[Result] = controller.retrieveBiss(nino, taxYear, selfEmploymentId)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveBiss(nino, selfEmploymentId, taxYear)(fakeGetRequest)
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe json
+        contentAsJson(result) shouldBe mtdResponse
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
@@ -131,7 +89,7 @@ class RetrieveSelfEmploymentBISSControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-            val result: Future[Result] = controller.retrieveBiss(nino, taxYear, selfEmploymentId)(fakeGetRequest)
+            val result: Future[Result] = controller.retrieveBiss(nino, selfEmploymentId, taxYear)(fakeGetRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -162,7 +120,7 @@ class RetrieveSelfEmploymentBISSControllerSpec
               .retrieveBiss(requestData)
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
-            val result: Future[Result] = controller.retrieveBiss(nino, taxYear, selfEmploymentId)(fakeGetRequest)
+            val result: Future[Result] = controller.retrieveBiss(nino, selfEmploymentId, taxYear)(fakeGetRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)

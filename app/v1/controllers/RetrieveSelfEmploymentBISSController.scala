@@ -48,8 +48,9 @@ class RetrieveSelfEmploymentBISSController @Inject()(
       endpointName = "retrieveBiss"
     )
 
-  def retrieveBiss(nino: String, taxYear: Option[String], selfEmploymentId: String): Action[AnyContent] =
+  def retrieveBiss(nino: String, selfEmploymentId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+
       val rawData = RetrieveSelfEmploymentBISSRawData(nino, taxYear, selfEmploymentId)
       val result =
         for {

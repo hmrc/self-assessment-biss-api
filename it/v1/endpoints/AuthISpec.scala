@@ -19,32 +19,39 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.http.Status.OK
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import fixtures.RetrieveSelfEmploymentBISSFixture._
 
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino          = "AA123456A"
-    val taxYear       = "2017-18"
-    val data        = "someData"
-    val correlationId = "X-123"
+    val nino                    = "AA123456A"
+    val taxYear: Option[String] = Some("2018-19")
+    val selfEmploymentId: String= "XAIS12345678913"
+    val correlationId           = "X-123"
+    val desTaxYear: DesTaxYear = DesTaxYear.fromMtd(taxYear.get)
 
-    val requestJson: String =
-      s"""
-         |{
-         |"data": "$data"
-         |}
-    """.stripMargin
+    def uri: String = s"/$nino/self-employment"
+
+    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss"
 
     def setupStubs(): StubMapping
 
-    def request(): WSRequest = {
+    def request: WSRequest = {
+      val queryParams: Seq[(String, String)] = Seq("selfEmploymentId" -> selfEmploymentId) ++
+        Seq("taxYear" -> taxYear)
+          .collect {
+            case (k, Some(v)) => (k, v)
+          }
+
       setupStubs()
-      buildRequest(s"/$nino/$taxYear/sampleEndpoint")
+      buildRequest(uri)
+        .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
   }
@@ -61,23 +68,26 @@ class AuthISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.internalServerError(nino)
         }
 
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
+        val response: WSResponse = await(request.get)
         response.status shouldBe Status.INTERNAL_SERVER_ERROR
       }
     }
 
     "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
 
-      "return 201" in new Test {
+      "return 200" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceSuccess(nino, DesTaxYear.fromMtd(taxYear).toString)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomesourceid" -> s"$selfEmploymentId"), OK, desResponse)
         }
 
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
-        response.status shouldBe Status.CREATED
+        val response: WSResponse = await(request.get)
+
+        response.status shouldBe OK
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.json shouldBe mtdResponse
       }
     }
 
@@ -92,7 +102,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuthStub.unauthorisedNotLoggedIn()
         }
 
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
+        val response: WSResponse = await(request.get)
         response.status shouldBe Status.FORBIDDEN
       }
     }
@@ -108,7 +118,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuthStub.unauthorisedOther()
         }
 
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
+        val response: WSResponse = await(request.get)
         response.status shouldBe Status.FORBIDDEN
       }
     }

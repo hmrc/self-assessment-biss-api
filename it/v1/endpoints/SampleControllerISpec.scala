@@ -25,7 +25,6 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
-import play.api.http.HeaderNames.ACCEPT
 
 class SampleControllerISpec extends IntegrationBaseSpec {
 

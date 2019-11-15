@@ -24,7 +24,7 @@ import v1.mocks.connectors.MockSelfEmploymentBISSConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRequest}
-import v1.models.response.selfEmployment.{Loss, Profit, RetrieveSelfEmploymentBISSResponse, Total}
+import fixtures.RetrieveSelfEmploymentBISSFixture._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,32 +45,13 @@ class SelfEmploymentBISSServiceSpec extends UnitSpec {
     val service = new SelfEmploymentBISSService(mockConnector)
   }
 
-  val response =
-    RetrieveSelfEmploymentBISSResponse (
-      Total(
-        income = 100.00,
-        expenses = Some(50.00),
-        additions = Some(5.00),
-        deductions = Some(60.00)
-      ),
-      accountingAdjustments = Some(-30.00),
-      Some(Profit(
-        net = Some(20.00),
-        taxable = Some(10.00)
-      )),
-      Some(Loss(
-        net = Some(10.00),
-        taxable = Some(35.00)
-      ))
-    )
-
   "retrieveBiss" should {
     "return a valid response" when {
       "a valid request is supplied" in new Test {
         MockSelfEmploymentBISSConnector.retrieveBiss(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
 
-        await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseObj))
       }
     }
 
