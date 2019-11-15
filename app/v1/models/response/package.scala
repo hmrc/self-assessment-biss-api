@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models
 
-import uk.gov.hmrc.domain.Nino
+import org.json4s.CustomSerializer
+import org.json4s.JsonAST.JDecimal
 
-case class RetrieveSelfEmploymentBISSRequest(nino: Nino, taxYear: DesTaxYear, selfEmploymentId: String)
+package object response {
+  object BigDecimalSerializer extends CustomSerializer[BigDecimal](_ =>
+    ({
+      case jde: JDecimal => jde.num
+    },
+      {
+        case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
+      })
+  )
+}

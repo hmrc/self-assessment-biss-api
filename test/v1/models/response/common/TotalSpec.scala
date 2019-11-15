@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response.common
 
-import play.api.libs.json.{JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class TotalSpec extends UnitSpec {

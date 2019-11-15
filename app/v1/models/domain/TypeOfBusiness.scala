@@ -14,8 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.domain
 
-import uk.gov.hmrc.domain.Nino
+import play.api.libs.json._
+import utils.enums.Enums
+import v1.models.des.IncomeSourceType
 
-case class RetrieveSelfEmploymentBISSRequest(nino: Nino, taxYear: DesTaxYear, selfEmploymentId: String)
+sealed trait TypeOfBusiness {
+  def toIncomeSourceType: IncomeSourceType
+}
+
+object TypeOfBusiness {
+  case object `uk-property-non-fhl` extends TypeOfBusiness {
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property`
+  }
+
+  case object `uk-property-fhl` extends TypeOfBusiness {
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-uk`
+  }
+
+  implicit val format: Format[TypeOfBusiness] = Enums.format[TypeOfBusiness]
+}

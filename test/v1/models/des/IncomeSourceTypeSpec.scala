@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.des
 
-import uk.gov.hmrc.domain.Nino
+import support.UnitSpec
+import utils.enums.EnumJsonSpecSupport
+import v1.models.des.IncomeSourceType._
+import v1.models.domain.TypeOfBusiness
 
-case class RetrieveSelfEmploymentBISSRequest(nino: Nino, taxYear: DesTaxYear, selfEmploymentId: String)
+class IncomeSourceTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+
+  testRoundTrip[IncomeSourceType](("uk-property", `uk-property`), ("fhl-property-uk", `fhl-property-uk`))
+}

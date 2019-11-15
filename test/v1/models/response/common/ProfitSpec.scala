@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response.common
 
 import play.api.libs.json.{JsSuccess, JsValue, Json}
 import support.UnitSpec
 
-class LossSpec extends UnitSpec {
+class ProfitSpec extends UnitSpec {
 
   val json: JsValue = Json.parse(
     """
@@ -32,13 +32,13 @@ class LossSpec extends UnitSpec {
   val desJson: JsValue = Json.parse(
     """
       |{
-      | "netLoss": 100.00,
-      | "taxableLoss" : 50.00
+      | "netProfit": 100.00,
+      | "taxableProfit" : 50.00
       |}
     """.stripMargin)
 
   val model =
-    Loss(
+    Profit(
       net = Some(100.00),
       taxable = Some(50.00)
     )
@@ -50,7 +50,7 @@ class LossSpec extends UnitSpec {
     }
 
     "read correctly from json" in {
-      desJson.validate[Loss] shouldBe JsSuccess(model)
+      desJson.validate[Profit] shouldBe JsSuccess(model)
     }
   }
 }

@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.response.common
 
-import uk.gov.hmrc.domain.Nino
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class RetrieveSelfEmploymentBISSRequest(nino: Nino, taxYear: DesTaxYear, selfEmploymentId: String)
+case class Loss(net: Option[BigDecimal],
+                taxable: Option[BigDecimal])
+
+object Loss {
+
+  implicit val reads: Reads[Loss] = (
+    (JsPath \ "netLoss").readNullable[BigDecimal] and
+      (JsPath \ "taxableLoss").readNullable[BigDecimal]
+    )(Loss.apply _)
+
+  implicit val writes: OWrites[Loss] = Json.writes[Loss]
+}
+

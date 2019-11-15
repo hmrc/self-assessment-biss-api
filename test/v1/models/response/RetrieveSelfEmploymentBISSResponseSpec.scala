@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.models.response.common.{Loss, Profit, Total}
 
 class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
 

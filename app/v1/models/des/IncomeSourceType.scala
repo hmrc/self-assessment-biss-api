@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.des
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import utils.enums.Enums
+import v1.models.domain.TypeOfBusiness
 
-case class Profit(net: Option[BigDecimal],
-                  taxable: Option[BigDecimal])
+sealed trait IncomeSourceType
 
-object Profit {
+object IncomeSourceType {
+  case object `uk-property` extends IncomeSourceType
 
-  implicit val reads: Reads[Profit] = (
-    (JsPath \ "netProfit").readNullable[BigDecimal] and
-      (JsPath \ "taxableProfit").readNullable[BigDecimal]
-    )(Profit.apply _)
+  case object `fhl-property-uk` extends IncomeSourceType
 
-  implicit val writes: OWrites[Profit] = Json.writes[Profit]
+  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
 }

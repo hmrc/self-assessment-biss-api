@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.requestData
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import play.api.libs.functional.syntax._
-
-case class Loss(net: Option[BigDecimal],
-                taxable: Option[BigDecimal])
-
-object Loss {
-
-  implicit val reads: Reads[Loss] = (
-    (JsPath \ "netLoss").readNullable[BigDecimal] and
-      (JsPath \ "taxableLoss").readNullable[BigDecimal]
-    )(Loss.apply _)
-
-  implicit val writes: OWrites[Loss] = Json.writes[Loss]
-}
-
+case class RetrieveUKPropertyBISSRawData(nino: String, taxYear: Option[String], typeOfBusiness: String) extends RawData
