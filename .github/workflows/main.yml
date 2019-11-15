@@ -1,0 +1,2 @@
+- name: check master
+  uses: codesuki/check-master-action@1.0.0
