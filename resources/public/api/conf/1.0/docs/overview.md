@@ -1,1 +1,1 @@
-The self-assessment biss API allows users to retrieve a summary of income and expenditure for a specified self employment, or UK property business for a given tax tear. If no tax year is specified, it will be defaulted to the current tax year.
+The self assessment biss API allows users to retrieve a summary of income and expenditure for a specified self-employment, or UK property business for a given tax year.
