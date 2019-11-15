@@ -1,1 +1,1 @@
-This API allows software packages to get a running (year-to date) summary of the income and expenditure for a specified self employment business during a tax tear. When no tax year is specified, then it will default to the current tax year.
+The self-assessment biss API allows users to retrieve a summary of income and expenditure for a specified self employment, or UK property business for a given tax tear. If no tax year is specified, it will be defaulted to the current tax year.

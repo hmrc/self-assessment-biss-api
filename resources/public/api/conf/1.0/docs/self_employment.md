@@ -1,1 +1,0 @@
-This endpoint allows the user to get a running (year-to date) summary of the income and expenditure for a specified self employment business during a tax tear. When no tax year is specified, then it will default to the current tax year.

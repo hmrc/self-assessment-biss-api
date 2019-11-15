@@ -3,7 +3,7 @@
 
 # To run locally
 
-`sbt "run 9787"`
+`sbt "run 9785"`
 or
 `sbt run`
 
