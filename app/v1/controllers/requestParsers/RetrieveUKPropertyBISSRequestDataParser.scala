@@ -16,19 +16,21 @@
 
 package v1.controllers.requestParsers
 
+import java.time.LocalDate
+
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
+import utils.DateUtils
 import v1.controllers.requestParsers.validators.RetrieveUKPropertyBISSValidator
 import v1.models.des.IncomeSourceType
-import v1.models.domain.TypeOfBusiness
-import v1.models.requestData.{DesTaxYear, RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest}
+import v1.models.requestData.{RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest}
 
 class RetrieveUKPropertyBISSRequestDataParser @Inject()(val validator: RetrieveUKPropertyBISSValidator)
   extends RequestParser[RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest] {
 
   override protected def requestFor(data: RetrieveUKPropertyBISSRawData): RetrieveUKPropertyBISSRequest = {
     RetrieveUKPropertyBISSRequest(Nino(data.nino),
-      data.taxYear.map(DesTaxYear.fromMtd),
+      data.taxYear.fold(DateUtils.getDesTaxYear(LocalDate.now()))(DateUtils.getDesTaxYear),
       data.typeOfBusiness match {
         case "uk-property-fhl" => IncomeSourceType.`fhl-property-uk`
         case "uk-property-non-fhl" => IncomeSourceType.`uk-property`
