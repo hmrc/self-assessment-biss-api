@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package fixtures
+package v1.models.response
 
 import play.api.libs.json.{JsValue, Json}
-import v1.models.response.RetrieveSelfEmploymentBISSResponse
+import support.UnitSpec
 import v1.models.response.common.{Loss, Profit, Total}
 
-object RetrieveSelfEmploymentBISSFixture {
+class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
 
-  val mtdResponse: JsValue = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
       |  "total": {
@@ -43,8 +43,25 @@ object RetrieveSelfEmploymentBISSFixture {
       |}
     """.stripMargin)
 
-  val responseObj =
-    RetrieveSelfEmploymentBISSResponse (
+  val desJson: JsValue = Json.parse(
+    """
+      |{
+      | "totalIncome": 100.00,
+      | "totalExpenses" : 50.00,
+      | "totalAdditions" : 5.00,
+      | "totalDeductions" : 60.00,
+      | "netProfit": 20.00,
+      | "taxableProfit" : 10.00,
+      | "netLoss": 10.00,
+      | "taxableLoss" : 35.00,
+      | "accountingAdjustments": -30.00
+      |}
+    """.stripMargin)
+
+  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+
+  val model =
+    RetrieveUKPropertyBISSResponse (
       Total(
         income = 100.00,
         expenses = Some(50.00),
@@ -62,18 +79,18 @@ object RetrieveSelfEmploymentBISSFixture {
       ))
     )
 
-  val desResponse: JsValue = Json.parse(
-    """
-      |{
-      | "totalIncome": 100.00,
-      | "totalExpenses" : 50.00,
-      | "totalAdditions" : 5.00,
-      | "totalDeductions" : 60.00,
-      | "netProfit": 20.00,
-      | "taxableProfit" : 10.00,
-      | "netLoss": 10.00,
-      | "taxableLoss" : 35.00,
-      | "accountingAdjustments": -30.00
-      |}
-    """.stripMargin)
+  "RetrieveUKPropertyBISSResponse" should {
+
+    "write correctly to json" in {
+      Json.toJson(model) shouldBe json
+    }
+
+    "read correctly from json" in {
+      desJson.as[RetrieveUKPropertyBISSResponse] shouldBe model
+    }
+
+    "toJsonString" in {
+      model.toJsonString shouldBe jsonString
+    }
+  }
 }

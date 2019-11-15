@@ -26,7 +26,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.RetrieveSelfEmploymentBISSRequest
-import v1.models.response.selfEmployment.RetrieveSelfEmploymentBISSResponse
+import v1.models.response.RetrieveSelfEmploymentBISSResponse
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}

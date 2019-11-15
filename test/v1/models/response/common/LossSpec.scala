@@ -14,28 +14,43 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response.common
 
-import fixtures.RetrieveSelfEmploymentBISSFixture._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsSuccess, JsValue, Json}
 import support.UnitSpec
 
-class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
+class LossSpec extends UnitSpec {
 
-  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+  val json: JsValue = Json.parse(
+    """
+      |{
+      | "net": 100.00,
+      | "taxable" : 50.00
+      |}
+    """.stripMargin)
 
-  "RetrieveSelfEmploymentBISSResponse" should {
+  val desJson: JsValue = Json.parse(
+    """
+      |{
+      | "netLoss": 100.00,
+      | "taxableLoss" : 50.00
+      |}
+    """.stripMargin)
+
+  val model =
+    Loss(
+      net = Some(100.00),
+      taxable = Some(50.00)
+    )
+
+  "TaxBand" should {
 
     "write correctly to json" in {
-      Json.toJson(responseObj) shouldBe mtdResponse
+      Json.toJson(model) shouldBe json
     }
 
     "read correctly from json" in {
-      desResponse.as[RetrieveSelfEmploymentBISSResponse] shouldBe responseObj
-    }
-
-    "toJsonString" in {
-      responseObj.toJsonString shouldBe jsonString
+      desJson.validate[Loss] shouldBe JsSuccess(model)
     }
   }
 }

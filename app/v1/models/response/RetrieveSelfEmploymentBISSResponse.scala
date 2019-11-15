@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.response.selfEmployment
+package v1.models.response
 
+import org.json4s.native.Serialization
+import org.json4s.{DefaultFormats, Formats}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import org.json4s.JsonAST._
-import org.json4s.native.Serialization
-import org.json4s.{CustomSerializer, DefaultFormats, Formats}
+import v1.models.response.common.{Loss, Profit, Total}
 
 case class RetrieveSelfEmploymentBISSResponse(total: Total,
                                               accountingAdjustments: Option[BigDecimal],
@@ -32,15 +32,6 @@ case class RetrieveSelfEmploymentBISSResponse(total: Total,
     Serialization.write(this)
   }
 }
-
-private object BigDecimalSerializer extends CustomSerializer[BigDecimal](format =>
-  ({
-     case jde: JDecimal => jde.num
-   },
-   {
-     case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
-   })
-)
 
 object RetrieveSelfEmploymentBISSResponse {
 
