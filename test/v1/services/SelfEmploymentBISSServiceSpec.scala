@@ -24,7 +24,8 @@ import v1.mocks.connectors.MockSelfEmploymentBISSConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRequest}
-import v1.models.response.selfEmployment.{Loss, Profit, RetrieveSelfEmploymentBISSResponse, Total}
+import v1.models.response.RetrieveSelfEmploymentBISSResponse
+import v1.models.response.common.{Loss, Profit, Total}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

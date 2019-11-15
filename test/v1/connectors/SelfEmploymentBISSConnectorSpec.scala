@@ -21,7 +21,8 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRequest}
-import v1.models.response.selfEmployment.{Loss, Profit, RetrieveSelfEmploymentBISSResponse, Total}
+import v1.models.response.RetrieveSelfEmploymentBISSResponse
+import v1.models.response.common.{Loss, Profit, Total}
 
 import scala.concurrent.Future
 

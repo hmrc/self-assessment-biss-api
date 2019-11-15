@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.requestData.RetrieveSelfEmploymentBISSRequest
-import v1.models.response.selfEmployment.RetrieveSelfEmploymentBISSResponse
+import v1.models.response.RetrieveSelfEmploymentBISSResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

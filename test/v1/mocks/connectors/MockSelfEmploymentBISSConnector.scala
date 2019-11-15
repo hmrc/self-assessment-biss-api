@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, SelfEmploymentBISSConnector}
 import v1.models.requestData.RetrieveSelfEmploymentBISSRequest
-import v1.models.response.selfEmployment.RetrieveSelfEmploymentBISSResponse
+import v1.models.response.RetrieveSelfEmploymentBISSResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,5 +37,4 @@ trait MockSelfEmploymentBISSConnector extends MockFactory {
         .expects(requestData, *, *)
     }
   }
-
 }
