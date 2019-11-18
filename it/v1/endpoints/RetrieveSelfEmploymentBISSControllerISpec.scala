@@ -76,7 +76,6 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        println(" MTD response with all details ::: \n"+response.json)
         response.json shouldBe mtdResponse
       }
 
@@ -113,7 +112,6 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request.get)
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        println(" MTD response with mandatory details ::: \n"+response.json)
         response.json shouldBe mtdResponseWithOnlyRequiredData
       }
     }
