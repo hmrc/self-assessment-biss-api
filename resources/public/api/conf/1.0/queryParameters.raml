@@ -9,10 +9,16 @@ traits:
       taxYear:
         description: 'The tax year to which the data applies, in the format YYYY-YY. If no tax year is supplied, then it will default to the current tax year.'
         example: "2019-20"
-        required: true
+        required: false
   selfEmploymentId:
     queryParameters:
       selfEmploymentId:
         description: 'An identifier for the self-employment business, unique to the customer. Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`'
         example: "X9IS98470026982"
+        required: true
+  typeOfBusiness:
+    queryParameters:
+      typeOfBusiness:
+        description: 'The type of business the summary calculation is for.'
+        enum: [uk-property-non-fhl, uk-property-fhl]
         required: true
