@@ -43,7 +43,7 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val desJson: JsValue = Json.parse(
+  val desJsonFull: JsValue = Json.parse(
     """
       |{
       | "totalIncome": 100.00,
@@ -57,6 +57,15 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       | "accountingAdjustments": -30.00
       |}
     """.stripMargin)
+
+  val desJsonMinimal: JsValue = Json.parse("""
+    |{
+    | "totalIncome": 100.00,
+    | "totalExpenses" : 50.00,
+    | "totalAdditions" : 5.00,
+    | "totalDeductions" : 60.00
+    |}
+  """.stripMargin)
 
   val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
 
@@ -79,15 +88,33 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       ))
     )
 
+  val modelMinimal =
+    RetrieveUKPropertyBISSResponse (
+      Total(
+        income = 100.00,
+        expenses = Some(50.00),
+        additions = Some(5.00),
+        deductions = Some(60.00)
+      ),
+      None,
+      None,
+      None
+    )
+
+
   "RetrieveUKPropertyBISSResponse" should {
 
     "write correctly to json" in {
       Json.toJson(model) shouldBe json
     }
 
-    "read correctly from json" in {
-      desJson.as[RetrieveUKPropertyBISSResponse] shouldBe model
+    "read correctly from json with full set of data" in {
+      desJsonFull.as[RetrieveUKPropertyBISSResponse] shouldBe model
     }
+    "read correctly from json with only mandatory set of data" in {
+      desJsonMinimal.as[RetrieveUKPropertyBISSResponse] shouldBe modelMinimal
+    }
+
 
     "toJsonString" in {
       model.toJsonString shouldBe jsonString

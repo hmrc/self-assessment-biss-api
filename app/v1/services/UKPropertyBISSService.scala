@@ -16,28 +16,27 @@
 
 package v1.services
 
-import cats.data.EitherT
-import cats.implicits._
 import javax.inject.{Inject, Singleton}
-
+import cats.implicits._
+import cats.data.EitherT
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.SelfEmploymentBISSConnector
+import v1.connectors.UKPropertyBISSConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.requestData.RetrieveSelfEmploymentBISSRequest
-import v1.models.response.RetrieveSelfEmploymentBISSResponse
+import v1.models.requestData.RetrieveUKPropertyBISSRequest
+import v1.models.response.RetrieveUKPropertyBISSResponse
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SelfEmploymentBISSService @Inject()(connector: SelfEmploymentBISSConnector) extends DesResponseMappingSupport with Logging{
+class UKPropertyBISSService @Inject()(connector: UKPropertyBISSConnector) extends DesResponseMappingSupport with Logging {
 
-  def retrieveBiss(request: RetrieveSelfEmploymentBISSRequest)
-                       (implicit hc: HeaderCarrier, ec: ExecutionContext, logContext: EndpointLogContext):
-  Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentBISSResponse]]] = {
+  def retrieveBiss(request: RetrieveUKPropertyBISSRequest)
+                  (implicit hc: HeaderCarrier, ec: ExecutionContext, logContext: EndpointLogContext):
+  Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.retrieveBiss(request)).leftMap(mapDesErrors(mappingDesToMtdError))
@@ -47,13 +46,13 @@ class SelfEmploymentBISSService @Inject()(connector: SelfEmploymentBISSConnector
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
-    "INVALID_IDVALUE"           -> NinoFormatError,
-    "INVALID_TAXYEAR"           -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID"    -> SelfEmploymentIdFormatError,
-    "NOT_FOUND"                 -> NotFoundError,
-    "INVALID_IDTYPE"            -> DownstreamError,
-    "INVALID_INCOMESOURCETYPE"  -> DownstreamError,
-    "SERVER_ERROR"              -> DownstreamError,
-    "SERVICE_UNAVAILABLE"       -> DownstreamError
+    "INVALID_IDVALUE" -> NinoFormatError,
+    "INVALID_TAXYEAR" -> TaxYearFormatError,
+    "INVALID_INCOMESOURCEID" -> DownstreamError,
+    "NOT_FOUND" -> NotFoundError,
+    "INVALID_IDTYPE" -> DownstreamError,
+    "INVALID_INCOMESOURCETYPE" -> TypeOfBusinessFormatError,
+    "SERVER_ERROR" -> DownstreamError,
+    "SERVICE_UNAVAILABLE" -> DownstreamError
   )
 }

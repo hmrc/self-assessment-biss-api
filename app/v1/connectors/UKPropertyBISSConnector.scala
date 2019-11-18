@@ -28,8 +28,8 @@ import v1.models.response.RetrieveUKPropertyBISSResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SelfEmploymentBISSPropertyConnector @Inject()(val http: HttpClient,
-                                                    val appConfig: AppConfig) extends BaseDesConnector {
+class UKPropertyBISSConnector @Inject()(val http: HttpClient,
+                                        val appConfig: AppConfig) extends BaseDesConnector {
 
   def retrieveBiss(request: RetrieveUKPropertyBISSRequest)(
     implicit hc: HeaderCarrier,

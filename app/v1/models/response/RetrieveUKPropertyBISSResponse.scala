@@ -38,8 +38,14 @@ object RetrieveUKPropertyBISSResponse {
   implicit val reads: Reads[RetrieveUKPropertyBISSResponse] = (
     JsPath.read[Total] and
       (JsPath \ "accountingAdjustments").readNullable[BigDecimal] and
-      JsPath.readNullable[Profit] and
-      JsPath.readNullable[Loss]
+      JsPath.readNullable[Profit].map{
+        case Some(Profit(None, None)) => None
+        case obj => obj
+      } and
+      JsPath.readNullable[Loss].map{
+        case Some(Loss(None, None)) => None
+        case obj => obj
+      }
     )(RetrieveUKPropertyBISSResponse.apply _)
 
   implicit val writes: OWrites[RetrieveUKPropertyBISSResponse] = Json.writes[RetrieveUKPropertyBISSResponse]

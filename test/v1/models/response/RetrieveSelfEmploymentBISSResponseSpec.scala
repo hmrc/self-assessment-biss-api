@@ -19,7 +19,6 @@ package v1.models.response
 import fixtures.RetrieveSelfEmploymentBISSFixture._
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.response.common.{Loss, Profit, Total}
 
 class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
 

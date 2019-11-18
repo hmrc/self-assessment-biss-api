@@ -27,7 +27,7 @@ import v1.models.response.common.{Loss, Profit, Total}
 
 import scala.concurrent.Future
 
-class SelfEmploymentBISSPropertyConnectorSpec extends ConnectorSpec {
+class UKPropertyBISSConnectorSpec extends ConnectorSpec {
 
   val desTaxYear = DesTaxYear("2019")
   val nino = Nino("AA123456A")
@@ -53,7 +53,7 @@ class SelfEmploymentBISSPropertyConnectorSpec extends ConnectorSpec {
     )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: SelfEmploymentBISSPropertyConnector = new SelfEmploymentBISSPropertyConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: UKPropertyBISSConnector = new UKPropertyBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
