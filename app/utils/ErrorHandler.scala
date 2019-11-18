@@ -51,7 +51,10 @@ class ErrorHandler @Inject()(
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError",
           "Request bad format exception", request))
-        Future.successful(BadRequest(Json.toJson(BadRequestError)))
+          if(request.uri.contains("self-employment") && request.getQueryString("selfEmploymentId").isEmpty)
+            Future.successful(BadRequest(Json.toJson(RuleSelfEmploymentIdError)))
+          else
+            Future.successful(BadRequest(Json.toJson(BadRequestError)))
       case NOT_FOUND =>
         auditConnector.sendEvent(dataEvent("ResourceNotFound",
           "Resource Endpoint Not Found", request))
