@@ -30,7 +30,7 @@ class ErrorWrapperSpec extends UnitSpec {
       """
         |{
         |   "code": "FORMAT_NINO",
-        |   "message": "The format of the National Insurance number is invalid"
+        |   "message": "The provided NINO is invalid"
         |}
       """.stripMargin
     )
@@ -47,7 +47,7 @@ class ErrorWrapperSpec extends UnitSpec {
       """
         |{
         |   "code": "FORMAT_NINO",
-        |   "message": "The format of the National Insurance number is invalid"
+        |   "message": "The provided NINO is invalid"
         |}
       """.stripMargin
     )
@@ -75,11 +75,11 @@ class ErrorWrapperSpec extends UnitSpec {
         |   "errors": [
         |       {
         |         "code": "FORMAT_NINO",
-        |         "message": "The format of the National Insurance number is invalid"
+        |         "message": "The provided NINO is invalid"
         |       },
         |       {
         |         "code": "FORMAT_TAX_YEAR",
-        |         "message": "The format of the given tax year is invalid"
+        |         "message": "The provided tax year is invalid"
         |       }
         |   ]
         |}

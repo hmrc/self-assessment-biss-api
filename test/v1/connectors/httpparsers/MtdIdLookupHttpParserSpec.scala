@@ -23,7 +23,7 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 import v1.connectors.MtdIdLookupOutcome
 import v1.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
-import v1.models.errors.{DownstreamError, InvalidBearerTokenError, NinoFormatError}
+import v1.models.errors.{DownstreamError, InvalidBearerTokenError, NinoFormatError, UnauthorisedError}
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
@@ -67,16 +67,16 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
       }
     }
 
-    "return an InvalidNino error" when {
+    "return an Unauthorised error" when {
       "the HttpResponse contains a 403 status" in {
         val response = HttpResponse(FORBIDDEN)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
-        result shouldBe Left(NinoFormatError)
+        result shouldBe Left(UnauthorisedError)
       }
     }
 
-    "return an Unauthorised error" when {
+    "return an InvalidBearerTokenError error" when {
       "the HttpResponse contains a 403 status" in {
         val response = HttpResponse(UNAUTHORIZED)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)

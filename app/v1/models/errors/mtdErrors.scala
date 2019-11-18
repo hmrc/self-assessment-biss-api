@@ -24,11 +24,11 @@ object MtdError {
   implicit val writes: Writes[MtdError] = Json.writes[MtdError]
 }
 
-object NinoFormatError extends MtdError("FORMAT_NINO", "The format of the National Insurance number is invalid")
+object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 
-object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The format of the given tax year is invalid")
+object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 
-object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The format of the given self employment ID is invalid")
+object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID", "The supplied self-employment ID format is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError

@@ -56,6 +56,18 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         await(connector.retrieveBiss(request)) shouldBe expected
 
       }
+
+      "des return valid response with only mandatory fields and correlationId" in new Test {
+
+        val expected = Right(ResponseWrapper(correlationId, responseObjWithOnlyRequiredData))
+
+        MockedHttpClient
+          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", Seq(("incomesourceid", incomeSourceId)), desRequestHeaders: _*)
+          .returns(Future.successful(expected))
+
+        await(connector.retrieveBiss(request)) shouldBe expected
+
+      }
     }
   }
 }

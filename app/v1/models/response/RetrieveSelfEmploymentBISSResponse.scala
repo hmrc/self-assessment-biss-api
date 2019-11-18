@@ -38,8 +38,14 @@ object RetrieveSelfEmploymentBISSResponse {
   implicit val reads: Reads[RetrieveSelfEmploymentBISSResponse] = (
     JsPath.read[Total] and
       (JsPath \ "accountingAdjustments").readNullable[BigDecimal] and
-      JsPath.readNullable[Profit] and
-      JsPath.readNullable[Loss]
+      JsPath.readNullable[Profit].map{
+        case Some(Profit(None, None)) => None
+        case obj => obj
+      } and
+      JsPath.readNullable[Loss].map{
+        case Some(Loss(None, None)) => None
+        case obj => obj
+      }
     )(RetrieveSelfEmploymentBISSResponse.apply _)
 
   implicit val writes: OWrites[RetrieveSelfEmploymentBISSResponse] = Json.writes[RetrieveSelfEmploymentBISSResponse]

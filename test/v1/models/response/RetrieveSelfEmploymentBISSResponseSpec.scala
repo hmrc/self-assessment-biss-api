@@ -35,6 +35,10 @@ class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
       desResponse.as[RetrieveSelfEmploymentBISSResponse] shouldBe responseObj
     }
 
+    "read correctly from json with only required data" in {
+      desResponseWithOnlyRequiredData.as[RetrieveSelfEmploymentBISSResponse] shouldBe responseObjWithOnlyRequiredData
+    }
+
     "toJsonString" in {
       responseObj.toJsonString shouldBe jsonString
     }

@@ -62,7 +62,7 @@ class RetrieveSelfEmploymentBISSControllerSpec
 
   "retrieveBiss" should {
     "return successful response with status OK" when {
-      "happy path" in new Test {
+      "a valid response received" in new Test {
 
         MockRetrieveSelfEmploymentBISSRequestDataParser
           .parse(rawData)

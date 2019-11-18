@@ -49,9 +49,6 @@ class RetrieveSelfEmploymentBISSValidatorSpec extends UnitSpec {
       "an invalid tax year is provided" in {
         validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(invalidTaxYear), selfEmploymentId)) shouldBe List(RuleTaxYearRangeExceededError)
       }
-      "a too early tax year is provided" in {
-        validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(tooEarlyTaxYear), selfEmploymentId)) shouldBe List(RuleTaxYearNotSupportedError)
-      }
       "an invalid self employment id is provided" in {
         validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(taxYear), invalidSelfEmploymentId)) shouldBe List(SelfEmploymentIdFormatError)
       }

@@ -75,7 +75,7 @@ class RetrieveSelfEmploymentBISSController @Inject()(
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError | RuleTaxYearRangeExceededError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

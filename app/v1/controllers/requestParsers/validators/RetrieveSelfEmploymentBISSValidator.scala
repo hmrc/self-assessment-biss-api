@@ -22,16 +22,12 @@ import v1.models.requestData.RetrieveSelfEmploymentBISSRawData
 
 class RetrieveSelfEmploymentBISSValidator extends Validator[RetrieveSelfEmploymentBISSRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
+  private val validationSet = List(parameterFormatValidation)
 
   private def parameterFormatValidation: RetrieveSelfEmploymentBISSRawData => List[List[MtdError]] = (data: RetrieveSelfEmploymentBISSRawData) => List(
     NinoValidation.validate(data.nino),
     data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
     SelfEmploymentIdValidation.validate(data.selfEmploymentId)
-  )
-
-  private def parameterRuleValidation: RetrieveSelfEmploymentBISSRawData => List[List[MtdError]] = (data: RetrieveSelfEmploymentBISSRawData) => List(
-    data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError)).getOrElse(Nil)
   )
 
   override def validate(data: RetrieveSelfEmploymentBISSRawData): List[MtdError] = run(validationSet, data).distinct

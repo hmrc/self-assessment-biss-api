@@ -43,6 +43,18 @@ object RetrieveSelfEmploymentBISSFixture {
       |}
     """.stripMargin)
 
+  val mtdResponseWithOnlyRequiredData: JsValue = Json.parse(
+    """
+      |{
+      |  "total": {
+      |    "income": 100.00,
+      |    "expenses": 50.00,
+      |    "additions": 5.00,
+      |    "deductions": 60.00
+      |  }
+      |}
+    """.stripMargin)
+
   val responseObj =
     RetrieveSelfEmploymentBISSResponse (
       Total(
@@ -62,6 +74,17 @@ object RetrieveSelfEmploymentBISSFixture {
       ))
     )
 
+  val responseObjWithOnlyRequiredData =
+    RetrieveSelfEmploymentBISSResponse (
+      Total(
+        income = 100.00,
+        expenses = Some(50.00),
+        additions = Some(5.00),
+        deductions = Some(60.00)
+      ),
+      None, None, None
+    )
+
   val desResponse: JsValue = Json.parse(
     """
       |{
@@ -74,6 +97,16 @@ object RetrieveSelfEmploymentBISSFixture {
       | "netLoss": 10.00,
       | "taxableLoss" : 35.00,
       | "accountingAdjustments": -30.00
+      |}
+    """.stripMargin)
+
+  val desResponseWithOnlyRequiredData: JsValue = Json.parse(
+    """
+      |{
+      | "totalIncome": 100.00,
+      | "totalExpenses" : 50.00,
+      | "totalAdditions" : 5.00,
+      | "totalDeductions" : 60.00
       |}
     """.stripMargin)
 }

@@ -76,6 +76,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
+        println(" MTD response with all details ::: \n"+response.json)
         response.json shouldBe mtdResponse
       }
 
@@ -95,6 +96,25 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
         response.json shouldBe mtdResponse
+      }
+
+      "valid request is made and des returns only mandatory data" in new Test {
+
+        override val taxYear: Option[String] = None
+        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomesourceid" -> s"$selfEmploymentId"), OK, desResponseWithOnlyRequiredData)
+        }
+
+        val response: WSResponse = await(request.get)
+        response.status shouldBe OK
+        response.header("Content-Type") shouldBe Some("application/json")
+        println(" MTD response with mandatory details ::: \n"+response.json)
+        response.json shouldBe mtdResponseWithOnlyRequiredData
       }
     }
 
