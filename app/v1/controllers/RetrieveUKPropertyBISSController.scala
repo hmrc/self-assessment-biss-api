@@ -27,7 +27,7 @@ import v1.models.errors.{BadRequestError, DownstreamError, ErrorWrapper, NinoFor
 import v1.models.requestData.RetrieveUKPropertyBISSRawData
 import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveUKPropertyBISSController @Inject()(
@@ -36,7 +36,7 @@ class RetrieveUKPropertyBISSController @Inject()(
                                                   requestParser: RetrieveUKPropertyBISSRequestDataParser,
                                                   UKPropertyBISSService: UKPropertyBISSService,
                                                   cc: ControllerComponents
-                                                )
+                                                )(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
     with Logging {
