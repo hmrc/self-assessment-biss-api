@@ -92,5 +92,16 @@ traits:
               description: No data can be found for the given NINO and request
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
+  formatTypeOfBusiness:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                formatTypeOfBusiness:
+                  description: The format of the supplied type of business is not valid
+                  value:
+                    code: FORMAT_TYPE_OF_BUSINESS
 
 
