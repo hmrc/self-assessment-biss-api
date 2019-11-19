@@ -23,8 +23,11 @@ responses:
               type: !include schemas/retrieveBiss/retrieve_self_employment_response.json
               examples:
                   example-1:
-                      description: Self-employment summary
-                      value: !include examples/retrieveSelfEmploymentBiss/retrieve_response.json
+                      description: Self-employment loss summary
+                      value: !include examples/retrieveSelfEmploymentBiss/retrieve_response_loss.json
+                  example-2:
+                      description: Self-employment profit summary
+                      value: !include examples/retrieveSelfEmploymentBiss/retrieve_response_profit.json
       headers:
         X-CorrelationId:
           example: c75f40a6-a3df-4429-a697-471eeec46435

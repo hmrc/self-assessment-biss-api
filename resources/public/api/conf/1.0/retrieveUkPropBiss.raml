@@ -21,8 +21,11 @@ responses:
         type: !include schemas/retrieveBiss/retrieve_uk_property_response.json
         examples:
           example-1:
-            description: UK Property Summary
-            value: !include examples/retrieveUkPropertyBiss/retrieve_response.json
+            description: UK Property Summary FHL
+            value: !include examples/retrieveUkPropertyBiss/retrieve_fhl_response.json
+          example-2:
+            description: UK Property Summary Non FHL
+            value: !include examples/retrieveUkPropertyBiss/retrieve_non_fhl_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435

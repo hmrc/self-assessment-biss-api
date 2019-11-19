@@ -8,9 +8,5 @@
   "profit": {
     "net": 50.00,
     "taxable": 0.00
-  },
-  "loss": {
-    "net": 0.00,
-    "taxable": 5.00
   }
 }

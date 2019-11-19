@@ -5,13 +5,8 @@
     "additions": 5.00,
     "deductions": 60.00
   },
-  "accountingAdjustments": -30.00,
-  "profit": {
-    "net": 20.00,
-    "taxable": 0.00
-  },
   "loss": {
     "net": 0.00,
-    "taxable": 35.00
+    "taxable": 5.00
   }
 }
