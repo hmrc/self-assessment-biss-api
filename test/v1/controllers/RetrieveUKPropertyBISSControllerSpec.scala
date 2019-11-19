@@ -16,12 +16,13 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import fixtures.RetrieveUKPropertyFixture._
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockRetrieveUKPropertyBISSRequestDataParser
-import v1.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, MockUKPropertyBISSService}
 import v1.models.des.IncomeSourceType
 import v1.models.errors.{BadRequestError, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, SelfEmploymentIdFormatError, TaxYearFormatError, TypeOfBusinessFormatError}
 import v1.models.outcomes.ResponseWrapper
@@ -29,6 +30,7 @@ import v1.models.requestData.{DesTaxYear, RetrieveUKPropertyBISSRawData, Retriev
 import v1.models.response.RetrieveUKPropertyBISSResponse
 import v1.models.response.common.{Loss, Profit, Total}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveUKPropertyBISSControllerSpec
@@ -58,29 +60,6 @@ class RetrieveUKPropertyBISSControllerSpec
   private val typeOfBusiness  = "uk-property-fhl"
   private val correlationId   = "X-123"
 
-  val json: JsValue = Json.parse(
-    """
-      |{
-      |  "total": {
-      |    "income": 100.00,
-      |    "expenses": 50.00,
-      |    "additions": 5.00,
-      |    "deductions": 60.00
-      |  },
-      |  "accountingAdjustments": -30.00,
-      |  "profit": {
-      |    "net": 20.00,
-      |    "taxable": 10.00
-      |  },
-      |  "loss": {
-      |    "net": 10.00,
-      |    "taxable": 35.00
-      |  }
-      |}
-    """.stripMargin)
-
-
-
   val response =
     RetrieveUKPropertyBISSResponse (
       Total(
@@ -103,22 +82,22 @@ class RetrieveUKPropertyBISSControllerSpec
   private val rawData     = RetrieveUKPropertyBISSRawData(nino, taxYear, typeOfBusiness)
   private val requestData = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`uk-property`)
 
-  "handleRequest" should {
-    "return OK with list of calculations" when {
+  "retrieveBiss" should {
+    "return successful response with status OK" when {
       "happy path" in new Test {
 
         MockRetrieveUKPropertyBISSRequestDataParser
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockSelfUKPropertyBISSService
+        MockUKPropertyBISSService
           .retrieveBiss(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
 
         val result: Future[Result] = controller.retrieveBiss(nino, taxYear, typeOfBusiness)(fakeGetRequest)
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe json
+        contentAsJson(result) shouldBe mtdResponse
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }

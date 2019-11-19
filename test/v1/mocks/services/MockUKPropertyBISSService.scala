@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
@@ -24,6 +24,7 @@ import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.RetrieveUKPropertyBISSRequest
 import v1.models.response.RetrieveUKPropertyBISSResponse
+import v1.services.UKPropertyBISSService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +32,7 @@ trait MockUKPropertyBISSService  extends MockFactory {
 
   val mockService: UKPropertyBISSService = mock[UKPropertyBISSService]
 
-  object MockSelfEmploymentBISSService {
+  object MockUKPropertyBISSService {
 
     def retrieveBiss(requestData: RetrieveUKPropertyBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]]] = {
       (mockService

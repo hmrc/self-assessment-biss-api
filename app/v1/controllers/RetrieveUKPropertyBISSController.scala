@@ -17,15 +17,16 @@
 package v1.controllers
 
 import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
+import play.mvc.Http.MimeTypes
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import play.mvc.Http.MimeTypes
 import utils.Logging
 import v1.controllers.requestParsers.RetrieveUKPropertyBISSRequestDataParser
-import v1.models.errors.{BadRequestError, DownstreamError, ErrorWrapper, NinoFormatError, NotFoundError, TaxYearFormatError, TypeOfBusinessFormatError}
+import v1.models.errors._
 import v1.models.requestData.RetrieveUKPropertyBISSRawData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{EnrolmentsAuthService, MtdIdLookupService, UKPropertyBISSService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,7 +35,7 @@ class RetrieveUKPropertyBISSController @Inject()(
                                                   val authService: EnrolmentsAuthService,
                                                   val lookupService: MtdIdLookupService,
                                                   requestParser: RetrieveUKPropertyBISSRequestDataParser,
-                                                  UKPropertyBISSService: UKPropertyBISSService,
+                                                  ukPropertyBISSService: UKPropertyBISSService,
                                                   cc: ControllerComponents
                                                 )(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
@@ -53,7 +54,7 @@ class RetrieveUKPropertyBISSController @Inject()(
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          response <- EitherT(UKPropertyBISSService.retrieveBiss(parsedRequest))
+          response <- EitherT(ukPropertyBISSService.retrieveBiss(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -72,7 +73,7 @@ class RetrieveUKPropertyBISSController @Inject()(
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfBusinessFormatError =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearRangeExceededError=>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
