@@ -38,17 +38,6 @@ traits:
                description: The format of the self-employment ID is not valid
                value:
                  code: FORMAT_SELF_EMPLOYMENT_ID
-  ruleTaxYearNotSupported:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              rule_TaxYearNotSupported:
-                description: The specified tax year is not supported, that is, the tax year specified is before the minimum tax year value
-                value:
-                  code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeExceeded:
     responses:
       400:
