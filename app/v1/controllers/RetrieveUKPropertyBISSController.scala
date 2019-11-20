@@ -45,7 +45,7 @@ class RetrieveUKPropertyBISSController @Inject()(
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "RetrieveUKPropertyBISSController",
-      endpointName = "retrieveBiss"
+      endpointName = "retrieveUkPropertyBiss"
     )
 
   def retrieveBiss(nino: String, taxYear: Option[String], typeOfBusiness: String): Action[AnyContent] =
