@@ -31,7 +31,6 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       |    "additions": 5.00,
       |    "deductions": 60.00
       |  },
-      |  "accountingAdjustments": -30.00,
       |  "profit": {
       |    "net": 20.00,
       |    "taxable": 10.00
@@ -53,8 +52,7 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       | "netProfit": 20.00,
       | "taxableProfit" : 10.00,
       | "netLoss": 10.00,
-      | "taxableLoss" : 35.00,
-      | "accountingAdjustments": -30.00
+      | "taxableLoss" : 35.00
       |}
     """.stripMargin)
 
@@ -67,7 +65,7 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
     |}
   """.stripMargin)
 
-  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
 
   val model =
     RetrieveUKPropertyBISSResponse (
@@ -77,7 +75,6 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      accountingAdjustments = Some(-30.00),
       Some(Profit(
         net = Some(20.00),
         taxable = Some(10.00)
@@ -96,7 +93,6 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      None,
       None,
       None
     )

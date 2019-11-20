@@ -32,7 +32,6 @@ object RetrieveUKPropertyFixture {
       |    "additions": 5.00,
       |    "deductions": 60.00
       |  },
-      |  "accountingAdjustments": -30.00,
       |  "profit": {
       |    "net": 20.00,
       |    "taxable": 10.00
@@ -57,14 +56,13 @@ object RetrieveUKPropertyFixture {
     """.stripMargin)
 
   val responseObj =
-    RetrieveUKPropertyBISSResponse (
+    RetrieveUKPropertyBISSResponse(
       Total(
         income = 100.00,
         expenses = Some(50.00),
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      accountingAdjustments = Some(-30.00),
       Some(Profit(
         net = Some(20.00),
         taxable = Some(10.00)
@@ -76,14 +74,14 @@ object RetrieveUKPropertyFixture {
     )
 
   val responseObjWithOnlyRequiredData =
-    RetrieveUKPropertyBISSResponse (
+    RetrieveUKPropertyBISSResponse(
       Total(
         income = 100.00,
         expenses = Some(50.00),
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      None, None, None
+      None, None
     )
 
   val desResponse: JsValue = Json.parse(
@@ -96,8 +94,7 @@ object RetrieveUKPropertyFixture {
       | "netProfit": 20.00,
       | "taxableProfit" : 10.00,
       | "netLoss": 10.00,
-      | "taxableLoss" : 35.00,
-      | "accountingAdjustments": -30.00
+      | "taxableLoss" : 35.00
       |}
     """.stripMargin)
 

@@ -23,7 +23,6 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.models.response.common.{Loss, Profit, Total}
 
 case class RetrieveUKPropertyBISSResponse(total: Total,
-                                          accountingAdjustments: Option[BigDecimal],
                                           profit: Option[Profit],
                                           loss: Option[Loss]) {
 
@@ -37,7 +36,6 @@ object RetrieveUKPropertyBISSResponse {
 
   implicit val reads: Reads[RetrieveUKPropertyBISSResponse] = (
     JsPath.read[Total] and
-      (JsPath \ "accountingAdjustments").readNullable[BigDecimal] and
       JsPath.readNullable[Profit].map{
         case Some(Profit(None, None)) => None
         case obj => obj

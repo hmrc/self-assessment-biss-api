@@ -69,7 +69,6 @@ class RetrieveUKPropertyBISSControllerSpec
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      accountingAdjustments = Some(-30.00),
       Some(Profit(
         net = Some(20.00),
         taxable = Some(10.00)
