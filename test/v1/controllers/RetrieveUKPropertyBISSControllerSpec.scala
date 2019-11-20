@@ -58,6 +58,7 @@ class RetrieveUKPropertyBISSControllerSpec
   private val nino            = "AA123456A"
   private val taxYear         =  Some("2018-19")
   private val typeOfBusiness  = "uk-property-fhl"
+  private val secondTypeOfBusiness  = "uk-property-non-fhl"
   private val correlationId   = "X-123"
 
   val response =
@@ -80,11 +81,13 @@ class RetrieveUKPropertyBISSControllerSpec
     )
 
   private val rawData     = RetrieveUKPropertyBISSRawData(nino, taxYear, typeOfBusiness)
+  private val rawDataTwo    = RetrieveUKPropertyBISSRawData(nino, taxYear, secondTypeOfBusiness)
   private val requestData = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`uk-property`)
+  private val requestDataTwo = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`fhl-property-uk`)
 
   "retrieveBiss" should {
     "return successful response with status OK" when {
-      "happy path" in new Test {
+      "valid fhl request" in new Test {
 
         MockRetrieveUKPropertyBISSRequestDataParser
           .parse(rawData)
@@ -95,6 +98,25 @@ class RetrieveUKPropertyBISSControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
 
         val result: Future[Result] = controller.retrieveBiss(nino, taxYear, typeOfBusiness)(fakeGetRequest)
+
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe mtdResponse
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+      }
+    }
+
+    "return successful response with status OK" when {
+      "valid non fhl request" in new Test {
+
+        MockRetrieveUKPropertyBISSRequestDataParser
+          .parse(rawDataTwo)
+          .returns(Right(requestDataTwo))
+
+        MockUKPropertyBISSService
+          .retrieveBiss(requestDataTwo)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
+
+        val result: Future[Result] = controller.retrieveBiss(nino, taxYear, secondTypeOfBusiness)(fakeGetRequest)
 
         status(result) shouldBe OK
         contentAsJson(result) shouldBe mtdResponse
