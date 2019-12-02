@@ -22,16 +22,12 @@ import v1.models.requestData.{RetrieveUKPropertyBISSRawData}
 
 class RetrieveUKPropertyBISSValidator  extends Validator[RetrieveUKPropertyBISSRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
+  private val validationSet = List(parameterFormatValidation)
 
   private def parameterFormatValidation: RetrieveUKPropertyBISSRawData => List[List[MtdError]] = (data: RetrieveUKPropertyBISSRawData) => List(
     NinoValidation.validate(data.nino),
     data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
     UKPropertyTypeOfBusinessValidation.validate(data.typeOfBusiness)
-  )
-
-  private def parameterRuleValidation: RetrieveUKPropertyBISSRawData => List[List[MtdError]] = (data: RetrieveUKPropertyBISSRawData) => List(
-    data.taxYear.map(MtdTaxYearValidation.validate(_, RuleTaxYearNotSupportedError)).getOrElse(Nil)
   )
 
   override def validate(data: RetrieveUKPropertyBISSRawData): List[MtdError] = run(validationSet, data).distinct

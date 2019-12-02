@@ -50,9 +50,6 @@ class RetrieveUKPropertyBISSValidatorSpec extends UnitSpec {
       "an invalid tax year is provided" in {
         validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(invalidTaxYear), typeOfBusiness)) shouldBe List(RuleTaxYearRangeExceededError)
       }
-      "a too early tax year is provided" in {
-        validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(tooEarlyTaxYear), typeOfBusiness)) shouldBe List(RuleTaxYearNotSupportedError)
-      }
       "an invalid type of business is provided" in {
         validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(taxYear), invalidTypeOfBusiness)) shouldBe List(TypeOfBusinessFormatError)
       }
