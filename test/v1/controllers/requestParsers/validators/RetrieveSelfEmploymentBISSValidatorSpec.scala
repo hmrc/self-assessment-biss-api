@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
-import v1.models.errors.{NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeExceededError, SelfEmploymentIdFormatError, TaxYearFormatError}
+import v1.models.errors.{NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, SelfEmploymentIdFormatError, TaxYearFormatError}
 import v1.models.requestData.RetrieveSelfEmploymentBISSRawData
 
 class RetrieveSelfEmploymentBISSValidatorSpec extends UnitSpec {
@@ -47,7 +47,7 @@ class RetrieveSelfEmploymentBISSValidatorSpec extends UnitSpec {
         validator.validate(RetrieveSelfEmploymentBISSRawData(invalidNino, Some(taxYear), selfEmploymentId)) shouldBe List(NinoFormatError)
       }
       "an invalid tax year is provided" in {
-        validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(invalidTaxYear), selfEmploymentId)) shouldBe List(RuleTaxYearRangeExceededError)
+        validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(invalidTaxYear), selfEmploymentId)) shouldBe List(RuleTaxYearRangeInvalidError)
       }
       "an invalid self employment id is provided" in {
         validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(taxYear), invalidSelfEmploymentId)) shouldBe List(SelfEmploymentIdFormatError)

@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
-import v1.models.errors.{NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeExceededError, TypeOfBusinessFormatError}
+import v1.models.errors.{NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TypeOfBusinessFormatError}
 import v1.models.requestData.RetrieveUKPropertyBISSRawData
 
 class RetrieveUKPropertyBISSValidatorSpec extends UnitSpec {
@@ -48,7 +48,7 @@ class RetrieveUKPropertyBISSValidatorSpec extends UnitSpec {
         validator.validate(RetrieveUKPropertyBISSRawData(invalidNino, Some(taxYear), typeOfBusiness)) shouldBe List(NinoFormatError)
       }
       "an invalid tax year is provided" in {
-        validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(invalidTaxYear), typeOfBusiness)) shouldBe List(RuleTaxYearRangeExceededError)
+        validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(invalidTaxYear), typeOfBusiness)) shouldBe List(RuleTaxYearRangeInvalidError)
       }
       "an invalid type of business is provided" in {
         validator.validate(RetrieveUKPropertyBISSRawData(nino, Some(taxYear), invalidTypeOfBusiness)) shouldBe List(TypeOfBusinessFormatError)
