@@ -22,23 +22,23 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc"   %% "bootstrap-play-26" % "1.1.0",
+    "uk.gov.hmrc"   %% "bootstrap-play-26" % "1.3.0",
     "uk.gov.hmrc"   %% "domain"            % "5.6.0-play-26",
     "uk.gov.hmrc"   %% "play-hmrc-api"     % "3.6.0-play-26",
     "org.typelevel" %% "cats-core"         % "2.0.0",
     "com.chuusai"   %% "shapeless"         % "2.3.3",
-    "org.json4s" %% "json4s-native" % "3.6.3",
-    "org.json4s" %% "json4s-ext" % "3.6.3"
+    "org.json4s" %% "json4s-native" % "3.6.7",
+    "org.json4s" %% "json4s-ext" % "3.6.7"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
     "org.scalatest"          %% "scalatest"          % "3.0.8"             % scope,
-    "org.scalacheck"         %% "scalacheck"         % "1.14.2"            % scope,
+    "org.scalacheck"         %% "scalacheck"         % "1.14.3"            % scope,
     "org.scalamock"          %% "scalamock"          % "4.4.0"             % scope,
     "org.pegdown"            % "pegdown"             % "1.6.0"             % scope,
-    "org.mockito"            % "mockito-core"        % "3.1.0"             % scope,
+    "org.mockito"            % "mockito-core"        % "3.2.4"             % scope,
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2"             % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.3"             % scope,
     "com.github.tomakehurst" % "wiremock"            % "2.25.1"            % scope
   )
 
