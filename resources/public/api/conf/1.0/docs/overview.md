@@ -1,1 +1,1 @@
-The self assessment biss API allows users to retrieve a summary of income and expenditure for a specified self-employment, or UK property business for a given tax year.
+The Self Assessment BISS (Business Income Source Summary) API allows a developer to retrieve a summary of income and expenditure for a specified self-employment, or UK property business for a given tax year.
