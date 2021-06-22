@@ -1,1 +1,1 @@
-You can find the changelog in the [self-assessment-biss-api](https://github.com/hmrc/self-assessment-biss-api/wiki/Changelog) GitHub wiki.
+You can find the changelog in the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/wiki) GitHub wiki.
