@@ -17,10 +17,10 @@
 package v1.services
 
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
 import v1.models.errors.NinoFormatError
+import v1.models.domain.Nino
 
 import scala.concurrent.{ExecutionContext, Future}
 

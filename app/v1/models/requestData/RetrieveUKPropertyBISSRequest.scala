@@ -16,7 +16,7 @@
 
 package v1.models.requestData
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.models.des.IncomeSourceType
 
 case class RetrieveUKPropertyBISSRequest(nino: Nino, taxYear: DesTaxYear, incomeSourceType: IncomeSourceType)

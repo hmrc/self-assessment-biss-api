@@ -30,6 +30,8 @@ trait AppConfig {
 
   def desEnv: String
 
+  def desEnvironmentHeaders: Option[Seq[String]]
+
   def desToken: String
 
   def apiGatewayContext: String
@@ -52,6 +54,8 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   val desBaseUrl: String = config.baseUrl("des")
 
   val desEnv: String = config.getString("microservice.services.des.env")
+
+  val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
 
   val desToken: String = config.getString("microservice.services.des.token")
 

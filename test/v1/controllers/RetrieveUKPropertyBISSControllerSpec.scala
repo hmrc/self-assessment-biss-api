@@ -19,12 +19,12 @@ package v1.controllers
 import fixtures.RetrieveUKPropertyFixture._
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockRetrieveUKPropertyBISSRequestDataParser
 import v1.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, MockUKPropertyBISSService}
 import v1.models.des.IncomeSourceType
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest}

@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.des.IncomeSourceType
 import v1.models.outcomes.ResponseWrapper
@@ -57,6 +57,7 @@ class UKPropertyBISSConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "retrieveBiss" when {
@@ -69,7 +70,7 @@ class UKPropertyBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, response))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/income-sources/nino/$nino/uk-property/${desTaxYear.toString}/biss", desRequestHeaders: _*)
+          .get(s"$baseUrl/income-tax/income-sources/nino/$nino/uk-property/${desTaxYear.toString}/biss", dummyDesHeaderCarrierConfig)
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected

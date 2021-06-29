@@ -18,8 +18,8 @@ package v1.connectors
 
 import fixtures.RetrieveSelfEmploymentBISSFixture._
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRequest}
 
@@ -38,6 +38,7 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "retrieveBiss" when {
@@ -50,7 +51,7 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObj))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", Seq(("incomesourceid", incomeSourceId)), desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", dummyDesHeaderCarrierConfig, Seq(("incomesourceid", incomeSourceId)))
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
@@ -62,7 +63,7 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObjWithOnlyRequiredData))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", Seq(("incomesourceid", incomeSourceId)), desRequestHeaders: _*)
+          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", dummyDesHeaderCarrierConfig, Seq(("incomesourceid", incomeSourceId)))
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected

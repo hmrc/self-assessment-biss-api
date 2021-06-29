@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import java.time.LocalDate
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import utils.DateUtils
 import v1.mocks.validators.MockRetrieveUKPropertyBISSValidator
 import v1.models.des.IncomeSourceType

@@ -16,11 +16,11 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockUKPropertyBISSConnector
 import v1.models.des.IncomeSourceType
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.requestData.{DesTaxYear, RetrieveUKPropertyBISSRequest}

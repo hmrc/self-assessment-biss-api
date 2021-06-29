@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import support.UnitSpec
 import v1.models.requestData._
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import utils.DateUtils
 import v1.mocks.validators.MockRetrieveForeignPropertyBISSValidator
 import v1.models.des.IncomeSourceType
