@@ -28,7 +28,7 @@ import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYear
 
 class RetrieveForeignPropertyBISSRequestDataParserSpec extends UnitSpec {
 
-  private val nino = Nino("AA123456B")
+  private val nino = "AA123456B"
   private val taxYear = "2018-19"
   private val typeOfBusinessNonFhl = Some("foreign-property")
   private val typeOfBusinessFhl = Some("foreign-property-fhl-eea")
@@ -47,19 +47,19 @@ class RetrieveForeignPropertyBISSRequestDataParserSpec extends UnitSpec {
       "valid non fhl data is provided" in new Test {
         MockValidator.validate(inputDataTwo).returns(Nil)
 
-        parser.parseRequest(inputDataTwo) shouldBe Right(RetrieveForeignPropertyBISSRequest(nino, businessId, IncomeSourceType.`foreign-property`, DesTaxYear.fromMtd(taxYear)))
+        parser.parseRequest(inputDataTwo) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`foreign-property`, DesTaxYear.fromMtd(taxYear)))
       }
 
       "valid fhl data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe Right(RetrieveForeignPropertyBISSRequest(nino, businessId, IncomeSourceType.`fhl-property-eea`, DesTaxYear.fromMtd(taxYear)))
+        parser.parseRequest(inputData) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DesTaxYear.fromMtd(taxYear)))
       }
 
       "valid data is provided without a tax year" in new Test {
         MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
 
-        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveForeignPropertyBISSRequest(nino, businessId, IncomeSourceType.`fhl-property-eea`, DateUtils.getDesTaxYear(LocalDate.now())))
+        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DateUtils.getDesTaxYear(LocalDate.now())))
       }
     }
 

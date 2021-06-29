@@ -36,7 +36,7 @@ class SelfEmploymentBISSConnector @Inject()(val http: HttpClient,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentBISSResponse]] = {
 
-    val nino = request.nino.nino
+    val nino = request.nino
     val taxYear = request.taxYear.toString
     val queryParams = Map("incomesourceid" -> request.selfEmploymentId)
 

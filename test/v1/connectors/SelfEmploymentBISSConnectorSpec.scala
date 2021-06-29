@@ -51,7 +51,11 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObj))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", dummyDesHeaderCarrierConfig, Seq(("incomesourceid", incomeSourceId)))
+          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
+            dummyDesHeaderCarrierConfig,
+            Seq(("incomesourceid", incomeSourceId)),
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
@@ -63,7 +67,9 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObjWithOnlyRequiredData))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss", dummyDesHeaderCarrierConfig, Seq(("incomesourceid", incomeSourceId)))
+          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
+            dummyDesHeaderCarrierConfig,
+            Seq(("incomesourceid", incomeSourceId)))
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected

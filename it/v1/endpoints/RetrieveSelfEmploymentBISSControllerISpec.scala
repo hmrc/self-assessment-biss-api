@@ -26,6 +26,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import utils.DateUtils
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
@@ -34,15 +35,14 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino                    = "AA123456A"
+    val nino: String            = "AA123456A"
     val taxYear: Option[String] = Some("2018-19")
     val selfEmploymentId: String= "XAIS12345678913"
-    val correlationId           = "X-123"
     val desTaxYear: DesTaxYear = DesTaxYear("2019")
 
     def uri: String = s"/$nino/self-employment"
 
-    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss"
+    def desUrl: String = s"/income-tax/income-sources/nino/${Nino(nino)}/self-employment/${desTaxYear.toString}/biss"
 
     def setupStubs(): StubMapping
 
