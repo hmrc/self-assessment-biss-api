@@ -42,7 +42,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/self-employment"
 
-    def desUrl: String = s"/income-tax/income-sources/nino/${Nino(nino)}/self-employment/${desTaxYear.toString}/biss"
+    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss"
 
     def setupStubs(): StubMapping
 

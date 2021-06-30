@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class UKPropertyBISSConnectorSpec extends ConnectorSpec {
 
   val desTaxYear: DesTaxYear = DesTaxYear("2019")
-  val nino: Nino = Nino("AA123456A")
+  val nino: String = "AA123456A"
   val incomeSourceId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
   val response: RetrieveUKPropertyBISSResponse = RetrieveUKPropertyBISSResponse(
@@ -62,7 +62,7 @@ class UKPropertyBISSConnectorSpec extends ConnectorSpec {
 
   "retrieveBiss" when {
 
-    val request = RetrieveUKPropertyBISSRequest(nino, desTaxYear, IncomeSourceType.`uk-property`)
+    val request = RetrieveUKPropertyBISSRequest(Nino(nino), desTaxYear, IncomeSourceType.`uk-property`)
 
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Test {

@@ -35,7 +35,7 @@ class ForeignPropertyBISSConnector @Inject()(val http: HttpClient,
     hc: HeaderCarrier,
     correlationId: String): Future[DesOutcome[RetrieveForeignPropertyBISSResponse]] = {
 
-    val nino = request.nino
+    val nino = request.nino.nino
     val businessId = request.businessId
     val typeOfBusiness = request.typeOfBusiness.toString
     val taxYear = request.taxYear.toString

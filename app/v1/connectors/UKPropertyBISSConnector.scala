@@ -36,7 +36,7 @@ class UKPropertyBISSConnector @Inject()(val http: HttpClient,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[RetrieveUKPropertyBISSResponse]] = {
 
-    val nino = request.nino
+    val nino = request.nino.nino
     val taxYear = request.taxYear.toString
     val incomeSourceType = request.incomeSourceType.toString
 
