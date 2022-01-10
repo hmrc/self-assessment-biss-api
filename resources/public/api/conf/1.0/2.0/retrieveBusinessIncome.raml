@@ -1,0 +1,31 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearRangeInvalid
+  - errors.ruleTaxYearNotSupported
+  - errors.formatBusinessID
+  - errors.formatTypeOfBusiness
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundIncomeSource
+displayName: Retrieve a Business Income Source Summary (BISS)
+description: This endpoint allows a developer to retrieve a running (year-to-date) summary of the income and expenditure for a specified self-employment, or property business during a tax year. A National Insurance number, business ID, tax year and type of business are required.
+(annotations.sandboxData): !include scenarios/retrieveBusinessIncome.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+responses:
+  200:
+    body:
+      application/json:
+        type: !include schemas/retrieveBiss/retrieve_income_summary_response.json
+          examples:
+            example-1:
+              description: Foreign Property profit summary
+              value: !include examples/retrieveBusinessIncome/retrieve_income_summary_response.json
+
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
