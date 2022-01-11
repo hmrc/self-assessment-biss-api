@@ -4,9 +4,9 @@
     "expenses": 50.00,
     "additions": 5.00,
     "deductions": 60.00,
-    "accountingAdjustments": -30.00,
+    "accountingAdjustments": -30.00
   },
-  "profit":{
+  "profit": {
     "net": 20.00,
     "taxable": 35.00
   },
