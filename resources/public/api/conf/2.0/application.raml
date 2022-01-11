@@ -1,0 +1,58 @@
+#%RAML 1.0
+---
+title: Business Income Source Summary (MTD)
+description: Retrieve a summary of income and expenditure for a specified self-employment, or property business for a given tax year.
+version: 2.0
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+mediaType: application/json
+
+documentation:
+ - title: Overview
+   content: !include docs/overview.md
+ - title: Versioning
+   content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+ - title: Errors
+   content: !include docs/errors.md
+ - title: Changelog
+   content: !include docs/changelog.md
+ - title: Support
+   content: !include docs/support.md
+ - title: Testing
+   content: !include docs/testing.md
+
+uses:
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  errors: errors.raml
+  headers: headers.raml
+  queryParameters: queryParameters.raml
+
+'/individuals/self-assessment/income-summary':
+  /{nino}:
+      uriParameters:
+        nino:
+          description: National Insurance number, in the format AA999999A.
+          type: string
+          example: TC663795B
+      /{typeOfBusiness}:
+        uriParameters:
+          typeOfBusiness:
+            description: "The type of business the summary calculation is for."
+            type: string
+            example: self-employment
+        /{taxYear}:
+          uriParameters:
+            taxYear:
+              description: The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid.
+              type: string
+              example: 2021-22
+          /{businessId}:
+            uriParameters:
+              businessId:
+                description: 'An identifier for the business, unique to the customer. Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`.'
+                type: string
+                example: XAIS12345678910
+                pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
+            get: !include retrieveBusinessIncome.raml

@@ -20,11 +20,10 @@ responses:
     body:
       application/json:
         type: !include schemas/retrieveBiss/retrieve_income_summary_response.json
-          examples:
-            example-1:
-              description: Foreign Property profit summary
-              value: !include examples/retrieveBusinessIncome/retrieve_income_summary_response.json
-
+        examples:
+          example-1:
+            description: Retrieve a Business Income Source Summary
+            value: !include examples/retrieveBusinessIncome/retrieve_income_summary_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
