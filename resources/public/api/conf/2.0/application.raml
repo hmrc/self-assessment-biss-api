@@ -39,12 +39,11 @@ uses:
       /{typeOfBusiness}:
         uriParameters:
           typeOfBusiness:
-            description: The type of business the summary calculation is for
-            type: string
+            description: "The type of business the summary calculation is for. Limited to the following possible values: <b><ul><li>`foreign-property-fhl-eea`<li>`foreign-property`<li>`uk-property-non-fhl`<li>`uk-property-fhl`<li>`self-employment`</b>"
         /{taxYear}:
           uriParameters:
             taxYear:
-              description: The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid
+              description: The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2020-22 is not valid.
               type: string
               example: 2021-22
           /{businessId}:
