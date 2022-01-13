@@ -53,8 +53,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
           apiVersion(VERSION_1),
-// TODO uncomment when we have some v2 RAML
-//          apiVersion(VERSION_2)
+          apiVersion(VERSION_2)
         ),
         requiresTrust = None
       )

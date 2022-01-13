@@ -18,7 +18,7 @@ package definition
 
 import config.ConfidenceLevelConfig
 import definition.APIStatus._
-import definition.Versions.VERSION_1
+import definition.Versions.{VERSION_1, VERSION_2}
 import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
@@ -71,12 +71,11 @@ class ApiDefinitionFactorySpec extends UnitSpec {
                   status = STABLE,
                   endpointsEnabled = true
                 ),
-// TODO uncomment when we have some v2 RAML
-//                APIVersion(
-//                  version = VERSION_2,
-//                  status = ALPHA,
-//                  endpointsEnabled = false
-//                )
+                APIVersion(
+                  version = VERSION_2,
+                  status = ALPHA,
+                  endpointsEnabled = false
+                )
               ),
               requiresTrust = None
             )
