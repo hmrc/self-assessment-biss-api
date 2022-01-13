@@ -26,13 +26,21 @@ trait AppConfig {
 
   def desBaseUrl: String
 
+  def ifsBaseUrl: String
+
   def mtdIdBaseUrl: String
 
   def desEnv: String
 
+  def ifsEnv: String
+
   def desEnvironmentHeaders: Option[Seq[String]]
 
+  def ifsEnvironmentHeaders: Option[Seq[String]]
+
   def desToken: String
+
+  def ifsToken: String
 
   def apiGatewayContext: String
 
@@ -50,14 +58,21 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
 
   val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
-
   val desBaseUrl: String = config.baseUrl("des")
+
+  val ifsBaseUrl: String = config.baseUrl("ifs")
 
   val desEnv: String = config.getString("microservice.services.des.env")
 
+  val ifsEnv: String = config.getString("microservice.services.ifs.env")
+
   val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
 
+  val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
+
   val desToken: String = config.getString("microservice.services.des.token")
+
+  val ifsToken: String = config.getString("microservice.services.ifs.token")
 
   val apiGatewayContext: String = config.getString("api.gateway.context")
 

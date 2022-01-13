@@ -18,14 +18,14 @@ package definition
 
 import config.AppConfig
 import definition.Versions._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
 
-  private val readScope = "read:self-assessment"
+  private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
   def confidenceLevel: ConfidenceLevel = if (appConfig.confidenceLevelConfig.definitionEnabled) ConfidenceLevel.L200 else ConfidenceLevel.L50
@@ -52,17 +52,20 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
-          APIVersion(
-            version = VERSION_1,
-            status = buildAPIStatus(VERSION_1),
-            endpointsEnabled = appConfig.endpointsEnabled(VERSION_1))
+          apiVersion(VERSION_1),
+// TODO uncomment when we have some v2 RAML
+//          apiVersion(VERSION_2)
         ),
         requiresTrust = None
       )
     )
 
+  private def apiVersion(version: String): APIVersion =
+    APIVersion(version = version, status = buildAPIStatus(version), endpointsEnabled = appConfig.endpointsEnabled(version))
+
   private[definition] def buildAPIStatus(version: String): APIStatus = {
-    APIStatus.parser.lift(appConfig.apiStatus(version))
+    APIStatus.parser
+      .lift(appConfig.apiStatus(version))
       .getOrElse {
         logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
         APIStatus.ALPHA

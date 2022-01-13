@@ -17,16 +17,15 @@
 package definition
 
 import config.ConfidenceLevelConfig
-import definition.APIStatus.{ALPHA, BETA}
+import definition.APIStatus._
 import definition.Versions.VERSION_1
 import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import v1.mocks.MockHttpClient
 
 class ApiDefinitionFactorySpec extends UnitSpec {
 
-  class Test extends MockHttpClient with MockAppConfig {
+  class Test extends MockAppConfig {
     val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
     MockedAppConfig.apiGatewayContext returns "api.gateway.context"
   }
@@ -37,8 +36,10 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "called" should {
       "return a valid Definition case class" in new Test {
         MockedAppConfig.featureSwitch returns None
-        MockedAppConfig.apiStatus returns "1.0"
-        MockedAppConfig.endpointsEnabled returns true
+        MockedAppConfig.apiStatus("1.0") returns "STABLE"
+        MockedAppConfig.apiStatus("2.0") returns "ALPHA"
+        MockedAppConfig.endpointsEnabled("1.0") returns true
+        MockedAppConfig.endpointsEnabled("2.0") returns false
         MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
 
         private val readScope = "read:self-assessment"
@@ -67,9 +68,15 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               versions = Seq(
                 APIVersion(
                   version = VERSION_1,
-                  status = ALPHA,
+                  status = STABLE,
                   endpointsEnabled = true
-                )
+                ),
+// TODO uncomment when we have some v2 RAML
+//                APIVersion(
+//                  version = VERSION_2,
+//                  status = ALPHA,
+//                  endpointsEnabled = false
+//                )
               ),
               requiresTrust = None
             )
@@ -94,17 +101,19 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   }
 
   "buildAPIStatus" when {
+    val anyVersion = "2.0"
+
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
-        MockedAppConfig.apiStatus returns "BETA"
-        apiDefinitionFactory.buildAPIStatus("1.0") shouldBe BETA
+        MockedAppConfig.apiStatus(anyVersion) returns "BETA"
+        apiDefinitionFactory.buildAPIStatus(anyVersion) shouldBe BETA
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockedAppConfig.apiStatus returns "ALPHO"
-        apiDefinitionFactory.buildAPIStatus("1.0") shouldBe ALPHA
+        MockedAppConfig.apiStatus(anyVersion) returns "ALPHO"
+        apiDefinitionFactory.buildAPIStatus(anyVersion) shouldBe ALPHA
       }
     }
   }
