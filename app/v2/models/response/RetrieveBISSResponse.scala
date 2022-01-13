@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package v1.models.response
+package v2.models.response
 
-import org.json4s.{DefaultFormats, Formats}
-import org.json4s.native.Serialization
+
+import v2.models.response.common._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.response.common.{Loss, Profit, Total}
 import play.api.libs.functional.syntax._
 
-case class RetrieveForeignPropertyBISSResponse(total: Total,
-                                               profit: Option[Profit],
-                                               loss: Option[Loss]) {
+case class RetrieveBISSResponse(total: Total,
+                                profit: Option[Profit],
+                                loss: Option[Loss])
 
-  def toJsonString: String = {
-    implicit val formats: Formats = DefaultFormats ++ Seq(BigDecimalSerializer)
-    Serialization.write(this)
-  }
 
-}
+object RetrieveBISSResponse {
 
-object RetrieveForeignPropertyBISSResponse {
-
-  implicit val reads: Reads[RetrieveForeignPropertyBISSResponse] = (
+  implicit val reads: Reads[RetrieveBISSResponse] = (
     JsPath.read[Total] and
       JsPath.readNullable[Profit].map{
         case Some(Profit(None, None)) => None
@@ -45,8 +38,8 @@ object RetrieveForeignPropertyBISSResponse {
         case Some(Loss(None, None)) => None
         case obj => obj
       }
-    )(RetrieveForeignPropertyBISSResponse.apply _)
+    )(RetrieveBISSResponse.apply _)
 
-  implicit val writes: OWrites[RetrieveForeignPropertyBISSResponse] = Json.writes[RetrieveForeignPropertyBISSResponse]
+  implicit val writes: OWrites[RetrieveBISSResponse] = Json.writes[RetrieveBISSResponse]
 
 }
