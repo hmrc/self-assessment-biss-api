@@ -32,7 +32,16 @@ class typeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
         TypeOfBusiness.`uk-property-non-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`uk-property`
       }
       "provided uk-property-fhl" in {
-        TypeOfBusiness.`uk-property-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`fhl-property-uk`
+        TypeOfBusiness.`uk-property-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`uk-property-fhl`
+      }
+      "provided foreign-property" in {
+        TypeOfBusiness.`foreign-property`.toIncomeSourceType shouldBe IncomeSourceType.`foreign-property`
+      }
+      "provided foreign-property-fhl-eea" in {
+        TypeOfBusiness.`foreign-property-fhl-eea`.toIncomeSourceType shouldBe IncomeSourceType.`foreign-property-fhl-eea`
+      }
+      "provided self-employment" in {
+        TypeOfBusiness.`self-employment`.toIncomeSourceType shouldBe IncomeSourceType.`self-employment`
       }
     }
   }
