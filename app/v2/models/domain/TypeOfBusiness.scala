@@ -33,5 +33,17 @@ object TypeOfBusiness {
     override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-uk`
   }
 
+  case object `foreign-property` extends TypeOfBusiness {
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property`
+  }
+
+  case object `foreign-property-fhl-eea` extends TypeOfBusiness {
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property-fhl-eea`
+  }
+
+  case object `self-employment` extends TypeOfBusiness {
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`self-employment`
+  }
+
   implicit val format: Format[TypeOfBusiness] = Enums.format[TypeOfBusiness]
 }
