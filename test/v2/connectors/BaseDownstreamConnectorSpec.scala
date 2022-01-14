@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class BaseDownstreamConnectorSpec extends ConnectorSpec {
   // WLOG
   val body        = "body"
-  val outcome     = Right(ResponseWrapper(correlationId, Result(2)))
+  val outcome     = Right(ResponseWrapper(correlationIdIn, Result(2)))
   val url         = "some/url?param=value"
   val absoluteUrl = s"$baseUrl/$url"
 
@@ -80,7 +80,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.post(body, DesUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -96,7 +96,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.get(DesUri[Result](url), queryParams = qps)) shouldBe outcome
+        await(connector.get(DesUri[Result](url), queryParams = qps, correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -111,7 +111,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.delete(DesUri[Result](url))) shouldBe outcome
+        await(connector.delete(DesUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -128,7 +128,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.put(body, DesUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -151,7 +151,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
               )
               .returns(Future.successful(outcome))
 
-            await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+            await(connector.put(body, DesUri[Result](url), correlationIdOut)) shouldBe outcome
           }
       }
     }
@@ -171,7 +171,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.post(body, IfsUri[Result](url))) shouldBe outcome
+        await(connector.post(body, IfsUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -187,7 +187,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.get(IfsUri[Result](url), queryParams = qps)) shouldBe outcome
+        await(connector.get(IfsUri[Result](url), queryParams = qps, correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -202,7 +202,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.delete(IfsUri[Result](url))) shouldBe outcome
+        await(connector.delete(IfsUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -219,7 +219,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.put(body, IfsUri[Result](url))) shouldBe outcome
+        await(connector.put(body, IfsUri[Result](url), correlationIdOut)) shouldBe outcome
       }
     }
 
@@ -242,7 +242,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
               )
               .returns(Future.successful(outcome))
 
-            await(connector.put(body, IfsUri[Result](url))) shouldBe outcome
+            await(connector.put(body, IfsUri[Result](url), correlationIdOut)) shouldBe outcome
           }
       }
     }

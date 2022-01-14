@@ -30,7 +30,7 @@ object IncomeSourceType {
 
   case object `self-employment` extends IncomeSourceType
 
-  case object `foreign-property-fhl-eea` extends IncomeSourceType
+  case object `fhl-property-eea` extends IncomeSourceType
 
   implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
 }

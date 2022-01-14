@@ -38,7 +38,7 @@ object TypeOfBusiness {
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property-fhl-eea`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-eea`
   }
 
   case object `self-employment` extends TypeOfBusiness {

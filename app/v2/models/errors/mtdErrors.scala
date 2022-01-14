@@ -47,6 +47,9 @@ object RuleTaxYearRangeInvalidError
 object RuleTypeOfBusinessError
   extends MtdError("RULE_TYPE_OF_BUSINESS", "A type of business must be supplied")
 
+object RuleNoIncomeSubmissionsExist
+  extends MtdError("RULE_NO_INCOME_SUBMISSIONS_EXIST", "No income submissions exist")
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 

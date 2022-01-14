@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators.validations
+package v2.models.requestData
 
-import v2.models.errors.MtdError
-import v2.models.requestData.TaxYear
+/**
+  * Represents a tax year
+  *
+  * @param value the tax year string (where 2018 represents 2017-18)
+  */
+class TaxYear(private val value: String) extends AnyVal {
+  def downstreamValue: String = value
+}
 
-object MtdTaxYearValidation  {
+object TaxYear {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, minTaxYear: Int,  error: MtdError): List[MtdError] = {
-
-    val desTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).downstreamValue)
-
-    if (desTaxYear >= minTaxYear) NoValidationErrors else List(error)
-  }
+  /**
+    * @param taxYear tax year in MTD format (e.g. 2017-18)
+    */
+  def fromMtd(taxYear: String): TaxYear =
+    new TaxYear(taxYear.take(2) + taxYear.drop(5))
 }
