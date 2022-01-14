@@ -28,7 +28,8 @@ trait ConnectorSpec extends UnitSpec
   with HeaderNames {
 
   lazy val baseUrl = "http://test-BaseUrl"
-  val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  val correlationIdOut = "correlationIdOut"
+  val correlationIdIn  = "correlationIdIn"
 
   val otherHeaders: Seq[(String, String)] = Seq(
     "Gov-Test-Scenario" -> "DEFAULT",
@@ -72,11 +73,13 @@ trait ConnectorSpec extends UnitSpec
 
   val requiredDesHeaders: Seq[(String, String)] = Seq(
     "Environment" -> "des-environment",
-    "Authorization" -> s"Bearer des-token"
+    "Authorization" -> s"Bearer des-token",
+    "CorrelationId" -> correlationIdOut
   )
 
   val requiredIfsHeaders: Seq[(String, String)] = Seq(
     "Environment" -> "ifs-environment",
-    "Authorization" -> s"Bearer ifs-token"
+    "Authorization" -> s"Bearer ifs-token",
+    "CorrelationId" -> correlationIdOut
   )
 }

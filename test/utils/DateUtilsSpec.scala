@@ -24,7 +24,7 @@ import v1.models.requestData.DesTaxYear
 class DateUtilsSpec extends UnitSpec{
 
   "getDesTaxYear with tax year param" should {
-    "return a valid DesTaxYear" when {
+    "return a valid TaxYear" when {
       "mtd formatted string tax year is supplied" in {
         DateUtils.getDesTaxYear("2018-19") shouldBe DesTaxYear("2019")
       }
@@ -32,7 +32,7 @@ class DateUtilsSpec extends UnitSpec{
   }
 
   "getDesTaxYear with date param" should {
-    "return a valid DesTaxYear" when {
+    "return a valid TaxYear" when {
       "no tax year is supplied when the date is 5th April of the current year" in {
         DateUtils.getDesTaxYear(LocalDate.parse(s"2019-04-05")) shouldBe DesTaxYear("2019")
       }

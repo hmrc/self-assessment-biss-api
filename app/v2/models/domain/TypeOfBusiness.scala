@@ -18,7 +18,7 @@ package v2.models.domain
 
 import play.api.libs.json._
 import utils.enums.Enums
-import v1.models.des.IncomeSourceType
+import v2.models.des.IncomeSourceType
 
 sealed trait TypeOfBusiness {
   def toIncomeSourceType: IncomeSourceType
@@ -38,7 +38,7 @@ object TypeOfBusiness {
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property-fhl-eea`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-eea`
   }
 
   case object `self-employment` extends TypeOfBusiness {

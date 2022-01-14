@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators.validations
+package v2.models.requestData
 
-import v2.models.errors.MtdError
-import v2.models.requestData.TaxYear
+import support.UnitSpec
 
-object MtdTaxYearValidation  {
+class TaxYearSpec extends UnitSpec{
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, minTaxYear: Int,  error: MtdError): List[MtdError] = {
+  "TaxYear" should {
+    "be creatable from an mtd value" in {
+      val taxYear = TaxYear.fromMtd("2019-20")
 
-    val desTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).downstreamValue)
-
-    if (desTaxYear >= minTaxYear) NoValidationErrors else List(error)
+      taxYear.downstreamValue shouldBe "2020"
+    }
   }
 }

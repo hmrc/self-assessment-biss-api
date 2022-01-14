@@ -23,27 +23,27 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v2.models.requestData.DesTaxYear
+import v2.models.requestData.TaxYear
 import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino                    = "AA123456A"
-    val taxYear: Option[String] = Some("2018-19")
-    val selfEmploymentId: String= "XAIS12345678913"
-    val correlationId           = "X-123"
-    val desTaxYear: DesTaxYear = DesTaxYear.fromMtd(taxYear.get)
+    val nino                     = "AA123456A"
+    val mtdTaxYear               = "2018-19"
+    val selfEmploymentId: String = "XAIS12345678913"
+    val correlationId            = "X-123"
+    val taxYear: TaxYear         = TaxYear.fromMtd(mtdTaxYear)
 
     def uri: String = s"/$nino/self-employment"
 
-    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss"
+    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${taxYear.downstreamValue}/biss"
 
     def setupStubs(): StubMapping
 
     def request: WSRequest = {
       val queryParams: Seq[(String, String)] = Seq("selfEmploymentId" -> selfEmploymentId) ++
-        Seq("taxYear" -> taxYear)
+        Seq("taxYear" -> Some(mtdTaxYear))
           .collect {
             case (k, Some(v)) => (k, v)
           }

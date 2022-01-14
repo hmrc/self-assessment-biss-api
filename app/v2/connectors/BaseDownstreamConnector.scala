@@ -17,11 +17,9 @@
 package v2.connectors
 
 import config.AppConfig
-import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 import v2.connectors.DownstreamUri._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,11 +28,9 @@ trait BaseDownstreamConnector {
   val http: HttpClient
   val appConfig: AppConfig
 
-  val logger: Logger = Logger(this.getClass)
-
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 
-  private def desHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
+  private def desHeaderCarrier(hc: HeaderCarrier, correlationId: String, additionalHeaders: (String, String)*): HeaderCarrier = {
     val passThroughHeaders = hc.headers(appConfig.desEnvironmentHeaders.getOrElse(Seq.empty))
       .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
 
@@ -43,14 +39,15 @@ trait BaseDownstreamConnector {
         // Contract headers
         Seq(
           "Authorization" -> s"Bearer ${appConfig.desToken}",
-          "Environment" -> appConfig.desEnv
+          "Environment" -> appConfig.desEnv,
+          "CorrelationId" -> correlationId
         ) ++
         additionalHeaders ++
         passThroughHeaders
     )
   }
 
-  private def ifsHeaderCarrier(hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier = {
+  private def ifsHeaderCarrier(hc: HeaderCarrier, correlationId: String, additionalHeaders: (String, String)*): HeaderCarrier = {
     val passThroughHeaders = hc.headers(appConfig.ifsEnvironmentHeaders.getOrElse(Seq.empty))
       .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
 
@@ -59,14 +56,15 @@ trait BaseDownstreamConnector {
         // Contract headers
         Seq(
           "Authorization" -> s"Bearer ${appConfig.ifsToken}",
-          "Environment"   -> appConfig.ifsEnv
+          "Environment"   -> appConfig.ifsEnv,
+          "CorrelationId" -> correlationId
         ) ++
         additionalHeaders ++
         passThroughHeaders
     )
   }
 
-  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(
+  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], correlationId: String)(
     implicit ec: ExecutionContext,
     hc: HeaderCarrier,
     httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
@@ -75,10 +73,10 @@ trait BaseDownstreamConnector {
       http.POST(getBackendUri(uri), body)
     }
 
-    doPost(getBackendHeaders(uri, hc, jsonContentTypeHeader))
+    doPost(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }
 
-  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Seq.empty)(
+  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Seq.empty, correlationId: String)(
     implicit ec: ExecutionContext,
     hc: HeaderCarrier,
     httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
@@ -86,10 +84,10 @@ trait BaseDownstreamConnector {
     def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
       http.GET(getBackendUri(uri), queryParams = queryParams)
 
-    doGet(getBackendHeaders(uri, hc))
+    doGet(getBackendHeaders(uri, hc, correlationId))
   }
 
-  def delete[Resp](uri: DownstreamUri[Resp])(implicit ec: ExecutionContext,
+  def delete[Resp](uri: DownstreamUri[Resp], correlationId: String)(implicit ec: ExecutionContext,
                                              hc: HeaderCarrier,
                                              httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
 
@@ -97,10 +95,10 @@ trait BaseDownstreamConnector {
       http.DELETE(getBackendUri(uri))
     }
 
-    doDelete(getBackendHeaders(uri, hc))
+    doDelete(getBackendHeaders(uri, hc, correlationId))
   }
 
-  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(
+  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], correlationId: String)(
     implicit ec: ExecutionContext,
     hc: HeaderCarrier,
     httpReads: HttpReads[DownstreamOutcome[Resp]]): Future[DownstreamOutcome[Resp]] = {
@@ -109,7 +107,7 @@ trait BaseDownstreamConnector {
       http.PUT(getBackendUri(uri), body)
     }
 
-    doPut(getBackendHeaders(uri, hc, jsonContentTypeHeader))
+    doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }
 
   private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String = uri match {
@@ -117,9 +115,9 @@ trait BaseDownstreamConnector {
     case IfsUri(value) => s"${appConfig.ifsBaseUrl}/$value"
   }
 
-  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp], hc: HeaderCarrier, additionalHeaders: (String, String)*): HeaderCarrier =
+  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp], hc: HeaderCarrier, correlationId: String, additionalHeaders: (String, String)*) =
     uri match {
-      case DesUri(_) => desHeaderCarrier(hc, additionalHeaders: _*)
-      case IfsUri(_) => ifsHeaderCarrier(hc, additionalHeaders: _*)
+      case DesUri(_) => desHeaderCarrier(hc, correlationId, additionalHeaders: _*)
+      case IfsUri(_) => ifsHeaderCarrier(hc, correlationId, additionalHeaders: _*)
     }
 }
