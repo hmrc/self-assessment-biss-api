@@ -22,7 +22,7 @@ import utils.enums.Enums
 sealed trait IncomeSourceType
 
 object IncomeSourceType {
-  case object `uk-property` extends IncomeSourceType
+  case object `uk-property-non-fhl` extends IncomeSourceType
 
   case object `uk-property-fhl` extends IncomeSourceType
 

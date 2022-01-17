@@ -26,7 +26,7 @@ sealed trait TypeOfBusiness {
 
 object TypeOfBusiness {
   case object `uk-property-non-fhl` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property-non-fhl`
   }
 
   case object `uk-property-fhl` extends TypeOfBusiness {

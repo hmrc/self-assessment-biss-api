@@ -29,7 +29,7 @@ class typeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
   "TypeOfBusiness" should {
     "convert to IncomeSourceType" when {
       "provided uk-property-non-fhl" in {
-        TypeOfBusiness.`uk-property-non-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`uk-property`
+        TypeOfBusiness.`uk-property-non-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`uk-property-non-fhl`
       }
       "provided uk-property-fhl" in {
         TypeOfBusiness.`uk-property-fhl`.toIncomeSourceType shouldBe IncomeSourceType.`uk-property-fhl`
