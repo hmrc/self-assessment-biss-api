@@ -26,11 +26,11 @@ sealed trait TypeOfBusiness {
 
 object TypeOfBusiness {
   case object `uk-property-non-fhl` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property-non-fhl`
   }
 
   case object `uk-property-fhl` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-uk`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property-fhl`
   }
 
   case object `foreign-property` extends TypeOfBusiness {
@@ -38,7 +38,7 @@ object TypeOfBusiness {
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-eea`
+    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property-fhl-eea`
   }
 
   case object `self-employment` extends TypeOfBusiness {
