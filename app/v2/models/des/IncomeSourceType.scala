@@ -16,22 +16,17 @@
 
 package v2.models.des
 
-import play.api.libs.json.Format
-import utils.enums.Enums
-
 sealed trait IncomeSourceType
 
 object IncomeSourceType {
-  case object `uk-property-non-fhl` extends IncomeSourceType
+  case object `uk-property` extends IncomeSourceType
 
-  case object `uk-property-fhl` extends IncomeSourceType
+  case object `fhl-property-uk` extends IncomeSourceType
 
   case object `foreign-property` extends IncomeSourceType
 
   case object `self-employment` extends IncomeSourceType
 
-  case object `foreign-property-fhl-eea` extends IncomeSourceType
-
-  implicit val format: Format[IncomeSourceType] = Enums.format[IncomeSourceType]
+  case object `fhl-property-eea` extends IncomeSourceType
 }
 
