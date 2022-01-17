@@ -68,7 +68,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
         "INVALID_TAXYEAR"              -> TaxYearFormatError,
         "INVALID_IDTYPE"               -> DownstreamError,
         "INVALID_CORRELATIONID"        -> DownstreamError,
-        "INVALID_INCOMESOURCETYPE"     -> TypeOfBusinessFormatError,
+        "INVALID_INCOMESOURCETYPE"     -> DownstreamError,
         "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
         "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
         "INVALID_ACCOUNTING_PERIOD"    -> DownstreamError,

@@ -17,41 +17,30 @@
 package v2.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import fixtures.RetrieveSelfEmploymentBISSFixture._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status.OK
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
-import v2.models.requestData.TaxYear
-import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import v2.fixtures.RetrieveBISSFixture
+import v2.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
-class AuthISpec extends IntegrationBaseSpec {
+class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
   private trait Test {
-    val nino                     = "AA123456A"
-    val mtdTaxYear               = "2018-19"
-    val selfEmploymentId: String = "XAIS12345678913"
-    val correlationId            = "X-123"
-    val taxYear: TaxYear         = TaxYear.fromMtd(mtdTaxYear)
+    val nino               = "AA123456A"
+    val businessId: String = "XAIS12345678913"
 
-    def uri: String = s"/$nino/self-employment"
+    def uri: String = s"/$nino/self-employment/2018-19/$businessId"
 
-    def desUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/${taxYear.downstreamValue}/biss"
+    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/2019/biss"
 
     def setupStubs(): StubMapping
 
     def request: WSRequest = {
-      val queryParams: Seq[(String, String)] = Seq("selfEmploymentId" -> selfEmploymentId) ++
-        Seq("taxYear" -> Some(mtdTaxYear))
-          .collect {
-            case (k, Some(v)) => (k, v)
-          }
-
       setupStubs()
       buildRequest(uri)
-        .addQueryStringParameters(queryParams: _*)
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))
     }
   }
 
@@ -79,14 +68,14 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, desUrl, Map("incomesourceid" -> s"$selfEmploymentId"), OK, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), OK, downstreamResponseJsonMin)
         }
 
         val response: WSResponse = await(request.get)
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe mtdResponse
+        response.json shouldBe responseJsonMin
       }
     }
 

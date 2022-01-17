@@ -19,13 +19,5 @@
                 <td><p>LOSS</p></td>
                 <td><p>Simulates success response with loss.</p></td>
             </tr>
-            <tr>
-                <td><p>PROPERTY</p></td>
-                <td><p>Simulates successful property response with loss.</p></td>
-            </tr>
-            <tr>
-                <td><p>SELF EMPLOYMENT</p></td>
-                <td><p>Simulates successful self-employment response with loss.</p></td>
-            </tr>
         </tbody>
 </table>
