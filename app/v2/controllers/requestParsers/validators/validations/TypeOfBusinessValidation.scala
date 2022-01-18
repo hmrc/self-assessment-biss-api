@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-package v2.models.requestData
+package v2.controllers.requestParsers.validators.validations
 
+import v2.models.domain.TypeOfBusiness
+import v2.models.errors.{MtdError, TypeOfBusinessFormatError}
 
-case class RetrieveBISSRawData(nino: String, typeOfBusiness: String, taxYear: String, businessId: String) extends RawData
+object TypeOfBusinessValidation {
+
+  def validate(typeOfBusiness: String): List[MtdError] = {
+    if (TypeOfBusiness.parser.isDefinedAt(typeOfBusiness)) NoValidationErrors else List(TypeOfBusinessFormatError)
+  }
+}

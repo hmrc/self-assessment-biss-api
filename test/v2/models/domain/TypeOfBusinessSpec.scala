@@ -23,14 +23,6 @@ import v2.models.domain.TypeOfBusiness._
 
 class TypeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
 
-  testRoundTrip[TypeOfBusiness](
-    "uk-property-non-fhl"      -> `uk-property-non-fhl`,
-    "uk-property-fhl"          -> `uk-property-fhl`,
-    "foreign-property"         -> `foreign-property`,
-    "foreign-property-fhl-eea" -> `foreign-property-fhl-eea`,
-    "self-employment"          -> `self-employment`,
-  )
-
   "TypeOfBusiness" should {
     "convert to IncomeSourceType" when {
 

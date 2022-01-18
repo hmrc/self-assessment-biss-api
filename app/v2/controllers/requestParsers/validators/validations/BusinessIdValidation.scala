@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-package v2.models.requestData
+package v2.controllers.requestParsers.validators.validations
 
+import v2.models.errors.{BusinessIdFormatError, MtdError}
 
-case class RetrieveBISSRawData(nino: String, typeOfBusiness: String, taxYear: String, businessId: String) extends RawData
+object BusinessIdValidation {
+
+  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+
+  def validate(businessId: String): List[MtdError] = {
+    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+  }
+}

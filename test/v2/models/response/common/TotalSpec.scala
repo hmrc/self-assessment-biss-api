@@ -16,13 +16,12 @@
 
 package v2.models.response.common
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v2.models.response.common._
 
 class TotalSpec extends UnitSpec {
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
       |        "income": 100.00,
@@ -33,7 +32,7 @@ class TotalSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
       |    "incomeSourceID": "string",
@@ -45,7 +44,7 @@ class TotalSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val minDesJson = Json.parse(
+  val minDesJson: JsValue = Json.parse(
     """
       |{
       |    "totalIncome": 100.00
@@ -53,7 +52,7 @@ class TotalSpec extends UnitSpec {
       |""".stripMargin)
 
 
-  val minJson = Json.parse(
+  val minJson: JsValue = Json.parse(
     """
       |{
       |    "income": 100.00
@@ -61,7 +60,7 @@ class TotalSpec extends UnitSpec {
       |""".stripMargin)
 
 
-  val model = Total(
+  val model: Total = Total(
       100.00,
       Some(50.00),
       Some(5.00),
@@ -70,7 +69,7 @@ class TotalSpec extends UnitSpec {
     )
 
 
-  val minModel = Total(
+  val minModel: Total = Total(
     100.00,
     None,
     None,

@@ -16,7 +16,6 @@
 
 package v2.models.domain
 
-import play.api.libs.json._
 import utils.enums.Enums
 import v2.models.des.IncomeSourceType
 
@@ -45,5 +44,5 @@ object TypeOfBusiness {
     override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`self-employment`
   }
 
-  implicit val format: Format[TypeOfBusiness] = Enums.format[TypeOfBusiness]
+  val parser: PartialFunction[String, TypeOfBusiness] = Enums.parser[TypeOfBusiness]
 }
