@@ -28,11 +28,7 @@ class BusinessIdValidationSpec extends UnitSpec {
 
     "return no errors" when {
 
-      "provided with a self employment loss with a valid id" in {
-        BusinessIdValidation.validate(validId).isEmpty shouldBe true
-      }
-
-      "provided with a class 4 self employment loss with a valid id" in {
+      "provided with a valid id" in {
         BusinessIdValidation.validate(validId).isEmpty shouldBe true
       }
     }
@@ -40,7 +36,7 @@ class BusinessIdValidationSpec extends UnitSpec {
     "return an error" when {
 
       invalidIds.foreach { badId =>
-        s"provided with a self employment loss with an invalid id '$badId'" in {
+        s"provided with an invalid id '$badId'" in {
           BusinessIdValidation.validate(badId) shouldBe List(BusinessIdFormatError)
         }
       }
