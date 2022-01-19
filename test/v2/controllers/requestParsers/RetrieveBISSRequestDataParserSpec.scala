@@ -22,10 +22,11 @@ import v2.models.domain.{Nino, TypeOfBusiness}
 import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest, TaxYear}
 
-class RetrieveBISSRequestParserSpec extends UnitSpec {
+class RetrieveBISSRequestDataParserSpec extends UnitSpec {
 
   private val nino = "AA123456B"
   private val taxYear = "2018-19"
+  private val taxYearForForeignProperty = "2019-20"
   private val typeOfBusiness = "uk-property-fhl"
   private val businessId = "XAIS12345678910"
 
@@ -40,10 +41,17 @@ class RetrieveBISSRequestParserSpec extends UnitSpec {
 
   "parse" should {
     "return a request object" when {
-      "valid non fhl data is provided" in new Test {
+      "valid uk property data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe Right(RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), businessId))
+      }
+
+      "valid foreign property data is provided" in new Test {
+        MockValidator.validate(inputData.copy(typeOfBusiness = "foreign-property", taxYear = taxYearForForeignProperty)).returns(Nil)
+
+        parser.parseRequest(inputData.copy(typeOfBusiness = "foreign-property", taxYear = taxYearForForeignProperty)) shouldBe
+          Right(RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd(taxYearForForeignProperty), businessId))
       }
     }
 
