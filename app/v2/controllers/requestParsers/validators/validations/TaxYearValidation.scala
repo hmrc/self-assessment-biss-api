@@ -27,10 +27,10 @@ object TaxYearValidation {
 
       val start     = taxYear.substring(2, 4).toInt
       val end       = taxYear.substring(5, 7).toInt
-      val startYear = taxYear.substring(0, 4).toInt
+      val endYear = (taxYear.take(2) + taxYear.drop(5)).toInt
 
       if (end - start == 1) {
-        if (startYear >= minimumTaxYear) {
+        if (endYear >= minimumTaxYear) {
           NoValidationErrors
         } else {
           List(RuleTaxYearNotSupportedError)
