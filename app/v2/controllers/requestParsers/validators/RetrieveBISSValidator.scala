@@ -21,14 +21,18 @@ import v2.controllers.requestParsers.validators.validations._
 import v2.models.errors.MtdError
 import v2.models.requestData.RetrieveBISSRawData
 
-class RetrieveBISSValidator extends Validator[RetrieveBISSRawData] with FixedConfig{
+class RetrieveBISSValidator extends Validator[RetrieveBISSRawData] with FixedConfig {
 
   private val validationSet = List(parameterFormatValidation)
 
   private def parameterFormatValidation: RetrieveBISSRawData => List[List[MtdError]] = (data: RetrieveBISSRawData) => List(
     NinoValidation.validate(data.nino),
-    TaxYearValidation.validate(minimumTaxYear, data.taxYear),
     TypeOfBusinessValidation.validate(data.typeOfBusiness),
+    data.typeOfBusiness match {
+      case "foreign-property-fhl-eea" | "foreign-property" => TaxYearValidation.validate(foreignPropertyMinTaxYear, data.taxYear)
+      case "uk-property-non-fhl" | "uk-property-fhl" | "self-employment" => TaxYearValidation.validate(minimumTaxYear, data.taxYear)
+      case _ => Nil
+    },
     BusinessIdValidation.validate(data.businessId)
   )
 

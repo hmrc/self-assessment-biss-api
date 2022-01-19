@@ -48,8 +48,11 @@ class RetrieveBISSValidatorSpec extends UnitSpec {
       "an invalid tax year range is provided" in {
         validator.validate(RetrieveBISSRawData(nino, typeOfBusiness, "2020-22", businessId)) shouldBe List(RuleTaxYearRangeInvalidError)
       }
-      "an invalid min tax year is provided" in {
+      "an invalid min tax year is provided for UK property" in {
         validator.validate(RetrieveBISSRawData(nino, typeOfBusiness, "2016-17", businessId)) shouldBe List(RuleTaxYearNotSupportedError)
+      }
+      "an invalid min tax year is provided for Foreign property" in {
+        validator.validate(RetrieveBISSRawData(nino, "foreign-property", "2018-19", businessId)) shouldBe List(RuleTaxYearNotSupportedError)
       }
       "an invalid type of business is provided" in {
         validator.validate(RetrieveBISSRawData(nino, "self-employments", taxYear, businessId)) shouldBe List(TypeOfBusinessFormatError)

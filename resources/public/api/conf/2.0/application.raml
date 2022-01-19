@@ -27,7 +27,6 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
   errors: errors.raml
   headers: headers.raml
-  queryParameters: queryParameters.raml
 
 '/individuals/self-assessment/income-summary':
   /{nino}:
@@ -43,7 +42,7 @@ uses:
         /{taxYear}:
           uriParameters:
             taxYear:
-              description: The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2020-22 is not valid.
+              description: The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year for UK property and self-employment is 2017-18 and for foreign property, it is 2019-20. No gaps are allowed, for example, 2020-22 is not valid.
               type: string
               example: 2021-22
           /{businessId}:
