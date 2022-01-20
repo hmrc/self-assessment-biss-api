@@ -22,7 +22,7 @@ import v2.models.errors.{RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidEr
 class TaxYearValidationSpec extends UnitSpec {
 
   val minTaxYear = 2018
-  val taxYear    = "2021-22"
+  val taxYear    = "2017-18"
 
   "validate" should {
     "return no errors" when {
