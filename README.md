@@ -8,7 +8,7 @@ The Self Assessment BISS (Business Income Source Summary) API allows a developer
 ## Requirements
 - Scala 2.12.x
 - Java 8
-- sbt 1.3.13
+- sbt 1.6.x
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Development Setup
