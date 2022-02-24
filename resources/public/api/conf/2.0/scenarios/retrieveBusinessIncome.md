@@ -19,5 +19,9 @@
                 <td><p>LOSS</p></td>
                 <td><p>Simulates success response with loss.</p></td>
             </tr>
+            <tr>
+                <td><p>NO_INCOME_SUBMISSIONS_EXIST</p></td>
+                <td><p>Simulates the scenario where no income submissions exist.</p></td>
+            </tr>
         </tbody>
 </table>
