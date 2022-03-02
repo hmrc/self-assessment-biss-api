@@ -1,5 +1,12 @@
 #%RAML 1.0
 ---
+uses:
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  errors: errors.raml
+  headers: headers.raml
+
 title: Business Income Source Summary (MTD)
 description: Retrieve a summary of income and expenditure for a specified self-employment, or property business for a given tax year.
 version: 2.0
@@ -20,13 +27,6 @@ documentation:
    content: !include docs/support.md
  - title: Testing
    content: !include docs/testing.md
-
-uses:
-  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
-  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
-  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
-  errors: errors.raml
-  headers: headers.raml
 
 '/individuals/self-assessment/income-summary':
   /{nino}:
