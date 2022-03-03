@@ -49,7 +49,6 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
       predicate and ((Individual and ConfidenceLevel.L200) or Organisation or Agent)
     } else predicate
 
-  @unchecked
   def authorised(predicate: Predicate)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuthOutcome] = {
     authFunction.authorised(buildPredicate(predicate)).retrieve(affinityGroup and authorisedEnrolments) {
       case Some(Individual) ~ _ =>
@@ -67,6 +66,9 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
             logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
             Left(DownstreamError)
         }
+      case _ ~ _ =>
+        logger.warn(s"[EnrolmentsAuthService][authorised] Invalid AffinityGroup.")
+        Future.successful(Left(UnauthorisedError))
     } recoverWith {
       case _: MissingBearerToken => Future.successful(Left(UnauthorisedError))
       case _: AuthorisationException => Future.successful(Left(UnauthorisedError))

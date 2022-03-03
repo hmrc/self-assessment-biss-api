@@ -19,7 +19,6 @@ package v2.models.response
 import play.api.libs.json.Json
 import support.UnitSpec
 import v2.fixtures.RetrieveBISSFixture
-import v2.models.response.common._
 
 class RetrieveBISSResponseSpec extends UnitSpec with RetrieveBISSFixture {
 

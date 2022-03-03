@@ -37,7 +37,9 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
                                                      selfEmploymentBISSService: SelfEmploymentBISSService,
                                                      cc: ControllerComponents,
                                                      val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
+  extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -57,7 +59,7 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          response   <- EitherT(selfEmploymentBISSService.retrieveBiss(parsedRequest))
+          response      <- EitherT(selfEmploymentBISSService.retrieveBiss(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -71,7 +73,7 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: $resCorrelationId")
@@ -80,12 +82,12 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError | RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case _               => unhandledError(errorWrapper)
     }
-  }
 }

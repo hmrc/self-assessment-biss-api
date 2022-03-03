@@ -77,20 +77,15 @@ class RetrieveBISSController @Inject()(val authService: EnrolmentsAuthService,
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearNotSupportedError |
-          RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
+           RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleNoIncomeSubmissionsExist => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError                => NotFound(Json.toJson(errorWrapper))
       case DownstreamError              => InternalServerError(Json.toJson(errorWrapper))
-      case _ =>
-        logger.error(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Unhandled error: $errorWrapper")
-        InternalServerError(Json.toJson(errorWrapper))
+      case _                            => unhandledError(errorWrapper)
     }
-  }
 
 }
