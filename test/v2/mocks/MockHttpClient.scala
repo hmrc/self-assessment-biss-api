@@ -39,14 +39,19 @@ trait MockHttpClient extends MockFactory {
       (mockHttpClient
         .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(assertArgs {
-          (actualUrl: String, actualParams: Seq[(String, String)], _: Seq[(String, String)], _: HttpReads[T], hc: HeaderCarrier, _: ExecutionContext) =>
-          {
-            actualUrl shouldBe url
-            actualParams shouldBe parameters
+          (actualUrl: String,
+           actualParams: Seq[(String, String)],
+           _: Seq[(String, String)],
+           _: HttpReads[T],
+           hc: HeaderCarrier,
+           _: ExecutionContext) =>
+            {
+              actualUrl shouldBe url
+              actualParams shouldBe parameters
 
-            val headersForUrl = hc.headersForUrl(config)(actualUrl)
-            assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
-          }
+              val headersForUrl = hc.headersForUrl(config)(actualUrl)
+              assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
+            }
         })
     }
 
@@ -58,13 +63,13 @@ trait MockHttpClient extends MockFactory {
       (mockHttpClient
         .POST[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(assertArgs { (actualUrl: String, actualBody: I, _, _, _, hc: HeaderCarrier, _) =>
-        {
-          actualUrl shouldBe url
-          actualBody shouldBe body
+          {
+            actualUrl shouldBe url
+            actualBody shouldBe body
 
-          val headersForUrl = hc.headersForUrl(config)(actualUrl)
-          assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
-        }
+            val headersForUrl = hc.headersForUrl(config)(actualUrl)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
+          }
         })
     }
 
@@ -76,13 +81,13 @@ trait MockHttpClient extends MockFactory {
       (mockHttpClient
         .PUT[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(assertArgs { (actualUrl: String, actualBody: I, _, _, _, hc: HeaderCarrier, _) =>
-        {
-          actualUrl shouldBe url
-          actualBody shouldBe body
+          {
+            actualUrl shouldBe url
+            actualBody shouldBe body
 
-          val headersForUrl = hc.headersForUrl(config)(actualUrl)
-          assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
-        }
+            val headersForUrl = hc.headersForUrl(config)(actualUrl)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
+          }
         })
     }
 
@@ -93,22 +98,23 @@ trait MockHttpClient extends MockFactory {
       (mockHttpClient
         .DELETE(_: String, _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(assertArgs { (actualUrl: String, _, _, hc: HeaderCarrier, _) =>
-        {
-          actualUrl shouldBe url
+          {
+            actualUrl shouldBe url
 
-          val headersForUrl = hc.headersForUrl(config)(actualUrl)
-          assertHeaders( headersForUrl, requiredHeaders, excludedHeaders)
-        }
+            val headersForUrl = hc.headersForUrl(config)(actualUrl)
+            assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
+          }
         })
     }
 
-    private def assertHeaders[T, I](
-                                     actualHeaders: Seq[(String, String)],
-                                     requiredHeaders: Seq[(String, String)],
-                                     excludedHeaders: Seq[(String, String)]) = {
+    private def assertHeaders[T, I](actualHeaders: Seq[(String, String)],
+                                    requiredHeaders: Seq[(String, String)],
+                                    excludedHeaders: Seq[(String, String)]) = {
 
       actualHeaders should contain allElementsOf requiredHeaders
       actualHeaders should contain noElementsOf excludedHeaders
     }
+
   }
+
 }

@@ -38,4 +38,5 @@ class TypeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
         }
     }
   }
+
 }

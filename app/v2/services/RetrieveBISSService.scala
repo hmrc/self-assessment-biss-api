@@ -30,10 +30,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveBISSService @Inject()(connector: RetrieveBISSConnector)(implicit ec: ExecutionContext) extends ServiceSupport with Logging {
+class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector)(implicit ec: ExecutionContext) extends ServiceSupport with Logging {
 
-  def retrieveBiss(request: RetrieveBISSRequest, correlationId: String)(
-      implicit hc: HeaderCarrier,
+  def retrieveBiss(request: RetrieveBISSRequest, correlationId: String)(implicit
+      hc: HeaderCarrier,
       logContext: EndpointLogContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
 
     val result = for {
@@ -57,4 +57,5 @@ class RetrieveBISSService @Inject()(connector: RetrieveBISSConnector)(implicit e
     "SERVER_ERROR"                 -> DownstreamError,
     "SERVICE_UNAVAILABLE"          -> DownstreamError
   )
+
 }

@@ -22,7 +22,7 @@ import v1.controllers.requestParsers.validators.RetrieveUKPropertyBISSValidator
 import v1.models.errors.MtdError
 import v1.models.requestData.RetrieveUKPropertyBISSRawData
 
-class MockRetrieveUKPropertyBISSValidator extends MockFactory{
+class MockRetrieveUKPropertyBISSValidator extends MockFactory {
   val mockValidator: RetrieveUKPropertyBISSValidator = mock[RetrieveUKPropertyBISSValidator]
 
   object MockValidator {
@@ -32,5 +32,7 @@ class MockRetrieveUKPropertyBISSValidator extends MockFactory{
         .validate(_: RetrieveUKPropertyBISSRawData))
         .expects(data)
     }
+
   }
+
 }

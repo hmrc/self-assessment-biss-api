@@ -22,9 +22,7 @@ import v1.models.response.common.{Loss, Profit, Total}
 
 object RetrieveUKPropertyFixture {
 
-
-  val mtdResponse: JsValue = Json.parse(
-    """
+  val mtdResponse: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.00,
@@ -43,8 +41,7 @@ object RetrieveUKPropertyFixture {
       |}
     """.stripMargin)
 
-  val mtdResponseWithOnlyRequiredData: JsValue = Json.parse(
-    """
+  val mtdResponseWithOnlyRequiredData: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.00,
@@ -63,14 +60,16 @@ object RetrieveUKPropertyFixture {
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      Some(Profit(
-        net = Some(20.00),
-        taxable = Some(10.00)
-      )),
-      Some(Loss(
-        net = Some(10.00),
-        taxable = Some(35.00)
-      ))
+      Some(
+        Profit(
+          net = Some(20.00),
+          taxable = Some(10.00)
+        )),
+      Some(
+        Loss(
+          net = Some(10.00),
+          taxable = Some(35.00)
+        ))
     )
 
   val responseObjWithOnlyRequiredData =
@@ -81,11 +80,11 @@ object RetrieveUKPropertyFixture {
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      None, None
+      None,
+      None
     )
 
-  val desResponse: JsValue = Json.parse(
-    """
+  val desResponse: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalExpenses" : 50.00,
@@ -98,8 +97,7 @@ object RetrieveUKPropertyFixture {
       |}
     """.stripMargin)
 
-  val desResponseWithOnlyRequiredData: JsValue = Json.parse(
-    """
+  val desResponseWithOnlyRequiredData: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalExpenses" : 50.00,
@@ -107,4 +105,5 @@ object RetrieveUKPropertyFixture {
       | "totalDeductions" : 60.00
       |}
     """.stripMargin)
+
 }

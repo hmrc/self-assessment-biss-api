@@ -28,14 +28,14 @@ import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYear
 
 class RetrieveForeignPropertyBISSRequestDataParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2018-19"
-  private val typeOfBusinessNonFhl = Some("foreign-property")
-  private val typeOfBusinessFhl = Some("foreign-property-fhl-eea")
-  private val businessId = "XAIS12345678910"
+  private val nino                   = "AA123456B"
+  private val taxYear                = "2018-19"
+  private val typeOfBusinessNonFhl   = Some("foreign-property")
+  private val typeOfBusinessFhl      = Some("foreign-property-fhl-eea")
+  private val businessId             = "XAIS12345678910"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  private val inputData = RetrieveForeignPropertyBISSRawData(nino.toString, Some(businessId), typeOfBusinessFhl, Some(taxYear))
+  private val inputData    = RetrieveForeignPropertyBISSRawData(nino.toString, Some(businessId), typeOfBusinessFhl, Some(taxYear))
   private val inputDataTwo = RetrieveForeignPropertyBISSRawData(nino.toString, Some(businessId), typeOfBusinessNonFhl, Some(taxYear))
 
   trait Test extends MockRetrieveForeignPropertyBISSValidator {
@@ -47,19 +47,22 @@ class RetrieveForeignPropertyBISSRequestDataParserSpec extends UnitSpec {
       "valid non fhl data is provided" in new Test {
         MockValidator.validate(inputDataTwo).returns(Nil)
 
-        parser.parseRequest(inputDataTwo) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`foreign-property`, DesTaxYear.fromMtd(taxYear)))
+        parser.parseRequest(inputDataTwo) shouldBe Right(
+          RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`foreign-property`, DesTaxYear.fromMtd(taxYear)))
       }
 
       "valid fhl data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DesTaxYear.fromMtd(taxYear)))
+        parser.parseRequest(inputData) shouldBe Right(
+          RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DesTaxYear.fromMtd(taxYear)))
       }
 
       "valid data is provided without a tax year" in new Test {
         MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
 
-        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DateUtils.getDesTaxYear(LocalDate.now())))
+        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(
+          RetrieveForeignPropertyBISSRequest(Nino(nino), businessId, IncomeSourceType.`fhl-property-eea`, DateUtils.getDesTaxYear(LocalDate.now())))
       }
     }
 
@@ -77,4 +80,5 @@ class RetrieveForeignPropertyBISSRequestDataParserSpec extends UnitSpec {
       }
     }
   }
+
 }

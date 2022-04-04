@@ -21,8 +21,7 @@ import support.UnitSpec
 
 class TotalSpec extends UnitSpec {
 
-  val json: JsValue = Json.parse(
-    """
+  val json: JsValue = Json.parse("""
       |{
       | "income": 100.00,
       | "additions" : 100.00,
@@ -31,8 +30,7 @@ class TotalSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val desJson: JsValue = Json.parse(
-    """
+  val desJson: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalAdditions" : 100.00,
@@ -49,8 +47,7 @@ class TotalSpec extends UnitSpec {
       expenses = Some(100.25)
     )
 
-  val mtdJsonWithNegativeValues: JsValue = Json.parse(
-    """
+  val mtdJsonWithNegativeValues: JsValue = Json.parse("""
       |{
       | "income": 100.00,
       | "additions" : -100.00,
@@ -59,8 +56,7 @@ class TotalSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val desJsonWithNegativeValues: JsValue = Json.parse(
-    """
+  val desJsonWithNegativeValues: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalAdditions" : -100.00,
@@ -94,4 +90,5 @@ class TotalSpec extends UnitSpec {
       desJson.as[Total] shouldBe model
     }
   }
+
 }

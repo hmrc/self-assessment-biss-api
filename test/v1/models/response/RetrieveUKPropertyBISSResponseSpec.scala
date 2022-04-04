@@ -22,8 +22,7 @@ import v1.models.response.common.{Loss, Profit, Total}
 
 class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
 
-  val json: JsValue = Json.parse(
-    """
+  val json: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.00,
@@ -42,8 +41,7 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val desJsonFull: JsValue = Json.parse(
-    """
+  val desJsonFull: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalExpenses" : 50.00,
@@ -65,28 +63,31 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
     |}
   """.stripMargin)
 
-  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+  val jsonString: String =
+    """{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
 
   val model =
-    RetrieveUKPropertyBISSResponse (
+    RetrieveUKPropertyBISSResponse(
       Total(
         income = 100.00,
         expenses = Some(50.00),
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      Some(Profit(
-        net = Some(20.00),
-        taxable = Some(10.00)
-      )),
-      Some(Loss(
-        net = Some(10.00),
-        taxable = Some(35.00)
-      ))
+      Some(
+        Profit(
+          net = Some(20.00),
+          taxable = Some(10.00)
+        )),
+      Some(
+        Loss(
+          net = Some(10.00),
+          taxable = Some(35.00)
+        ))
     )
 
   val modelMinimal =
-    RetrieveUKPropertyBISSResponse (
+    RetrieveUKPropertyBISSResponse(
       Total(
         income = 100.00,
         expenses = Some(50.00),
@@ -96,7 +97,6 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       None,
       None
     )
-
 
   "RetrieveUKPropertyBISSResponse" should {
 
@@ -111,9 +111,9 @@ class RetrieveUKPropertyBISSResponseSpec extends UnitSpec {
       desJsonMinimal.as[RetrieveUKPropertyBISSResponse] shouldBe modelMinimal
     }
 
-
     "toJsonString" in {
       model.toJsonString shouldBe jsonString
     }
   }
+
 }

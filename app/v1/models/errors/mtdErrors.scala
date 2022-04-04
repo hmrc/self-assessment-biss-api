@@ -25,6 +25,7 @@ object MtdError {
 
   implicit def genericWrites[T <: MtdError]: Writes[T] =
     writes.contramap[T](c => c: MtdError)
+
 }
 
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
@@ -35,25 +36,22 @@ object SelfEmploymentIdFormatError extends MtdError("FORMAT_SELF_EMPLOYMENT_ID",
 
 object TypeOfBusinessFormatError extends MtdError("FORMAT_TYPE_OF_BUSINESS", "The provided type of business is invalid")
 
-object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID","The provided Business ID is invalid")
+object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
-  extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
+    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
 object RuleTaxYearRangeInvalidError
-  extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required")
+    extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required")
 
-object RuleSelfEmploymentIdError
-  extends MtdError("RULE_SELF_EMPLOYMENT_ID", "A self-employment ID must be supplied for a self-employment business")
+object RuleSelfEmploymentIdError extends MtdError("RULE_SELF_EMPLOYMENT_ID", "A self-employment ID must be supplied for a self-employment business")
 
-object RuleTypeOfBusinessError
-  extends MtdError("RULE_TYPE_OF_BUSINESS", "A type of business must be supplied")
+object RuleTypeOfBusinessError extends MtdError("RULE_TYPE_OF_BUSINESS", "A type of business must be supplied")
 
-object RuleForeignBusinessIdError
-  extends MtdError("RULE_BUSINESS_ID","A Business ID must be supplied for a foreign property business")
+object RuleForeignBusinessIdError extends MtdError("RULE_BUSINESS_ID", "A Business ID must be supplied for a foreign property business")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
@@ -67,12 +65,12 @@ object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error")
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
 
 //Authorisation Errors
-object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
+object UnauthorisedError       extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
 object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
 
 // Accept header Errors
-object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
-object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")

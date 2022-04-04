@@ -19,13 +19,14 @@ package v1.controllers.requestParsers.validators.validations
 import v1.models.errors.MtdError
 import v1.models.requestData.DesTaxYear
 
-object MtdTaxYearValidation  {
+object MtdTaxYearValidation {
 
   // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, minTaxYear: Int,  error: MtdError): List[MtdError] = {
+  def validate(taxYear: String, minTaxYear: Int, error: MtdError): List[MtdError] = {
 
     val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
 
     if (desTaxYear >= minTaxYear) NoValidationErrors else List(error)
   }
+
 }

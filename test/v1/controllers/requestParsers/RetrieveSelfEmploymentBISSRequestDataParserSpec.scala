@@ -27,9 +27,9 @@ import v1.models.requestData.{DesTaxYear, RetrieveSelfEmploymentBISSRawData, Ret
 
 class RetrieveSelfEmploymentBISSRequestDataParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2018-19"
-  private val selfEmploymentId = "XAIS12345678901"
+  private val nino                   = "AA123456B"
+  private val taxYear                = "2018-19"
+  private val selfEmploymentId       = "XAIS12345678901"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   private val inputData = RetrieveSelfEmploymentBISSRawData(nino, Some(taxYear), selfEmploymentId)
@@ -49,7 +49,8 @@ class RetrieveSelfEmploymentBISSRequestDataParserSpec extends UnitSpec {
       "valid data is provided without tax year" in new Test {
         MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
 
-        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveSelfEmploymentBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), selfEmploymentId))
+        parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(
+          RetrieveSelfEmploymentBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), selfEmploymentId))
       }
     }
 

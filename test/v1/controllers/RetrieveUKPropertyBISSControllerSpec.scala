@@ -35,39 +35,41 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveUKPropertyBISSControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveUKPropertyBISSRequestDataParser
     with MockUKPropertyBISSService
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val taxYear = Some("2018-19")
-  private val typeOfBusiness = Some("uk-property-fhl")
+  private val nino                 = "AA123456A"
+  private val taxYear              = Some("2018-19")
+  private val typeOfBusiness       = Some("uk-property-fhl")
   private val secondTypeOfBusiness = Some("uk-property-non-fhl")
-  private val correlationId = "X-123"
+  private val correlationId        = "X-123"
 
-  val response: RetrieveUKPropertyBISSResponse = RetrieveUKPropertyBISSResponse (
+  val response: RetrieveUKPropertyBISSResponse = RetrieveUKPropertyBISSResponse(
     Total(
       income = 100.00,
       expenses = Some(50.00),
       additions = Some(5.00),
       deductions = Some(60.00)
     ),
-    Some(Profit(
-      net = Some(20.00),
-      taxable = Some(10.00)
-    )),
-    Some(Loss(
-      net = Some(10.00),
-      taxable = Some(35.00)
-    ))
+    Some(
+      Profit(
+        net = Some(20.00),
+        taxable = Some(10.00)
+      )),
+    Some(
+      Loss(
+        net = Some(10.00),
+        taxable = Some(35.00)
+      ))
   )
 
-  private val rawData = RetrieveUKPropertyBISSRawData(nino, taxYear, typeOfBusiness)
-  private val rawDataTwo = RetrieveUKPropertyBISSRawData(nino, taxYear, secondTypeOfBusiness)
-  private val requestData = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`uk-property`)
+  private val rawData        = RetrieveUKPropertyBISSRawData(nino, taxYear, typeOfBusiness)
+  private val rawDataTwo     = RetrieveUKPropertyBISSRawData(nino, taxYear, secondTypeOfBusiness)
+  private val requestData    = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`uk-property`)
   private val requestDataTwo = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear("2019"), IncomeSourceType.`fhl-property-uk`)
 
   trait Test {
@@ -78,7 +80,7 @@ class RetrieveUKPropertyBISSControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestParser,
       ukPropertyBISSService = mockService,
-      cc =  cc,
+      cc = cc,
       idGenerator = mockIdGenerator
     )
 
@@ -135,7 +137,7 @@ class RetrieveUKPropertyBISSControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-            val result: Future[Result] = controller.retrieveBiss(nino, taxYear,  typeOfBusiness)(fakeGetRequest)
+            val result: Future[Result] = controller.retrieveBiss(nino, taxYear, typeOfBusiness)(fakeGetRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -186,4 +188,5 @@ class RetrieveUKPropertyBISSControllerSpec
       }
     }
   }
+
 }

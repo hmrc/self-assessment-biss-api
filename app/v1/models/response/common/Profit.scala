@@ -19,15 +19,14 @@ package v1.models.response.common
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Profit(net: Option[BigDecimal],
-                  taxable: Option[BigDecimal])
+case class Profit(net: Option[BigDecimal], taxable: Option[BigDecimal])
 
 object Profit {
 
   implicit val reads: Reads[Profit] = (
     (JsPath \ "netProfit").readNullable[BigDecimal] and
       (JsPath \ "taxableProfit").readNullable[BigDecimal]
-    )(Profit.apply _)
+  )(Profit.apply _)
 
   implicit val writes: OWrites[Profit] = Json.writes[Profit]
 }

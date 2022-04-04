@@ -35,41 +35,43 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveForeignPropertyBISSControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveForeignPropertyBISSRequestDataParser
     with MockForeignPropertyBISSService
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = Some("")
-  private val taxYear = Some("2018-19")
-  private val typeOfBusiness = Some("foreign-property-fhl-eea")
+  private val nino                 = "AA123456A"
+  private val businessId           = Some("")
+  private val taxYear              = Some("2018-19")
+  private val typeOfBusiness       = Some("foreign-property-fhl-eea")
   private val secondTypeOfBusiness = Some("foreign-property")
-  private val correlationId = "X-123"
+  private val correlationId        = "X-123"
 
-  val response: RetrieveForeignPropertyBISSResponse = RetrieveForeignPropertyBISSResponse (
+  val response: RetrieveForeignPropertyBISSResponse = RetrieveForeignPropertyBISSResponse(
     Total(
       income = 100.00,
       expenses = Some(50.00),
       additions = Some(5.00),
       deductions = Some(60.00)
     ),
-    Some(Profit(
-      net = Some(20.00),
-      taxable = Some(10.00)
-    )),
-    Some(Loss(
-      net = Some(10.00),
-      taxable = Some(35.00)
-    ))
+    Some(
+      Profit(
+        net = Some(20.00),
+        taxable = Some(10.00)
+      )),
+    Some(
+      Loss(
+        net = Some(10.00),
+        taxable = Some(35.00)
+      ))
   )
 
-  private val rawData = RetrieveForeignPropertyBISSRawData(nino, businessId, typeOfBusiness, taxYear)
-  private val rawDataTwo = RetrieveForeignPropertyBISSRawData(nino, businessId, secondTypeOfBusiness, taxYear)
-  private val requestData = RetrieveForeignPropertyBISSRequest(Nino(nino), businessId.get, IncomeSourceType.`uk-property`, DesTaxYear("2019"))
-  private val requestDataTwo = RetrieveForeignPropertyBISSRequest(Nino(nino), businessId.get, IncomeSourceType.`fhl-property-uk` ,DesTaxYear("2019"))
+  private val rawData        = RetrieveForeignPropertyBISSRawData(nino, businessId, typeOfBusiness, taxYear)
+  private val rawDataTwo     = RetrieveForeignPropertyBISSRawData(nino, businessId, secondTypeOfBusiness, taxYear)
+  private val requestData    = RetrieveForeignPropertyBISSRequest(Nino(nino), businessId.get, IncomeSourceType.`uk-property`, DesTaxYear("2019"))
+  private val requestDataTwo = RetrieveForeignPropertyBISSRequest(Nino(nino), businessId.get, IncomeSourceType.`fhl-property-uk`, DesTaxYear("2019"))
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -79,7 +81,7 @@ class RetrieveForeignPropertyBISSControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestParser,
       foreignPropertyBISSService = mockService,
-      cc =  cc,
+      cc = cc,
       idGenerator = mockIdGenerator
     )
 
@@ -136,7 +138,7 @@ class RetrieveForeignPropertyBISSControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-            val result: Future[Result] = controller.retrieveBiss(nino, businessId, taxYear,  typeOfBusiness)(fakeGetRequest)
+            val result: Future[Result] = controller.retrieveBiss(nino, businessId, taxYear, typeOfBusiness)(fakeGetRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -198,4 +200,5 @@ class RetrieveForeignPropertyBISSControllerSpec
       }
     }
   }
+
 }

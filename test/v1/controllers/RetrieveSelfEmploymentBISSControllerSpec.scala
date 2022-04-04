@@ -32,17 +32,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentBISSControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveSelfEmploymentBISSRequestDataParser
     with MockSelfEmploymentBISSService
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val taxYear = Some("2018-19")
+  private val nino             = "AA123456A"
+  private val taxYear          = Some("2018-19")
   private val selfEmploymentId = "123456789"
-  private val correlationId = "X-123"
+  private val correlationId    = "X-123"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -61,7 +61,7 @@ class RetrieveSelfEmploymentBISSControllerSpec
     MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
-  private val rawData = RetrieveSelfEmploymentBISSRawData(nino, taxYear, selfEmploymentId)
+  private val rawData     = RetrieveSelfEmploymentBISSRawData(nino, taxYear, selfEmploymentId)
   private val requestData = RetrieveSelfEmploymentBISSRequest(Nino(nino), DesTaxYear("2019"), selfEmploymentId)
 
   "retrieveBiss" should {
@@ -145,4 +145,5 @@ class RetrieveSelfEmploymentBISSControllerSpec
       }
     }
   }
+
 }

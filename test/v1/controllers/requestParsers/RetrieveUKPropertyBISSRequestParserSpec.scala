@@ -28,39 +28,41 @@ import v1.models.requestData.{DesTaxYear, RetrieveUKPropertyBISSRawData, Retriev
 
 class RetrieveUKPropertyBISSRequestParserSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2018-19"
-  private val typeOfBusinessNonFhl = Some("uk-property-non-fhl")
-  private val typeOfBusinessFhl = Some("uk-property-fhl")
+  private val nino                   = "AA123456B"
+  private val taxYear                = "2018-19"
+  private val typeOfBusinessNonFhl   = Some("uk-property-non-fhl")
+  private val typeOfBusinessFhl      = Some("uk-property-fhl")
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  private val inputData = RetrieveUKPropertyBISSRawData(nino, Some(taxYear), typeOfBusinessNonFhl)
+  private val inputData    = RetrieveUKPropertyBISSRawData(nino, Some(taxYear), typeOfBusinessNonFhl)
   private val inputDataTwo = RetrieveUKPropertyBISSRawData(nino, Some(taxYear), typeOfBusinessFhl)
 
   trait Test extends MockRetrieveUKPropertyBISSValidator {
     lazy val parser = new RetrieveUKPropertyBISSRequestDataParser(mockValidator)
   }
 
-
   "parse" should {
     "return a request object" when {
       "valid non fhl data is provided" in new Test {
         MockValidator.validate(inputData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), IncomeSourceType.`uk-property`))
+        parser.parseRequest(inputData) shouldBe Right(
+          RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), IncomeSourceType.`uk-property`))
       }
 
       "valid fhl data is provided" in new Test {
         MockValidator.validate(inputDataTwo).returns(Nil)
 
-        parser.parseRequest(inputDataTwo) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), IncomeSourceType.`fhl-property-uk`))
+        parser.parseRequest(inputDataTwo) shouldBe Right(
+          RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), IncomeSourceType.`fhl-property-uk`))
       }
     }
 
     "valid data is provided without tax year" in new Test {
       MockValidator.validate(inputData.copy(taxYear = None)).returns(Nil)
 
-      parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(RetrieveUKPropertyBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), IncomeSourceType.`uk-property`))
+      parser.parseRequest(inputData.copy(taxYear = None)) shouldBe Right(
+        RetrieveUKPropertyBISSRequest(Nino(nino), DateUtils.getDesTaxYear(LocalDate.now()), IncomeSourceType.`uk-property`))
     }
     "return an ErrorWrapper" when {
       "a single error is found" in new Test {
@@ -76,4 +78,5 @@ class RetrieveUKPropertyBISSRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

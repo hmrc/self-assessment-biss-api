@@ -19,35 +19,29 @@ package v2.models.response.common
 import support.UnitSpec
 import play.api.libs.json.Json
 
-
 class LossSpec extends UnitSpec {
 
-  val json = Json.parse(
-    """
+  val json = Json.parse("""
       |{
       |        "net": 0.00,
       |        "taxable": 35.00
       |}
       |""".stripMargin)
 
-  val desJson = Json.parse(
-    """
+  val desJson = Json.parse("""
       |{
       |    "netLoss": 0,
       |    "taxableLoss": 35.00
       |}
       |""".stripMargin)
 
-
   val model =
     Loss(
       Some(0),
       Some(35.00)
-  )
-
+    )
 
   "Loss" should {
-
 
     "write correctly to json" in {
       Json.toJson(model) shouldBe json

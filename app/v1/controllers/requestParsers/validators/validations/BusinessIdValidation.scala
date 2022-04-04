@@ -23,9 +23,9 @@ object BusinessIdValidation {
   private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
   def validate(businessId: Option[String]): List[MtdError] = businessId match {
-    case Some(i) if(i.matches(regex)) =>  NoValidationErrors
-    case Some(_) =>  List(BusinessIdFormatError)
-    case None => List(RuleForeignBusinessIdError)
+    case Some(i) if (i.matches(regex)) => NoValidationErrors
+    case Some(_)                       => List(BusinessIdFormatError)
+    case None                          => List(RuleForeignBusinessIdError)
   }
 
 }

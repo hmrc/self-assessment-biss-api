@@ -33,16 +33,18 @@ class BaseDesConnectorSpec extends ConnectorSpec {
 
   val outcome = Right(ResponseWrapper(correlationId, Result(2)))
 
-  val url = "some/url?param=value"
+  val url         = "some/url?param=value"
   val absoluteUrl = s"$baseUrl/$url"
 
   implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: BaseDesConnector = new BaseDesConnector {
-      val http = mockHttpClient
+      val http      = mockHttpClient
       val appConfig = mockAppConfig
     }
+
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
@@ -63,7 +65,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
   "get" must {
     "get with the requred des headers and return the result" in new Test {
       MockedHttpClient
-        .get(absoluteUrl,  dummyDesHeaderCarrierConfig, desRequestHeaders)
+        .get(absoluteUrl, dummyDesHeaderCarrierConfig, desRequestHeaders)
         .returns(Future.successful(outcome))
 
       await(connector.get(DesUri[Result](url))) shouldBe outcome
@@ -79,4 +81,5 @@ class BaseDesConnectorSpec extends ConnectorSpec {
       await(connector.get(DesUri[Result](url), Seq("param" -> "value"))) shouldBe outcome
     }
   }
+
 }

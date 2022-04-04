@@ -27,9 +27,11 @@ trait MockRetrieveSelfEmploymentBISSRequestDataParser extends MockFactory {
   val mockRequestParser: RetrieveSelfEmploymentBISSRequestDataParser = mock[RetrieveSelfEmploymentBISSRequestDataParser]
 
   object MockRetrieveSelfEmploymentBISSRequestDataParser {
+
     def parse(data: RetrieveSelfEmploymentBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveSelfEmploymentBISSRequest]] = {
       (mockRequestParser.parseRequest(_: RetrieveSelfEmploymentBISSRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

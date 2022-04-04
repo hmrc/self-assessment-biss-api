@@ -16,9 +16,9 @@
 
 package v2.fixtures
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import v2.models.response.RetrieveBISSResponse
-import v2.models.response.common.{ Loss, Profit, Total }
+import v2.models.response.common.{Loss, Profit, Total}
 
 trait RetrieveBISSFixture {
 
@@ -98,4 +98,5 @@ trait RetrieveBISSFixture {
       | "totalIncome": 100.00
       |}
     """.stripMargin)
+
 }

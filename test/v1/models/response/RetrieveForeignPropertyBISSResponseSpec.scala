@@ -41,4 +41,5 @@ class RetrieveForeignPropertyBISSResponseSpec extends UnitSpec {
     }
 
   }
+
 }

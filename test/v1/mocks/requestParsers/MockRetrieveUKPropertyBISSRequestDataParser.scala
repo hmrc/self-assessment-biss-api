@@ -27,9 +27,11 @@ trait MockRetrieveUKPropertyBISSRequestDataParser extends MockFactory {
   val mockRequestParser: RetrieveUKPropertyBISSRequestDataParser = mock[RetrieveUKPropertyBISSRequestDataParser]
 
   object MockRetrieveUKPropertyBISSRequestDataParser {
+
     def parse(data: RetrieveUKPropertyBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveUKPropertyBISSRequest]] = {
       (mockRequestParser.parseRequest(_: RetrieveUKPropertyBISSRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

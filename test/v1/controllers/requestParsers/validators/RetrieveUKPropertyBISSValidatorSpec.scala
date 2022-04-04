@@ -22,16 +22,15 @@ import v1.models.requestData.RetrieveUKPropertyBISSRawData
 
 class RetrieveUKPropertyBISSValidatorSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2018-19"
-  private val typeOfBusiness = Some("uk-property-fhl")
-  private val invalidNino = "~~~~~~~~~"
-  private val invalidTaxYear = "2018-20"
+  private val nino                  = "AA123456B"
+  private val taxYear               = "2018-19"
+  private val typeOfBusiness        = Some("uk-property-fhl")
+  private val invalidNino           = "~~~~~~~~~"
+  private val invalidTaxYear        = "2018-20"
   private val invalidTypeOfBusiness = Some("pigs-with-little-shoes")
   private val missingTypeOfBusiness = None
 
   val validator = new RetrieveUKPropertyBISSValidator()
-
 
   "running the validator" should {
     "return no errors" when {
@@ -65,4 +64,5 @@ class RetrieveUKPropertyBISSValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

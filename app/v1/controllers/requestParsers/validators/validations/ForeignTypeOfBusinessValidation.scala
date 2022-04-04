@@ -21,12 +21,13 @@ import v1.models.errors.{MtdError, RuleTypeOfBusinessError, TypeOfBusinessFormat
 object ForeignTypeOfBusinessValidation {
 
   val foreignPropertyFhlEea = "foreign-property-fhl-eea"
-  val foreignProperty = "foreign-property"
+  val foreignProperty       = "foreign-property"
 
   def validate(typeOfBusiness: Option[String]): List[MtdError] =
     typeOfBusiness match {
       case Some(i) if (i == foreignPropertyFhlEea || i == foreignProperty) => NoValidationErrors
-      case Some(_) => List(TypeOfBusinessFormatError)
-      case None => List(RuleTypeOfBusinessError)
+      case Some(_)                                                         => List(TypeOfBusinessFormatError)
+      case None                                                            => List(RuleTypeOfBusinessError)
     }
+
 }

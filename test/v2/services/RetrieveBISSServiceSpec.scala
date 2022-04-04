@@ -33,7 +33,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
   private val requestData = RetrieveBISSRequest(Nino("AA123456A"), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd("2019-20"), "XAIS12345678910")
   private val response    = RetrieveBISSResponse(Total(income = 100.00, None, None, None, None), None, None)
 
-  private val correlationIdIn = "correlation-id-in"
+  private val correlationIdIn  = "correlation-id-in"
   private val correlationIdOut = "correlation-id-out"
 
   implicit val loggingContext: EndpointLogContext = EndpointLogContext("controller", "endpoint")
@@ -81,4 +81,5 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

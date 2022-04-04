@@ -25,15 +25,18 @@ import v1.controllers.requestParsers.validators.RetrieveUKPropertyBISSValidator
 import v1.models.des.IncomeSourceType
 import v1.models.requestData.{RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest}
 
-class RetrieveUKPropertyBISSRequestDataParser @Inject()(val validator: RetrieveUKPropertyBISSValidator)
-  extends RequestParser[RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest] {
+class RetrieveUKPropertyBISSRequestDataParser @Inject() (val validator: RetrieveUKPropertyBISSValidator)
+    extends RequestParser[RetrieveUKPropertyBISSRawData, RetrieveUKPropertyBISSRequest] {
 
   override protected def requestFor(data: RetrieveUKPropertyBISSRawData): RetrieveUKPropertyBISSRequest = {
-    RetrieveUKPropertyBISSRequest(Nino(data.nino),
+    RetrieveUKPropertyBISSRequest(
+      Nino(data.nino),
       data.taxYear.fold(DateUtils.getDesTaxYear(LocalDate.now()))(DateUtils.getDesTaxYear),
       (data.typeOfBusiness: @unchecked) match {
-        case Some("uk-property-fhl") => IncomeSourceType.`fhl-property-uk`
+        case Some("uk-property-fhl")     => IncomeSourceType.`fhl-property-uk`
         case Some("uk-property-non-fhl") => IncomeSourceType.`uk-property`
-      })
+      }
+    )
   }
+
 }

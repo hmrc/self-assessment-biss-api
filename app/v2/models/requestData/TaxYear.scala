@@ -16,10 +16,10 @@
 
 package v2.models.requestData
 
-/**
-  * Represents a tax year
+/** Represents a tax year
   *
-  * @param value the tax year string (where 2018 represents 2017-18)
+  * @param value
+  *   the tax year string (where 2018 represents 2017-18)
   */
 class TaxYear(private val value: String) extends AnyVal {
   def downstreamValue: String = value
@@ -27,9 +27,10 @@ class TaxYear(private val value: String) extends AnyVal {
 
 object TaxYear {
 
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
+  /** @param taxYear
+    *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear =
     new TaxYear(taxYear.take(2) + taxYear.drop(5))
+
 }

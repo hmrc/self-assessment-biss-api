@@ -25,16 +25,19 @@ import v1.controllers.requestParsers.validators.RetrieveForeignPropertyBISSValid
 import v1.models.des.IncomeSourceType
 import v1.models.requestData.{RetrieveForeignPropertyBISSRawData, RetrieveForeignPropertyBISSRequest}
 
-class RetrieveForeignPropertyBISSRequestDataParser @Inject()(val validator: RetrieveForeignPropertyBISSValidator)
-extends RequestParser[RetrieveForeignPropertyBISSRawData, RetrieveForeignPropertyBISSRequest]{
+class RetrieveForeignPropertyBISSRequestDataParser @Inject() (val validator: RetrieveForeignPropertyBISSValidator)
+    extends RequestParser[RetrieveForeignPropertyBISSRawData, RetrieveForeignPropertyBISSRequest] {
 
   override protected def requestFor(data: RetrieveForeignPropertyBISSRawData): RetrieveForeignPropertyBISSRequest = {
-   RetrieveForeignPropertyBISSRequest(Nino(data.nino),
-     data.businessId.get,
-     (data.typeOfBusiness: @unchecked) match {
-       case Some("foreign-property") => IncomeSourceType.`foreign-property`
-       case Some("foreign-property-fhl-eea") =>  IncomeSourceType.`fhl-property-eea`
-     },
-     data.taxYear.fold(DateUtils.getDesTaxYear(LocalDate.now()))(DateUtils.getDesTaxYear))
+    RetrieveForeignPropertyBISSRequest(
+      Nino(data.nino),
+      data.businessId.get,
+      (data.typeOfBusiness: @unchecked) match {
+        case Some("foreign-property")         => IncomeSourceType.`foreign-property`
+        case Some("foreign-property-fhl-eea") => IncomeSourceType.`fhl-property-eea`
+      },
+      data.taxYear.fold(DateUtils.getDesTaxYear(LocalDate.now()))(DateUtils.getDesTaxYear)
+    )
   }
+
 }

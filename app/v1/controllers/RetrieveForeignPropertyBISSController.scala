@@ -31,13 +31,13 @@ import v1.services.{EnrolmentsAuthService, ForeignPropertyBISSService, MtdIdLook
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveForeignPropertyBISSController @Inject()(val authService: EnrolmentsAuthService,
-                                                      val lookupService: MtdIdLookupService,
-                                                      requestParser: RetrieveForeignPropertyBISSRequestDataParser,
-                                                      foreignPropertyBISSService: ForeignPropertyBISSService,
-                                                      cc: ControllerComponents,
-                                                      val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
+class RetrieveForeignPropertyBISSController @Inject() (val authService: EnrolmentsAuthService,
+                                                       val lookupService: MtdIdLookupService,
+                                                       requestParser: RetrieveForeignPropertyBISSRequestDataParser,
+                                                       foreignPropertyBISSService: ForeignPropertyBISSService,
+                                                       cc: ControllerComponents,
+                                                       val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
@@ -49,17 +49,16 @@ class RetrieveForeignPropertyBISSController @Inject()(val authService: Enrolment
 
   def retrieveBiss(nino: String, businessId: Option[String], taxYear: Option[String], typeOfBusiness: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
 
-      val rawData = RetrieveForeignPropertyBISSRawData(nino, businessId,typeOfBusiness,taxYear)
+      val rawData = RetrieveForeignPropertyBISSRawData(nino, businessId, typeOfBusiness, taxYear)
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          response <- EitherT(foreignPropertyBISSService.retrieveBiss(parsedRequest))
+          response      <- EitherT(foreignPropertyBISSService.retrieveBiss(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -82,11 +81,12 @@ class RetrieveForeignPropertyBISSController @Inject()(val authService: Enrolment
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearNotSupportedError
-           | RuleTaxYearRangeInvalidError | RuleForeignBusinessIdError | RuleTypeOfBusinessError =>
+      case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearNotSupportedError |
+          RuleTaxYearRangeInvalidError | RuleForeignBusinessIdError | RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
+
 }

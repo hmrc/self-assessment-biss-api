@@ -16,16 +16,16 @@
 
 package v2.controllers
 
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.MockIdGenerator
 import v2.mocks.requestParsers.MockRetrieveBISSRequestDataParser
-import v2.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBISSService }
-import v2.models.domain.{ Nino, TypeOfBusiness }
+import v2.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveBISSService}
+import v2.models.domain.{Nino, TypeOfBusiness}
 import v2.models.errors._
 import v2.models.outcomes.ResponseWrapper
-import v2.models.requestData.{ RetrieveBISSRawData, RetrieveBISSRequest, TaxYear }
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest, TaxYear}
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.Total
 
@@ -48,7 +48,8 @@ class RetrieveBISSControllerSpec
 
   // WLOG
   val response: RetrieveBISSResponse = RetrieveBISSResponse(Total(income = 100.00, None, None, None, None), None, None)
-  val responseJson: JsValue          = Json.parse("""{
+
+  val responseJson: JsValue = Json.parse("""{
                                                     |  "total": {
                                                     |    "income": 100.00
                                                     |  }
@@ -150,4 +151,5 @@ class RetrieveBISSControllerSpec
       }
     }
   }
+
 }

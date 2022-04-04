@@ -36,5 +36,7 @@ trait MockForeignPropertyBISSConnector extends MockFactory {
         .retrieveBiss(_: RetrieveForeignPropertyBISSRequest)(_: ExecutionContext, _: HeaderCarrier, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
+
 }

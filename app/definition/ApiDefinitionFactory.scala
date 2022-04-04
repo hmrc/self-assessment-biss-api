@@ -18,12 +18,12 @@ package definition
 
 import config.AppConfig
 import definition.Versions._
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
   private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
@@ -70,4 +70,5 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         APIStatus.ALPHA
       }
   }
+
 }

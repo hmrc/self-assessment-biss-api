@@ -29,4 +29,3 @@ object IncomeSourceType {
 
   case object `fhl-property-eea` extends IncomeSourceType
 }
-

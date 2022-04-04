@@ -22,7 +22,8 @@ import support.UnitSpec
 
 class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
 
-  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+  val jsonString: String =
+    """{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"accountingAdjustments":-30.00,"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
 
   "RetrieveSelfEmploymentBISSResponse" should {
 
@@ -42,4 +43,5 @@ class RetrieveSelfEmploymentBISSResponseSpec extends UnitSpec {
       responseObj.toJsonString shouldBe jsonString
     }
   }
+
 }

@@ -31,13 +31,13 @@ import v1.services.{EnrolmentsAuthService, MtdIdLookupService, SelfEmploymentBIS
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveSelfEmploymentBISSController @Inject()(val authService: EnrolmentsAuthService,
-                                                     val lookupService: MtdIdLookupService,
-                                                     requestParser: RetrieveSelfEmploymentBISSRequestDataParser,
-                                                     selfEmploymentBISSService: SelfEmploymentBISSService,
-                                                     cc: ControllerComponents,
-                                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
+class RetrieveSelfEmploymentBISSController @Inject() (val authService: EnrolmentsAuthService,
+                                                      val lookupService: MtdIdLookupService,
+                                                      requestParser: RetrieveSelfEmploymentBISSRequestDataParser,
+                                                      selfEmploymentBISSService: SelfEmploymentBISSService,
+                                                      cc: ControllerComponents,
+                                                      val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
@@ -49,7 +49,6 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
 
   def retrieveBiss(nino: String, selfEmploymentId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
@@ -84,10 +83,12 @@ class RetrieveSelfEmploymentBISSController @Inject()(val authService: Enrolments
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError | RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | SelfEmploymentIdFormatError | RuleTaxYearRangeInvalidError |
+          RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
+
 }

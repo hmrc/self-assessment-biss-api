@@ -21,7 +21,7 @@ import v1.models.errors.SelfEmploymentIdFormatError
 
 class SelfEmploymentIdValidationSpec extends UnitSpec {
 
-  private val selfEmploymentId = "XAIS12345678901"
+  private val selfEmploymentId        = "XAIS12345678901"
   private val invalidSelfEmploymentId = "Actual Beans"
 
   "validate" should {

@@ -17,19 +17,25 @@
 package v2.controllers.requestParsers.validators
 
 import support.UnitSpec
-import v2.models.errors.{BusinessIdFormatError, NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError, TypeOfBusinessFormatError}
+import v2.models.errors.{
+  BusinessIdFormatError,
+  NinoFormatError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  TaxYearFormatError,
+  TypeOfBusinessFormatError
+}
 import v2.models.requestData.RetrieveBISSRawData
 
 class RetrieveBISSValidatorSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2021-22"
+  private val nino           = "AA123456B"
+  private val taxYear        = "2021-22"
   private val typeOfBusiness = "uk-property-fhl"
-  private val invalidNino = "AA1234B"
-  private val businessId = "XAIS12345678910"
+  private val invalidNino    = "AA1234B"
+  private val businessId     = "XAIS12345678910"
 
   val validator = new RetrieveBISSValidator()
-
 
   "running the validator" should {
     "return no errors" when {
@@ -69,4 +75,5 @@ class RetrieveBISSValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

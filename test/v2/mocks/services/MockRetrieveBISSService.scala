@@ -28,7 +28,7 @@ import v2.services.RetrieveBISSService
 
 import scala.concurrent.Future
 
-trait MockRetrieveBISSService  extends MockFactory {
+trait MockRetrieveBISSService extends MockFactory {
 
   val mockService: RetrieveBISSService = mock[RetrieveBISSService]
 
@@ -39,6 +39,7 @@ trait MockRetrieveBISSService  extends MockFactory {
         .retrieveBiss(_: RetrieveBISSRequest, _: String)(_: HeaderCarrier, _: EndpointLogContext))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

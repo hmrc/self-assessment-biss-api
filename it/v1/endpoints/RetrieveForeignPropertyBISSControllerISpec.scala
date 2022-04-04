@@ -32,14 +32,13 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
 
-
   private trait Test {
 
-    val nino = "AA123456A"
-    val taxYear: Option[String] = Some("2019-20")
+    val nino                           = "AA123456A"
+    val taxYear: Option[String]        = Some("2019-20")
     val typeOfBusiness: Option[String] = Some("foreign-property")
-    val desTaxYear: DesTaxYear = DesTaxYear("2020")
-    val businessId= "XAIS12345678910"
+    val desTaxYear: DesTaxYear         = DesTaxYear("2020")
+    val businessId                     = "XAIS12345678910"
 
     def uri: String = s"/$nino/foreign-property"
 
@@ -50,17 +49,17 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
       val queryParams: Seq[(String, String)] = (taxYear, typeOfBusiness, businessId) match {
         case (Some(x), Some(y), z) => Seq("taxYear" -> x, "typeOfBusiness" -> y, "businessId" -> z)
-        case (None, Some(y), z) => Seq("typeOfBusiness" -> y, "businessId" -> z)
-        case (Some(x), None, z) => Seq("taxYear" -> x, "businessId" -> z)
-        case (None, None, z) => Seq("businessId" -> z)
+        case (None, Some(y), z)    => Seq("typeOfBusiness" -> y, "businessId" -> z)
+        case (Some(x), None, z)    => Seq("taxYear" -> x, "businessId" -> z)
+        case (None, None, z)       => Seq("businessId" -> z)
       }
-
 
       setupStubs()
       buildRequest(uri)
         .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the retrieve foreign property BISS endpoint" should {
@@ -73,7 +72,7 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomesourceid" -> businessId),  OK, desResponse)
+          DesStub.onSuccess(DesStub.GET, desUrl, Map("incomesourceid" -> businessId), OK, desResponse)
         }
         val response: WSResponse = await(request.get)
 
@@ -85,7 +84,7 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made without a tax year" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -103,7 +102,7 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made and des returns only mandatory data" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -121,12 +120,16 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      def validationErrorTest(requestNino: String, requestTaxYear: Option[String], requestBusiness: Option[String], expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String,
+                              requestTaxYear: Option[String],
+                              requestBusiness: Option[String],
+                              expectedStatus: Int,
+                              expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String            = requestNino
-          override val taxYear: Option[String] = requestTaxYear
-          override val typeOfBusiness: Option[String]  = requestBusiness
+          override val nino: String                   = requestNino
+          override val taxYear: Option[String]        = requestTaxYear
+          override val typeOfBusiness: Option[String] = requestBusiness
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -191,4 +194,5 @@ class RetrieveForeignPropertyBISSControllerISpec extends IntegrationBaseSpec {
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

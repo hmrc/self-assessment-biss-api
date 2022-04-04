@@ -19,10 +19,7 @@ package v1.models.response.common
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Total(income: BigDecimal,
-                 expenses: Option[BigDecimal],
-                 additions: Option[BigDecimal],
-                 deductions: Option[BigDecimal])
+case class Total(income: BigDecimal, expenses: Option[BigDecimal], additions: Option[BigDecimal], deductions: Option[BigDecimal])
 
 object Total {
 
@@ -31,7 +28,7 @@ object Total {
       (JsPath \ "totalExpenses").readNullable[BigDecimal] and
       (JsPath \ "totalAdditions").readNullable[BigDecimal] and
       (JsPath \ "totalDeductions").readNullable[BigDecimal]
-    )(Total.apply _)
+  )(Total.apply _)
 
   implicit val writes: OWrites[Total] = Json.writes[Total]
 }

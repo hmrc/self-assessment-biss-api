@@ -31,13 +31,13 @@ import scala.concurrent.Future
 
 class UKPropertyBISSServiceSpec extends ServiceSpec {
 
-  private val nino = "AA123456A"
+  private val nino    = "AA123456A"
   private val taxYear = "2019"
 
   private val requestData = RetrieveUKPropertyBISSRequest(Nino(nino), DesTaxYear(taxYear), IncomeSourceType.`uk-property`)
 
   trait Test extends MockUKPropertyBISSConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrieveSelfEmploymentPropertyBISS")
 
     val service = new UKPropertyBISSService(mockConnector)
@@ -50,20 +50,23 @@ class UKPropertyBISSServiceSpec extends ServiceSpec {
       additions = Some(5.00),
       deductions = Some(60.00)
     ),
-    Some(Profit(
-      net = Some(20.00),
-      taxable = Some(10.00)
-    )),
-    Some(Loss(
-      net = Some(10.00),
-      taxable = Some(35.00)
-    ))
+    Some(
+      Profit(
+        net = Some(20.00),
+        taxable = Some(10.00)
+      )),
+    Some(
+      Loss(
+        net = Some(10.00),
+        taxable = Some(35.00)
+      ))
   )
 
   "retrieveBiss" should {
     "return a valid response" when {
       "a valid request is supplied" in new Test {
-        MockUKPropertyBISSConnector.retrieveBiss(requestData)
+        MockUKPropertyBISSConnector
+          .retrieveBiss(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
@@ -75,7 +78,8 @@ class UKPropertyBISSServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockUKPropertyBISSConnector.retrieveBiss(requestData)
+          MockUKPropertyBISSConnector
+            .retrieveBiss(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveBiss(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
@@ -94,4 +98,5 @@ class UKPropertyBISSServiceSpec extends ServiceSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

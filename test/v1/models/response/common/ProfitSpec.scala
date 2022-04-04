@@ -21,16 +21,14 @@ import support.UnitSpec
 
 class ProfitSpec extends UnitSpec {
 
-  val json: JsValue = Json.parse(
-    """
+  val json: JsValue = Json.parse("""
       |{
       | "net": 100.00,
       | "taxable" : 50.00
       |}
     """.stripMargin)
 
-  val desJson: JsValue = Json.parse(
-    """
+  val desJson: JsValue = Json.parse("""
       |{
       | "netProfit": 100.00,
       | "taxableProfit" : 50.00
@@ -53,4 +51,5 @@ class ProfitSpec extends UnitSpec {
       desJson.validate[Profit] shouldBe JsSuccess(model)
     }
   }
+
 }

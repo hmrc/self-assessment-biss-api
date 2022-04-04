@@ -28,19 +28,21 @@ case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[S
 
   def auditErrors: Seq[AuditError] =
     allErrors.map(error => AuditError(error.code))
+
 }
 
 object ErrorWrapper {
+
   implicit val writes: Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
 
     val json = Json.obj(
-      "code" -> errorResponse.error.code,
+      "code"    -> errorResponse.error.code,
       "message" -> errorResponse.error.message
     )
 
     errorResponse.errors match {
       case Some(errors) if errors.nonEmpty => json + ("errors" -> Json.toJson(errors))
-      case _ => json
+      case _                               => json
     }
 
   }

@@ -36,6 +36,7 @@ trait MockUKPropertyBISSConnector extends MockFactory {
         .retrieveBiss(_: RetrieveUKPropertyBISSRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

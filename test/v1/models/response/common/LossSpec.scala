@@ -21,16 +21,14 @@ import support.UnitSpec
 
 class LossSpec extends UnitSpec {
 
-  val json: JsValue = Json.parse(
-    """
+  val json: JsValue = Json.parse("""
       |{
       | "net": 100.00,
       | "taxable" : 50.00
       |}
     """.stripMargin)
 
-  val desJson: JsValue = Json.parse(
-    """
+  val desJson: JsValue = Json.parse("""
       |{
       | "netLoss": 100.00,
       | "taxableLoss" : 50.00
@@ -53,4 +51,5 @@ class LossSpec extends UnitSpec {
       desJson.validate[Loss] shouldBe JsSuccess(model)
     }
   }
+
 }

@@ -22,30 +22,28 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.models.response.common.{Loss, Profit, Total}
 
-case class RetrieveUKPropertyBISSResponse(total: Total,
-                                          profit: Option[Profit],
-                                          loss: Option[Loss]) {
+case class RetrieveUKPropertyBISSResponse(total: Total, profit: Option[Profit], loss: Option[Loss]) {
 
   def toJsonString: String = {
     implicit val formats: Formats = DefaultFormats ++ Seq(BigDecimalSerializer)
     Serialization.write(this)
   }
+
 }
 
 object RetrieveUKPropertyBISSResponse {
 
   implicit val reads: Reads[RetrieveUKPropertyBISSResponse] = (
     JsPath.read[Total] and
-      JsPath.readNullable[Profit].map{
+      JsPath.readNullable[Profit].map {
         case Some(Profit(None, None)) => None
-        case obj => obj
+        case obj                      => obj
       } and
-      JsPath.readNullable[Loss].map{
+      JsPath.readNullable[Loss].map {
         case Some(Loss(None, None)) => None
-        case obj => obj
+        case obj                    => obj
       }
-    )(RetrieveUKPropertyBISSResponse.apply _)
+  )(RetrieveUKPropertyBISSResponse.apply _)
 
   implicit val writes: OWrites[RetrieveUKPropertyBISSResponse] = Json.writes[RetrieveUKPropertyBISSResponse]
 }
-

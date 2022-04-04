@@ -29,8 +29,10 @@ class BaseControllerSpec extends UnitSpec {
     EndpointLogContext(controllerName = "BaseController", endpointName = "beans")
 
   val result: Result = Result(ResponseHeader(200), HttpEntity.NoEntity)
-  val correlationId = "X-123"
-  val baseHeaders: Map[String, String] = Map("X-CorrelationId" -> correlationId, "X-Content-Type-Options" -> "nosniff", "Content-Type" -> "application/json")
+  val correlationId  = "X-123"
+
+  val baseHeaders: Map[String, String] =
+    Map("X-CorrelationId" -> correlationId, "X-Content-Type-Options" -> "nosniff", "Content-Type" -> "application/json")
 
   "BaseController" when {
     "withApiHeaders is called" should {

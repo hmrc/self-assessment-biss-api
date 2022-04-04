@@ -28,17 +28,19 @@ import v1.services.UKPropertyBISSService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUKPropertyBISSService  extends MockFactory {
+trait MockUKPropertyBISSService extends MockFactory {
 
   val mockService: UKPropertyBISSService = mock[UKPropertyBISSService]
 
   object MockUKPropertyBISSService {
 
-    def retrieveBiss(requestData: RetrieveUKPropertyBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]]] = {
+    def retrieveBiss(
+        requestData: RetrieveUKPropertyBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]]] = {
       (mockService
         .retrieveBiss(_: RetrieveUKPropertyBISSRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
 
 }

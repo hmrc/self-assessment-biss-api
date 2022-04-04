@@ -28,8 +28,8 @@ class BaseControllerSpec extends UnitSpec {
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "BaseController", endpointName = "beans")
 
-  val result: Result = Result(ResponseHeader(200), HttpEntity.NoEntity)
-  val correlationId = "X-123"
+  val result: Result                   = Result(ResponseHeader(200), HttpEntity.NoEntity)
+  val correlationId                    = "X-123"
   val baseHeaders: Map[String, String] = Map("X-CorrelationId" -> correlationId, "X-Content-Type-Options" -> "nosniff")
 
   "BaseController" when {

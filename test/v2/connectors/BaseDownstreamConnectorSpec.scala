@@ -16,7 +16,6 @@
 
 package v2.connectors
 
-
 import config.AppConfig
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
@@ -44,6 +43,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val http: HttpClient     = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
+
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
@@ -58,6 +58,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val http: HttpClient     = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
+
     MockedAppConfig.ifsBaseUrl returns baseUrl
     MockedAppConfig.ifsToken returns "ifs-token"
     MockedAppConfig.ifsEnvironment returns "ifs-environment"
@@ -73,7 +74,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
-          .post(absoluteUrl,
+          .post(
+            absoluteUrl,
             config = dummyDesHeaderCarrierConfig,
             body,
             requiredHeaders = requiredDesHeadersPost,
@@ -89,7 +91,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 
         MockHttpClient
-          .get(absoluteUrl,
+          .get(
+            absoluteUrl,
             config = dummyDesHeaderCarrierConfig,
             parameters = qps,
             requiredHeaders = requiredDesHeaders,
@@ -105,7 +108,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 
         MockHttpClient
-          .delete(absoluteUrl,
+          .delete(
+            absoluteUrl,
             config = dummyDesHeaderCarrierConfig,
             requiredHeaders = requiredDesHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
@@ -121,7 +125,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
-          .put(absoluteUrl,
+          .put(
+            absoluteUrl,
             config = dummyDesHeaderCarrierConfig,
             body,
             requiredHeaders = requiredDesHeadersPut,
@@ -164,7 +169,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
-          .post(absoluteUrl,
+          .post(
+            absoluteUrl,
             config = dummyIfsHeaderCarrierConfig,
             body,
             requiredHeaders = requiredIfsHeadersPost,
@@ -180,7 +186,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 
         MockHttpClient
-          .get(absoluteUrl,
+          .get(
+            absoluteUrl,
             config = dummyIfsHeaderCarrierConfig,
             parameters = qps,
             requiredHeaders = requiredIfsHeaders,
@@ -196,7 +203,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
 
         MockHttpClient
-          .delete(absoluteUrl,
+          .delete(
+            absoluteUrl,
             config = dummyIfsHeaderCarrierConfig,
             requiredHeaders = requiredIfsHeaders,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
@@ -212,7 +220,8 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
         val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
-          .put(absoluteUrl,
+          .put(
+            absoluteUrl,
             config = dummyIfsHeaderCarrierConfig,
             body,
             requiredHeaders = requiredIfsHeadersPut,
@@ -247,4 +256,5 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

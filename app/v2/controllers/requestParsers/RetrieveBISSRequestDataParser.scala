@@ -21,10 +21,10 @@ import v2.controllers.requestParsers.validators.RetrieveBISSValidator
 import v2.models.domain.{Nino, TypeOfBusiness}
 import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest, TaxYear}
 
-class RetrieveBISSRequestDataParser @Inject()(val validator: RetrieveBISSValidator)
-  extends RequestParser[RetrieveBISSRawData, RetrieveBISSRequest] {
+class RetrieveBISSRequestDataParser @Inject() (val validator: RetrieveBISSValidator) extends RequestParser[RetrieveBISSRawData, RetrieveBISSRequest] {
 
   override protected def requestFor(data: RetrieveBISSRawData): RetrieveBISSRequest = {
     RetrieveBISSRequest(Nino(data.nino), TypeOfBusiness.parser(data.typeOfBusiness), TaxYear.fromMtd(data.taxYear), data.businessId)
   }
+
 }

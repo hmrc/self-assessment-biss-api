@@ -25,16 +25,17 @@ class RetrieveBISSValidator extends Validator[RetrieveBISSRawData] with FixedCon
 
   private val validationSet = List(parameterFormatValidation)
 
-  private def parameterFormatValidation: RetrieveBISSRawData => List[List[MtdError]] = (data: RetrieveBISSRawData) => List(
-    NinoValidation.validate(data.nino),
-    TypeOfBusinessValidation.validate(data.typeOfBusiness),
-    data.typeOfBusiness match {
-      case "foreign-property-fhl-eea" | "foreign-property" => TaxYearValidation.validate(foreignPropertyMinTaxYear, data.taxYear)
-      case "uk-property-non-fhl" | "uk-property-fhl" | "self-employment" => TaxYearValidation.validate(minimumTaxYear, data.taxYear)
-      case _ => Nil
-    },
-    BusinessIdValidation.validate(data.businessId)
-  )
+  private def parameterFormatValidation: RetrieveBISSRawData => List[List[MtdError]] = (data: RetrieveBISSRawData) =>
+    List(
+      NinoValidation.validate(data.nino),
+      TypeOfBusinessValidation.validate(data.typeOfBusiness),
+      data.typeOfBusiness match {
+        case "foreign-property-fhl-eea" | "foreign-property"               => TaxYearValidation.validate(foreignPropertyMinTaxYear, data.taxYear)
+        case "uk-property-non-fhl" | "uk-property-fhl" | "self-employment" => TaxYearValidation.validate(minimumTaxYear, data.taxYear)
+        case _                                                             => Nil
+      },
+      BusinessIdValidation.validate(data.businessId)
+    )
 
   override def validate(data: RetrieveBISSRawData): List[MtdError] = run(validationSet, data).distinct
 }

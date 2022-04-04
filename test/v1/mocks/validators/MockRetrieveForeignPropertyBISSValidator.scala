@@ -22,14 +22,17 @@ import v1.controllers.requestParsers.validators.RetrieveForeignPropertyBISSValid
 import v1.models.errors.MtdError
 import v1.models.requestData.RetrieveForeignPropertyBISSRawData
 
-class MockRetrieveForeignPropertyBISSValidator extends MockFactory{
+class MockRetrieveForeignPropertyBISSValidator extends MockFactory {
   val mockValidator: RetrieveForeignPropertyBISSValidator = mock[RetrieveForeignPropertyBISSValidator]
 
   object MockValidator {
+
     def validate(data: RetrieveForeignPropertyBISSRawData): CallHandler1[RetrieveForeignPropertyBISSRawData, List[MtdError]] = {
       (mockValidator
         .validate(_: RetrieveForeignPropertyBISSRawData))
         .expects(data)
     }
+
   }
+
 }

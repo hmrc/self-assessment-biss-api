@@ -34,10 +34,10 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String            = "AA123456A"
-    val taxYear: Option[String] = Some("2018-19")
-    val selfEmploymentId: String= "XAIS12345678913"
-    val desTaxYear: DesTaxYear = DesTaxYear("2019")
+    val nino: String             = "AA123456A"
+    val taxYear: Option[String]  = Some("2018-19")
+    val selfEmploymentId: String = "XAIS12345678913"
+    val desTaxYear: DesTaxYear   = DesTaxYear("2019")
 
     def uri: String = s"/$nino/self-employment"
 
@@ -48,7 +48,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
       val queryParams: Seq[(String, String)] = taxYear match {
         case Some(x) => Seq("taxYear" -> x, "selfEmploymentId" -> selfEmploymentId)
-        case None => Seq("selfEmploymentId" -> selfEmploymentId)
+        case None    => Seq("selfEmploymentId" -> selfEmploymentId)
       }
 
       setupStubs()
@@ -56,6 +56,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
         .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the retrieve SE BISS endpoint" should {
@@ -81,7 +82,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made without a tax year" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -99,7 +100,7 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made and des returns only mandatory data" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -120,9 +121,9 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
       def validationErrorTest(requestNino: String, requestTaxYear: Option[String], id: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String            = requestNino
-          override val taxYear: Option[String] = requestTaxYear
-          override val selfEmploymentId: String= id
+          override val nino: String             = requestNino
+          override val taxYear: Option[String]  = requestTaxYear
+          override val selfEmploymentId: String = id
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -186,4 +187,5 @@ class RetrieveSelfEmploymentBISSControllerISpec extends IntegrationBaseSpec {
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

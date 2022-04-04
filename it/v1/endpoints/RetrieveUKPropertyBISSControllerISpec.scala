@@ -26,20 +26,27 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import utils.DateUtils
-import v1.models.errors.{DownstreamError, MtdError, NinoFormatError, NotFoundError, RuleTypeOfBusinessError, TaxYearFormatError, TypeOfBusinessFormatError}
+import v1.models.errors.{
+  DownstreamError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleTypeOfBusinessError,
+  TaxYearFormatError,
+  TypeOfBusinessFormatError
+}
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
 
-
   private trait Test {
 
-    val nino = "AA123456A"
-    val taxYear: Option[String] = Some("2018-19")
+    val nino                           = "AA123456A"
+    val taxYear: Option[String]        = Some("2018-19")
     val typeOfBusiness: Option[String] = Some("uk-property-non-fhl")
-    val correlationId = "X-123"
-    val desTaxYear: DesTaxYear = DesTaxYear("2019")
+    val correlationId                  = "X-123"
+    val desTaxYear: DesTaxYear         = DesTaxYear("2019")
 
     def uri: String = s"/$nino/uk-property"
 
@@ -50,17 +57,17 @@ class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
       val queryParams: Seq[(String, String)] = (taxYear, typeOfBusiness) match {
         case (Some(x), Some(y)) => Seq("taxYear" -> x, "typeOfBusiness" -> y)
-        case (None,Some(y)) => Seq("typeOfBusiness" -> y)
-        case (Some(x), None) => Seq("taxYear" -> x)
-        case (None, None) => Seq()
+        case (None, Some(y))    => Seq("typeOfBusiness" -> y)
+        case (Some(x), None)    => Seq("taxYear" -> x)
+        case (None, None)       => Seq()
       }
-
 
       setupStubs()
       buildRequest(uri)
         .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the retrieve UK property BISS endpoint" should {
@@ -85,7 +92,7 @@ class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made without a tax year" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -103,7 +110,7 @@ class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
       "valid request is made and des returns only mandatory data" in new Test {
 
         override val taxYear: Option[String] = None
-        override val desTaxYear: DesTaxYear = DateUtils.getDesTaxYear(LocalDate.now())
+        override val desTaxYear: DesTaxYear  = DateUtils.getDesTaxYear(LocalDate.now())
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -121,12 +128,16 @@ class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      def validationErrorTest(requestNino: String, requestTaxYear: Option[String], requestBusiness: Option[String], expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def validationErrorTest(requestNino: String,
+                              requestTaxYear: Option[String],
+                              requestBusiness: Option[String],
+                              expectedStatus: Int,
+                              expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
 
-          override val nino: String            = requestNino
-          override val taxYear: Option[String] = requestTaxYear
-          override val typeOfBusiness: Option[String]  = requestBusiness
+          override val nino: String                   = requestNino
+          override val taxYear: Option[String]        = requestTaxYear
+          override val typeOfBusiness: Option[String] = requestBusiness
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -191,4 +202,5 @@ class RetrieveUKPropertyBISSControllerISpec extends IntegrationBaseSpec {
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

@@ -22,11 +22,11 @@ import v1.models.requestData.RetrieveSelfEmploymentBISSRawData
 
 class RetrieveSelfEmploymentBISSValidatorSpec extends UnitSpec {
 
-  private val nino = "AA123456B"
-  private val taxYear = "2018-19"
-  private val selfEmploymentId = "XAIS12345678901"
-  private val invalidNino = "~~~~~~~~~"
-  private val invalidTaxYear = "2018-20"
+  private val nino                    = "AA123456B"
+  private val taxYear                 = "2018-19"
+  private val selfEmploymentId        = "XAIS12345678901"
+  private val invalidNino             = "~~~~~~~~~"
+  private val invalidTaxYear          = "2018-20"
   private val invalidSelfEmploymentId = "Actual Beans"
 
   val validator = new RetrieveSelfEmploymentBISSValidator()
@@ -46,7 +46,8 @@ class RetrieveSelfEmploymentBISSValidatorSpec extends UnitSpec {
         validator.validate(RetrieveSelfEmploymentBISSRawData(invalidNino, Some(taxYear), selfEmploymentId)) shouldBe List(NinoFormatError)
       }
       "an invalid tax year is provided" in {
-        validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(invalidTaxYear), selfEmploymentId)) shouldBe List(RuleTaxYearRangeInvalidError)
+        validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(invalidTaxYear), selfEmploymentId)) shouldBe List(
+          RuleTaxYearRangeInvalidError)
       }
       "an invalid self employment id is provided" in {
         validator.validate(RetrieveSelfEmploymentBISSRawData(nino, Some(taxYear), invalidSelfEmploymentId)) shouldBe List(SelfEmploymentIdFormatError)

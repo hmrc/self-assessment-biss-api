@@ -16,6 +16,5 @@
 
 package v1.models.requestData
 
-case class RetrieveForeignPropertyBISSRawData(nino: String, businessId: Option[String], typeOfBusiness: Option[String], taxYear: Option[String]) extends RawData
-
-
+case class RetrieveForeignPropertyBISSRawData(nino: String, businessId: Option[String], typeOfBusiness: Option[String], taxYear: Option[String])
+    extends RawData

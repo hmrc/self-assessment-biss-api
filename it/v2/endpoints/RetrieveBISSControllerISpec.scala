@@ -31,12 +31,12 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
   private trait Test {
 
-    val taxYear = "2020-21"
-    val downstreamTaxYear = "2021"
+    val taxYear            = "2020-21"
+    val downstreamTaxYear  = "2021"
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678913"
-    val typeOfBusiness = "self-employment"
-    val incomeSourceType = "self-employment"
+    val typeOfBusiness     = "self-employment"
+    val incomeSourceType   = "self-employment"
 
     def uri: String = s"/$nino/$typeOfBusiness/$taxYear/$businessId"
 
@@ -49,6 +49,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       buildRequest(uri)
         .withHttpHeaders(ACCEPT -> "application/vnd.hmrc.2.0+json")
     }
+
   }
 
   "Calling the retrieve BISS endpoint" should {
@@ -71,8 +72,8 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
       def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit =
         s"work for $requestTypeOfBusiness" in new Test {
-          override val typeOfBusiness: String = requestTypeOfBusiness
-          override val incomeSourceType: String =  requestIncomeSourceType
+          override val typeOfBusiness: String   = requestTypeOfBusiness
+          override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), OK, downstreamResponseJsonMin)
 
@@ -92,9 +93,9 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new Test {
-          override val taxYear: String = requestTaxYear
-          override val nino: String       = requestNino
-          override val businessId: String = requestBusinessId
+          override val taxYear: String        = requestTaxYear
+          override val nino: String           = requestNino
+          override val businessId: String     = requestBusinessId
           override val typeOfBusiness: String = requestTypeOfBusiness
 
           val response: WSResponse = await(request.get)
@@ -155,4 +156,5 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

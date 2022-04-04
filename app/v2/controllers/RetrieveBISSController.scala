@@ -28,12 +28,12 @@ import v2.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveBISSServi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveBISSController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       requestParser: RetrieveBISSRequestDataParser,
-                                       retrieveBISSService: RetrieveBISSService,
-                                       cc: ControllerComponents,
-                                       val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        requestParser: RetrieveBISSRequestDataParser,
+                                        retrieveBISSService: RetrieveBISSService,
+                                        cc: ControllerComponents,
+                                        val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -80,7 +80,7 @@ class RetrieveBISSController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
+          RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleNoIncomeSubmissionsExist => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError                => NotFound(Json.toJson(errorWrapper))

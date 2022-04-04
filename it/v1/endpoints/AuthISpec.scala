@@ -29,11 +29,11 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino                    = "AA123456A"
-    val taxYear: Option[String] = Some("2018-19")
-    val selfEmploymentId: String= "XAIS12345678913"
-    val correlationId           = "X-123"
-    val desTaxYear: DesTaxYear = DesTaxYear.fromMtd(taxYear.get)
+    val nino                     = "AA123456A"
+    val taxYear: Option[String]  = Some("2018-19")
+    val selfEmploymentId: String = "XAIS12345678913"
+    val correlationId            = "X-123"
+    val desTaxYear: DesTaxYear   = DesTaxYear.fromMtd(taxYear.get)
 
     def uri: String = s"/$nino/self-employment"
 
@@ -44,8 +44,8 @@ class AuthISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
       val queryParams: Seq[(String, String)] = Seq("selfEmploymentId" -> selfEmploymentId) ++
         Seq("taxYear" -> taxYear)
-          .collect {
-            case (k, Some(v)) => (k, v)
+          .collect { case (k, Some(v)) =>
+            (k, v)
           }
 
       setupStubs()
@@ -53,6 +53,7 @@ class AuthISpec extends IntegrationBaseSpec {
         .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the GET self employment BISS endpoint" when {

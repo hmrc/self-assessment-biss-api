@@ -27,21 +27,21 @@ import v1.models.response.RetrieveSelfEmploymentBISSResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SelfEmploymentBISSConnector @Inject()(val http: HttpClient,
-                                            val appConfig: AppConfig) extends BaseDesConnector {
+class SelfEmploymentBISSConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
+  def retrieveBiss(request: RetrieveSelfEmploymentBISSRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentBISSResponse]] = {
 
-  def retrieveBiss(request: RetrieveSelfEmploymentBISSRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentBISSResponse]] = {
-
-    val nino = request.nino.nino
-    val taxYear = request.taxYear.toString
+    val nino        = request.nino.nino
+    val taxYear     = request.taxYear.toString
     val queryParams = Map("incomesourceid" -> request.selfEmploymentId)
 
     get(
-      DesUri[RetrieveSelfEmploymentBISSResponse](s"income-tax/income-sources/nino/$nino/self-employment/$taxYear/biss"), queryParams.toSeq
+      DesUri[RetrieveSelfEmploymentBISSResponse](s"income-tax/income-sources/nino/$nino/self-employment/$taxYear/biss"),
+      queryParams.toSeq
     )
   }
+
 }

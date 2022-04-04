@@ -21,9 +21,9 @@ import v1.models.errors.{RuleTypeOfBusinessError, TypeOfBusinessFormatError}
 
 class ForeignTypeOfBusinessValidationSpec extends UnitSpec {
 
-  private val typeOfBusiness = Some("foreign-property-fhl-eea")
+  private val typeOfBusiness    = Some("foreign-property-fhl-eea")
   private val badTypeOfBusiness = Some("dog food shop")
-  private val noTypeOfBusiness = None
+  private val noTypeOfBusiness  = None
 
   "validate" should {
     "return no errors" when {
@@ -45,4 +45,5 @@ class ForeignTypeOfBusinessValidationSpec extends UnitSpec {
     }
 
   }
+
 }

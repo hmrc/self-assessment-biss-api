@@ -21,9 +21,9 @@ import v1.models.errors.{BusinessIdFormatError, RuleForeignBusinessIdError}
 
 class BusinessIdValidationSpec extends UnitSpec {
 
-  private val businessId = "XAIS12345678901"
+  private val businessId        = "XAIS12345678901"
   private val invalidBusinessId = "Invalid Business Id"
-  private val noBusinessId = None
+  private val noBusinessId      = None
 
   "validate" should {
     "return no errors" when {
@@ -40,11 +40,9 @@ class BusinessIdValidationSpec extends UnitSpec {
 
     "return an error" when {
       "no business id is provided" in {
-        BusinessIdValidation.validate(noBusinessId)  shouldBe List(RuleForeignBusinessIdError)
+        BusinessIdValidation.validate(noBusinessId) shouldBe List(RuleForeignBusinessIdError)
       }
     }
-
-
 
   }
 

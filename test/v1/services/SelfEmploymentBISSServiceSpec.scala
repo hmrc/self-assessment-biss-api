@@ -29,14 +29,14 @@ import scala.concurrent.Future
 
 class SelfEmploymentBISSServiceSpec extends ServiceSpec {
 
-  private val nino = "AA123456A"
-  private val taxYear = "2019"
+  private val nino             = "AA123456A"
+  private val taxYear          = "2019"
   private val selfEmploymentId = "123456789"
 
   private val requestData = RetrieveSelfEmploymentBISSRequest(Nino(nino), DesTaxYear(taxYear), selfEmploymentId)
 
   trait Test extends MockSelfEmploymentBISSConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrieveSelfEmploymentBISS")
 
     val service = new SelfEmploymentBISSService(mockConnector)
@@ -45,7 +45,8 @@ class SelfEmploymentBISSServiceSpec extends ServiceSpec {
   "retrieveBiss" should {
     "return a valid response" when {
       "a valid request is supplied" in new Test {
-        MockSelfEmploymentBISSConnector.retrieveBiss(requestData)
+        MockSelfEmploymentBISSConnector
+          .retrieveBiss(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseObj))))
 
         await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseObj))
@@ -57,14 +58,14 @@ class SelfEmploymentBISSServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockSelfEmploymentBISSConnector.retrieveBiss(requestData)
+          MockSelfEmploymentBISSConnector
+            .retrieveBiss(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveBiss(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-
         ("INVALID_IDVALUE", NinoFormatError),
         ("INVALID_TAXYEAR", TaxYearFormatError),
         ("INVALID_INCOMESOURCEID", SelfEmploymentIdFormatError),
@@ -78,4 +79,5 @@ class SelfEmploymentBISSServiceSpec extends ServiceSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

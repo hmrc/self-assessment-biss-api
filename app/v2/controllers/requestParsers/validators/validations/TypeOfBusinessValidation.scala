@@ -24,4 +24,5 @@ object TypeOfBusinessValidation {
   def validate(typeOfBusiness: String): List[MtdError] = {
     if (TypeOfBusiness.parser.isDefinedAt(typeOfBusiness)) NoValidationErrors else List(TypeOfBusinessFormatError)
   }
+
 }

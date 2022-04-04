@@ -16,5 +16,4 @@
 
 package v2.models.requestData
 
-
 case class RetrieveBISSRawData(nino: String, typeOfBusiness: String, taxYear: String, businessId: String) extends RawData

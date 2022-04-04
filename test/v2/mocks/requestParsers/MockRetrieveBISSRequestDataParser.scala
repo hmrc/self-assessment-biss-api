@@ -27,8 +27,11 @@ trait MockRetrieveBISSRequestDataParser extends MockFactory {
   val mockRequestParser: RetrieveBISSRequestDataParser = mock[RetrieveBISSRequestDataParser]
 
   object MockRetrieveBISSRequestDataParser {
+
     def parse(data: RetrieveBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveBISSRequest]] = {
       (mockRequestParser.parseRequest(_: RetrieveBISSRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

@@ -30,7 +30,7 @@ class TypeOfBusinessValidationSpec extends UnitSpec {
       validate("foreign-property")
       validate("foreign-property-fhl-eea")
 
-      def validate(typeOfBusiness  : String)  : Unit =
+      def validate(typeOfBusiness: String): Unit =
         s"provided with a string of '$typeOfBusiness'" in {
           TypeOfBusinessValidation.validate(typeOfBusiness) shouldBe Nil
         }
@@ -42,4 +42,5 @@ class TypeOfBusinessValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

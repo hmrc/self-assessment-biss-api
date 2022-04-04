@@ -19,11 +19,11 @@ package v1.controllers.requestParsers.validators.validations
 import support.UnitSpec
 import v1.models.errors.{RuleTypeOfBusinessError, TypeOfBusinessFormatError}
 
-class UkPropertyTypeOfBusinessValidationSpec extends UnitSpec{
+class UkPropertyTypeOfBusinessValidationSpec extends UnitSpec {
 
-  private val typeOfBusiness = Some("uk-property-fhl")
+  private val typeOfBusiness    = Some("uk-property-fhl")
   private val badTypeOfBusiness = Some("rabbit hair comb shop")
-  private val noTypeOfBusiness = None
+  private val noTypeOfBusiness  = None
 
   "validate" should {
     "return no errors" when {
@@ -44,4 +44,5 @@ class UkPropertyTypeOfBusinessValidationSpec extends UnitSpec{
       }
     }
   }
+
 }

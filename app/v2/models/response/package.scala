@@ -20,12 +20,15 @@ import org.json4s.CustomSerializer
 import org.json4s.JsonAST.JDecimal
 
 package object response {
-  object BigDecimalSerializer extends CustomSerializer[BigDecimal](_ =>
-    ({
-      case jde: JDecimal => jde.num
-    },
-      {
-        case bd: BigDecimal => JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
-      })
-  )
+
+  object BigDecimalSerializer
+      extends CustomSerializer[BigDecimal](_ =>
+        (
+          { case jde: JDecimal =>
+            jde.num
+          },
+          { case bd: BigDecimal =>
+            JDecimal(bd.setScale(2, BigDecimal.RoundingMode.HALF_UP))
+          }))
+
 }

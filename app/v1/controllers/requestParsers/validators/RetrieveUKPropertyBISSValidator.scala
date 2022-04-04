@@ -20,15 +20,16 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
 import v1.models.requestData.RetrieveUKPropertyBISSRawData
 
-class RetrieveUKPropertyBISSValidator  extends Validator[RetrieveUKPropertyBISSRawData] {
+class RetrieveUKPropertyBISSValidator extends Validator[RetrieveUKPropertyBISSRawData] {
 
   private val validationSet = List(parameterFormatValidation)
 
-  private def parameterFormatValidation: RetrieveUKPropertyBISSRawData => List[List[MtdError]] = (data: RetrieveUKPropertyBISSRawData) => List(
-    NinoValidation.validate(data.nino),
-    data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
-    UKPropertyTypeOfBusinessValidation.validate(data.typeOfBusiness)
-  )
+  private def parameterFormatValidation: RetrieveUKPropertyBISSRawData => List[List[MtdError]] = (data: RetrieveUKPropertyBISSRawData) =>
+    List(
+      NinoValidation.validate(data.nino),
+      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil),
+      UKPropertyTypeOfBusinessValidation.validate(data.typeOfBusiness)
+    )
 
   override def validate(data: RetrieveUKPropertyBISSRawData): List[MtdError] = run(validationSet, data).distinct
 }

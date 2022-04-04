@@ -28,17 +28,19 @@ import v1.services.ForeignPropertyBISSService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockForeignPropertyBISSService  extends MockFactory {
+trait MockForeignPropertyBISSService extends MockFactory {
 
   val mockService: ForeignPropertyBISSService = mock[ForeignPropertyBISSService]
 
   object MockForeignPropertyBISSService {
 
-    def retrieveBiss(requestData: RetrieveForeignPropertyBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveForeignPropertyBISSResponse]]]] = {
+    def retrieveBiss(requestData: RetrieveForeignPropertyBISSRequest)
+        : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveForeignPropertyBISSResponse]]]] = {
       (mockService
         .retrieveBiss(_: RetrieveForeignPropertyBISSRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
 
 }

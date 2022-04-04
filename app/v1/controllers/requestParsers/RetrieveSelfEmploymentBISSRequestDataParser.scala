@@ -24,11 +24,13 @@ import utils.DateUtils
 import v1.controllers.requestParsers.validators.RetrieveSelfEmploymentBISSValidator
 import v1.models.requestData.{RetrieveSelfEmploymentBISSRawData, RetrieveSelfEmploymentBISSRequest}
 
-class RetrieveSelfEmploymentBISSRequestDataParser @Inject()(val validator: RetrieveSelfEmploymentBISSValidator)
-  extends RequestParser[RetrieveSelfEmploymentBISSRawData, RetrieveSelfEmploymentBISSRequest] {
+class RetrieveSelfEmploymentBISSRequestDataParser @Inject() (val validator: RetrieveSelfEmploymentBISSValidator)
+    extends RequestParser[RetrieveSelfEmploymentBISSRawData, RetrieveSelfEmploymentBISSRequest] {
 
   override protected def requestFor(data: RetrieveSelfEmploymentBISSRawData): RetrieveSelfEmploymentBISSRequest =
-    RetrieveSelfEmploymentBISSRequest(Nino(data.nino),
+    RetrieveSelfEmploymentBISSRequest(
+      Nino(data.nino),
       data.taxYear.fold(DateUtils.getDesTaxYear(LocalDate.now()))(DateUtils.getDesTaxYear),
       data.selfEmploymentId)
+
 }

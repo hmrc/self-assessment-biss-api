@@ -30,9 +30,9 @@ import scala.concurrent.Future
 class ForeignPropertyBISSConnectorSpec extends ConnectorSpec {
 
   val desTaxYear: DesTaxYear = DesTaxYear("2019")
-  val nino: String = "AA123456A"
+  val nino: String           = "AA123456A"
   val incomeSourceId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
-  val businessId: String = "XAIS12345678910"
+  val businessId: String     = "XAIS12345678910"
 
   val response: RetrieveForeignPropertyBISSResponse = RetrieveForeignPropertyBISSResponse(
     Total(
@@ -41,14 +41,16 @@ class ForeignPropertyBISSConnectorSpec extends ConnectorSpec {
       additions = Some(5.00),
       deductions = Some(60.00)
     ),
-    Some(Profit(
-      net = Some(20.00),
-      taxable = Some(10.00)
-    )),
-    Some(Loss(
-      net = Some(10.00),
-      taxable = Some(35.00)
-    ))
+    Some(
+      Profit(
+        net = Some(20.00),
+        taxable = Some(10.00)
+      )),
+    Some(
+      Loss(
+        net = Some(10.00),
+        taxable = Some(35.00)
+      ))
   )
 
   val responseWithMissingOptionals: RetrieveForeignPropertyBISSResponse = RetrieveForeignPropertyBISSResponse(
@@ -58,7 +60,8 @@ class ForeignPropertyBISSConnectorSpec extends ConnectorSpec {
       additions = Some(5.00),
       deductions = Some(60.00)
     ),
-    None, None
+    None,
+    None
   )
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -80,7 +83,9 @@ class ForeignPropertyBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, response))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/income-sources/nino/$nino/foreign-property/${desTaxYear.toString}/biss?incomesourceid=$businessId", dummyDesHeaderCarrierConfig)
+          .get(
+            s"$baseUrl/income-tax/income-sources/nino/$nino/foreign-property/${desTaxYear.toString}/biss?incomesourceid=$businessId",
+            dummyDesHeaderCarrierConfig)
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
@@ -92,11 +97,14 @@ class ForeignPropertyBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseWithMissingOptionals))
 
         MockedHttpClient
-          .get(s"$baseUrl/income-tax/income-sources/nino/$nino/foreign-property/${desTaxYear.toString}/biss?incomesourceid=$businessId", dummyDesHeaderCarrierConfig)
+          .get(
+            s"$baseUrl/income-tax/income-sources/nino/$nino/foreign-property/${desTaxYear.toString}/biss?incomesourceid=$businessId",
+            dummyDesHeaderCarrierConfig)
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
       }
     }
   }
+
 }

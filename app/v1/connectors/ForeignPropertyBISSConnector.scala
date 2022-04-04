@@ -27,22 +27,22 @@ import v1.models.response.RetrieveForeignPropertyBISSResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ForeignPropertyBISSConnector @Inject()(val http: HttpClient,
-                                             val appConfig: AppConfig) extends BaseDesConnector {
+class ForeignPropertyBISSConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
-  def retrieveBiss(request: RetrieveForeignPropertyBISSRequest)(
-    implicit ec: ExecutionContext,
-    hc: HeaderCarrier,
-    correlationId: String): Future[DesOutcome[RetrieveForeignPropertyBISSResponse]] = {
+  def retrieveBiss(request: RetrieveForeignPropertyBISSRequest)(implicit
+      ec: ExecutionContext,
+      hc: HeaderCarrier,
+      correlationId: String): Future[DesOutcome[RetrieveForeignPropertyBISSResponse]] = {
 
-    val nino = request.nino.nino
-    val businessId = request.businessId
+    val nino           = request.nino.nino
+    val businessId     = request.businessId
     val typeOfBusiness = request.typeOfBusiness.toString
-    val taxYear = request.taxYear.toString
+    val taxYear        = request.taxYear.toString
 
     get(
       DesUri[RetrieveForeignPropertyBISSResponse](s"income-tax/income-sources/nino/$nino/$typeOfBusiness/$taxYear/biss?incomesourceid=$businessId")
     )
 
   }
+
 }

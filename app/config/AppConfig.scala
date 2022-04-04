@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-
 trait AppConfig {
 
   def desBaseUrl: String
@@ -54,7 +53,7 @@ trait AppConfig {
 }
 
 @Singleton
-class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configuration) extends AppConfig {
+class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configuration) extends AppConfig {
 
   val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
@@ -87,7 +86,9 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
 }
 
 case class ConfidenceLevelConfig(definitionEnabled: Boolean, authValidationEnabled: Boolean)
+
 object ConfidenceLevelConfig {
+
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
@@ -95,10 +96,11 @@ object ConfidenceLevelConfig {
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
   }
+
 }
 
 trait FixedConfig {
   // Minimum tax year for MTD
-  val minimumTaxYear = 2018
+  val minimumTaxYear            = 2018
   val foreignPropertyMinTaxYear = 2020
 }

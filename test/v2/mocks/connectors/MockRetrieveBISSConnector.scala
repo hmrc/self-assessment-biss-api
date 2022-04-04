@@ -19,7 +19,7 @@ package v2.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.{ DownstreamOutcome, RetrieveBISSConnector }
+import v2.connectors.{DownstreamOutcome, RetrieveBISSConnector}
 import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
 
@@ -36,5 +36,7 @@ trait MockRetrieveBISSConnector extends MockFactory {
         .retrieveBiss(_: RetrieveBISSRequest, _: String)(_: HeaderCarrier))
         .expects(requestData, correlationId, *)
     }
+
   }
+
 }

@@ -20,10 +20,10 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status.OK
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v2.fixtures.RetrieveBISSFixture
-import v2.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
@@ -42,6 +42,7 @@ class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))
     }
+
   }
 
   "Calling the GET self employment BISS endpoint" when {

@@ -36,5 +36,7 @@ trait MockSelfEmploymentBISSConnector extends MockFactory {
         .retrieveBiss(_: RetrieveSelfEmploymentBISSRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
+
 }

@@ -18,7 +18,7 @@ package v2.models.requestData
 
 import support.UnitSpec
 
-class TaxYearSpec extends UnitSpec{
+class TaxYearSpec extends UnitSpec {
 
   "TaxYear" should {
     "be creatable from an mtd value" in {
@@ -27,4 +27,5 @@ class TaxYearSpec extends UnitSpec{
       taxYear.downstreamValue shouldBe "2020"
     }
   }
+
 }

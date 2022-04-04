@@ -25,7 +25,6 @@ case class Total(income: BigDecimal,
                  deductions: Option[BigDecimal],
                  accountingAdjustments: Option[BigDecimal])
 
-
 object Total {
 
   implicit val reads: Reads[Total] = (
@@ -34,7 +33,7 @@ object Total {
       (JsPath \ "totalAdditions").readNullable[BigDecimal] and
       (JsPath \ "totalDeductions").readNullable[BigDecimal] and
       (JsPath \ "accountingAdjustments").readNullable[BigDecimal]
-    ) (Total.apply _)
+  )(Total.apply _)
 
   implicit val writes: OWrites[Total] = Json.writes[Total]
 }

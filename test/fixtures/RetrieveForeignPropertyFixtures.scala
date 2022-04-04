@@ -22,8 +22,7 @@ import v1.models.response.common.{Loss, Profit, Total}
 
 object RetrieveForeignPropertyFixtures {
 
-  val mtdResponse: JsValue = Json.parse(
-    """
+  val mtdResponse: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.00,
@@ -42,8 +41,7 @@ object RetrieveForeignPropertyFixtures {
       |}
     """.stripMargin)
 
-  val mtdResponseWithOnlyRequiredData: JsValue = Json.parse(
-    """
+  val mtdResponseWithOnlyRequiredData: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.00,
@@ -54,8 +52,7 @@ object RetrieveForeignPropertyFixtures {
       |}
     """.stripMargin)
 
-  val desResponse: JsValue = Json.parse(
-    """
+  val desResponse: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalExpenses" : 50.00,
@@ -68,8 +65,7 @@ object RetrieveForeignPropertyFixtures {
       |}
     """.stripMargin)
 
-  val desResponseWithOnlyRequiredData: JsValue = Json.parse(
-    """
+  val desResponseWithOnlyRequiredData: JsValue = Json.parse("""
       |{
       | "totalIncome": 100.00,
       | "totalExpenses" : 50.00,
@@ -78,34 +74,39 @@ object RetrieveForeignPropertyFixtures {
       |}
     """.stripMargin)
 
-  val jsonString: String ="""{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
+  val jsonString: String =
+    """{"total":{"income":100.00,"expenses":50.00,"additions":5.00,"deductions":60.00},"profit":{"net":20.00,"taxable":10.00},"loss":{"net":10.00,"taxable":35.00}}"""
 
   val responseObj =
-  RetrieveForeignPropertyBISSResponse(
-    Total(
-      income = 100.00,
-      expenses = Some(50.00),
-      additions = Some(5.00),
-      deductions = Some(60.00)
-    ),
-    Some(Profit(
-      net = Some(20.00),
-      taxable = Some(10.00)
-    )),
-    Some(Loss(
-      net = Some(10.00),
-      taxable = Some(35.00)
-    ))
-  )
-
-  val responseObjWithOnlyRequiredData =
-    RetrieveForeignPropertyBISSResponse (
+    RetrieveForeignPropertyBISSResponse(
       Total(
         income = 100.00,
         expenses = Some(50.00),
         additions = Some(5.00),
         deductions = Some(60.00)
       ),
-      None, None
+      Some(
+        Profit(
+          net = Some(20.00),
+          taxable = Some(10.00)
+        )),
+      Some(
+        Loss(
+          net = Some(10.00),
+          taxable = Some(35.00)
+        ))
     )
+
+  val responseObjWithOnlyRequiredData =
+    RetrieveForeignPropertyBISSResponse(
+      Total(
+        income = 100.00,
+        expenses = Some(50.00),
+        additions = Some(5.00),
+        deductions = Some(60.00)
+      ),
+      None,
+      None
+    )
+
 }

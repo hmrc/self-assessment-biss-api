@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
 
   val desTaxYear: DesTaxYear = DesTaxYear("2019")
-  val nino: String = "AA123456A"
+  val nino: String           = "AA123456A"
   val incomeSourceId: String = "041f7e4d-87b9-4d4a-a296-3cfbdf92f7e2"
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -51,11 +51,13 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObj))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
+          .parameterGet(
+            s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
             dummyDesHeaderCarrierConfig,
             Seq(("incomesourceid", incomeSourceId)),
             desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue"))
+            Seq("AnotherHeader" -> "HeaderValue")
+          )
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
@@ -67,9 +69,11 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
         val expected = Right(ResponseWrapper(correlationId, responseObjWithOnlyRequiredData))
 
         MockedHttpClient
-          .parameterGet(s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
+          .parameterGet(
+            s"$baseUrl/income-tax/income-sources/nino/$nino/self-employment/${desTaxYear.toString}/biss",
             dummyDesHeaderCarrierConfig,
-            Seq(("incomesourceid", incomeSourceId)))
+            Seq(("incomesourceid", incomeSourceId))
+          )
           .returns(Future.successful(expected))
 
         await(connector.retrieveBiss(request)) shouldBe expected
@@ -77,4 +81,5 @@ class SelfEmploymentBISSConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

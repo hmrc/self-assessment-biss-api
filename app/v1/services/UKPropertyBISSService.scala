@@ -32,14 +32,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UKPropertyBISSService @Inject()(connector: UKPropertyBISSConnector)
-  extends DesResponseMappingSupport with Logging {
+class UKPropertyBISSService @Inject() (connector: UKPropertyBISSConnector) extends DesResponseMappingSupport with Logging {
 
-  def retrieveBiss(request: RetrieveUKPropertyBISSRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]] = {
+  def retrieveBiss(request: RetrieveUKPropertyBISSRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveUKPropertyBISSResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.retrieveBiss(request)).leftMap(mapDesErrors(mappingDesToMtdError))
@@ -49,13 +48,14 @@ class UKPropertyBISSService @Inject()(connector: UKPropertyBISSConnector)
   }
 
   private def mappingDesToMtdError: Map[String, MtdError] = Map(
-    "INVALID_IDVALUE" -> NinoFormatError,
-    "INVALID_TAXYEAR" -> TaxYearFormatError,
-    "INVALID_INCOMESOURCEID" -> DownstreamError,
-    "NOT_FOUND" -> NotFoundError,
-    "INVALID_IDTYPE" -> DownstreamError,
+    "INVALID_IDVALUE"          -> NinoFormatError,
+    "INVALID_TAXYEAR"          -> TaxYearFormatError,
+    "INVALID_INCOMESOURCEID"   -> DownstreamError,
+    "NOT_FOUND"                -> NotFoundError,
+    "INVALID_IDTYPE"           -> DownstreamError,
     "INVALID_INCOMESOURCETYPE" -> TypeOfBusinessFormatError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "SERVER_ERROR"             -> DownstreamError,
+    "SERVICE_UNAVAILABLE"      -> DownstreamError
   )
+
 }

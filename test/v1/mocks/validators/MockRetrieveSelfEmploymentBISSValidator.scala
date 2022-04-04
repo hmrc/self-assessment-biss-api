@@ -32,5 +32,7 @@ class MockRetrieveSelfEmploymentBISSValidator extends MockFactory {
         .validate(_: RetrieveSelfEmploymentBISSRawData))
         .expects(data)
     }
+
   }
+
 }

@@ -28,16 +28,15 @@ import v1.models.response.RetrieveUKPropertyBISSResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UKPropertyBISSConnector @Inject()(val http: HttpClient,
-                                        val appConfig: AppConfig) extends BaseDesConnector {
+class UKPropertyBISSConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
-  def retrieveBiss(request: RetrieveUKPropertyBISSRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[RetrieveUKPropertyBISSResponse]] = {
+  def retrieveBiss(request: RetrieveUKPropertyBISSRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DesOutcome[RetrieveUKPropertyBISSResponse]] = {
 
-    val nino = request.nino.nino
-    val taxYear = request.taxYear.toString
+    val nino             = request.nino.nino
+    val taxYear          = request.taxYear.toString
     val incomeSourceType = request.incomeSourceType.toString
 
     get(

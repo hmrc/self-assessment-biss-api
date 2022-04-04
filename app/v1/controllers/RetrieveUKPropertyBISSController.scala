@@ -31,13 +31,13 @@ import v1.services.{EnrolmentsAuthService, MtdIdLookupService, UKPropertyBISSSer
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveUKPropertyBISSController @Inject()(val authService: EnrolmentsAuthService,
-                                                 val lookupService: MtdIdLookupService,
-                                                 requestParser: RetrieveUKPropertyBISSRequestDataParser,
-                                                 ukPropertyBISSService: UKPropertyBISSService,
-                                                 cc: ControllerComponents,
-                                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
+class RetrieveUKPropertyBISSController @Inject() (val authService: EnrolmentsAuthService,
+                                                  val lookupService: MtdIdLookupService,
+                                                  requestParser: RetrieveUKPropertyBISSRequestDataParser,
+                                                  ukPropertyBISSService: UKPropertyBISSService,
+                                                  cc: ControllerComponents,
+                                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
@@ -49,7 +49,6 @@ class RetrieveUKPropertyBISSController @Inject()(val authService: EnrolmentsAuth
 
   def retrieveBiss(nino: String, taxYear: Option[String], typeOfBusiness: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-
       implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
@@ -83,10 +82,12 @@ class RetrieveUKPropertyBISSController @Inject()(val authService: EnrolmentsAuth
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearRangeInvalidError | RuleTypeOfBusinessError =>
+      case BadRequestError | NinoFormatError | TaxYearFormatError | TypeOfBusinessFormatError | RuleTaxYearRangeInvalidError |
+          RuleTypeOfBusinessError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
+
 }
