@@ -47,7 +47,7 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |    "versions":[
       |      {
       |        "version":"1.0",
-      |        "status":"DEPRECATED",
+      |        "status":"RETIRED",
       |        "endpointsEnabled":true
       |      },
       |      {
