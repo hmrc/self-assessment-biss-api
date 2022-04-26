@@ -31,7 +31,7 @@ import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
-import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import v2.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with GuiceOneAppPerSuite {
   test =>
@@ -75,7 +75,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     (filters.filters _).stubs().returns(Seq.empty)
 
     MockedAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("""
-                                                                                         |version-1.enabled = true
                                                                                          |version-2.enabled = true
                                                                          """.stripMargin))))
 
@@ -104,7 +103,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   "Routing requests with valid version" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
+    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.2.0+json")
 
     handleWithDefaultRoutes()
   }
@@ -114,7 +113,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
     "return 406" in new Test {
 
-      val request: RequestHeader = buildRequest("/v1")
+      val request: RequestHeader = buildRequest("/v2")
       inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
         val result = a.apply(request)
 
@@ -122,12 +121,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
       }
     }
-  }
-
-  "Routing requests with v1" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
-
-    handleWithVersionRoutes("/v1", V1Handler)
   }
 
   "Routing requests with v2" should {
@@ -139,7 +132,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.5.0+json")
 
     "return 404" in new Test {
-      private val request = buildRequest("/v1")
+      private val request = buildRequest("/v2")
 
       inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
         val result = a.apply(request)
@@ -156,7 +149,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "the version has a route for the resource" must {
       "return 404 Not Found" in new Test {
 
-        private val request = buildRequest("/v1")
+        private val request = buildRequest("/v2")
         inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
           val result = a.apply(request)
 

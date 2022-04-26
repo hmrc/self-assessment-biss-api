@@ -20,11 +20,20 @@ import support.UnitSpec
 
 class TaxYearSpec extends UnitSpec {
 
-  "TaxYear" should {
-    "be creatable from an mtd value" in {
-      val taxYear = TaxYear.fromMtd("2019-20")
+  val mtdValue = "2018-19"
+  val desValue = "2019"
 
-      taxYear.downstreamValue shouldBe "2020"
+  "DesTaxYear" when {
+    "toString is called" should {
+      "return the value instead of a String representation of the case class" in {
+        TaxYear(desValue).toString shouldBe desValue
+      }
+    }
+
+    "fromMtd is called" should {
+      "return the DES representation of the tax year" in {
+        TaxYear.fromMtd(mtdValue) shouldBe TaxYear(desValue)
+      }
     }
   }
 

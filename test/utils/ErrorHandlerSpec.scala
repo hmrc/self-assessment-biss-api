@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
-import v1.models.errors._
+import v2.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -93,18 +93,11 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       }
     }
 
-    "return 400 with RuleSelfEmploymentIdError error body" when {
+    "return 400 with error body" when {
       "JsValidationException thrown and header is supplied" in new Test() {
-
-        override val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/AA123456A/self-employment").withHeaders(versionHeader)
-        private val result                                              = handler.onClientError(requestHeader, BAD_REQUEST, "test")
-        status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(RuleSelfEmploymentIdError)
-      }
-
-      "JsValidationException thrown an InvalidRequest and header is supplied" in new Test() {
         private val result = handler.onClientError(requestHeader, BAD_REQUEST, "test")
         status(result) shouldBe BAD_REQUEST
+
         contentAsJson(result) shouldBe Json.toJson(BadRequestError)
       }
     }

@@ -1,3 +1,0 @@
-GET        /:nino/self-employment                          v1.controllers.RetrieveSelfEmploymentBISSController.retrieveBiss(nino: String, selfEmploymentId: String, taxYear: Option[String])
-GET        /:nino/uk-property                              v1.controllers.RetrieveUKPropertyBISSController.retrieveBiss(nino: String, taxYear: Option[String], typeOfBusiness: Option[String])
-GET        /:nino/foreign-property                         v1.controllers.RetrieveForeignPropertyBISSController.retrieveBiss(nino: String, businessId: Option[String], taxYear: Option[String], typeOfBusiness: Option[String])

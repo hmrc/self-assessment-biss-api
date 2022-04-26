@@ -18,7 +18,7 @@ package definition
 
 import config.ConfidenceLevelConfig
 import definition.APIStatus._
-import definition.Versions.{VERSION_1, VERSION_2}
+import definition.Versions.VERSION_2
 import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
@@ -35,9 +35,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class with endpoint version settings taken from configuration" in new Test {
-        MockedAppConfig.apiStatus("1.0") returns "STABLE"
         MockedAppConfig.apiStatus("2.0") returns "ALPHA"
-        MockedAppConfig.endpointsEnabled("1.0") returns true
         MockedAppConfig.endpointsEnabled("2.0") returns false
         MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(
           definitionEnabled = true,
@@ -67,11 +65,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               context = "api.gateway.context",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
-                APIVersion(
-                  version = VERSION_1,
-                  status = STABLE,
-                  endpointsEnabled = true
-                ),
                 APIVersion(
                   version = VERSION_2,
                   status = ALPHA,

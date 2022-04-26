@@ -52,7 +52,6 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
-          apiVersion(VERSION_1),
           apiVersion(VERSION_2)
         ),
         requiresTrust = None

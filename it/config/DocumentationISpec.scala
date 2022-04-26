@@ -46,11 +46,6 @@ class DocumentationISpec extends IntegrationBaseSpec {
       |    "categories":["INCOME_TAX_MTD"],
       |    "versions":[
       |      {
-      |        "version":"1.0",
-      |        "status":"RETIRED",
-      |        "endpointsEnabled":true
-      |      },
-      |      {
       |        "version":"2.0",
       |        "status":"ALPHA",
       |        "endpointsEnabled":false
@@ -71,7 +66,7 @@ class DocumentationISpec extends IntegrationBaseSpec {
 
   "a documentation request" must {
     "return the documentation" in {
-      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
+      val response: WSResponse = await(buildRequest("/api/conf/2.0/application.raml").get())
       response.status shouldBe Status.OK
       response.body[String] should startWith("#%RAML 1.0")
     }
