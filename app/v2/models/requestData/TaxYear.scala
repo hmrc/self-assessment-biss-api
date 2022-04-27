@@ -16,20 +16,21 @@
 
 package v2.models.requestData
 
-/**
- * Represents a tax year for DES/IF
- *
- * @param value the tax year string (where 2018 represents 2017-18)
- */
-case class TaxYear(value: String) extends AnyVal {
-  override def toString: String = value
+/** Represents a tax year
+  *
+  * @param value
+  *   the tax year string (where 2018 represents 2017-18)
+  */
+class TaxYear(private val value: String) extends AnyVal {
+  def downstreamValue: String = value
 }
 
 object TaxYear {
 
-  /**
-   * @param taxYear tax year in MTD format (e.g. 2017-18)
-   */
+  /** @param taxYear
+    *   tax year in MTD format (e.g. 2017-18)
+    */
   def fromMtd(taxYear: String): TaxYear =
-    TaxYear(taxYear.take(2) + taxYear.drop(5))
+    new TaxYear(taxYear.take(2) + taxYear.drop(5))
+
 }

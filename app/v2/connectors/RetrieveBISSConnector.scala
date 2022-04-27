@@ -36,7 +36,7 @@ class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppC
 
     val nino             = request.nino.nino
     val incomeSourceType = request.typeOfBusiness.toIncomeSourceType
-    val taxYear          = request.taxYear.toString
+    val taxYear          = request.taxYear.downstreamValue
     val businessId       = request.businessId
 
     val url = s"income-tax/income-sources/nino/$nino/$incomeSourceType/$taxYear/biss"
