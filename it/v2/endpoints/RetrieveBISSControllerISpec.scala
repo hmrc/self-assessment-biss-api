@@ -26,6 +26,7 @@ import v2.models.errors._
 import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import play.api.http.HeaderNames._
 import play.api.http.MimeTypes
+import play.api.test.Helpers.AUTHORIZATION
 
 class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
@@ -47,9 +48,11 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       AuthStub.authorised()
       MtdIdLookupStub.ninoFound(nino)
       buildRequest(uri)
-        .withHttpHeaders(ACCEPT -> "application/vnd.hmrc.2.0+json")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+      )
     }
-
   }
 
   "Calling the retrieve BISS endpoint" should {
@@ -114,7 +117,6 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         ("AA123456A", "2018-19", "BadBusinessId", "self-employment", BAD_REQUEST, BusinessIdFormatError),
         ("AA123456A", "2018-19", "XAIS12345678913", "not-business-type", BAD_REQUEST, TypeOfBusinessFormatError)
       )
-
       input.foreach(args => (validationErrorTest _).tupled(args))
     }
 
@@ -152,9 +154,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError)
       )
-
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
-
 }

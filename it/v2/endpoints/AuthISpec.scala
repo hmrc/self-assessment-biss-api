@@ -21,6 +21,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v2.fixtures.RetrieveBISSFixture
 import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -40,9 +41,11 @@ class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
     def request: WSRequest = {
       setupStubs()
       buildRequest(uri)
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+      )
     }
-
   }
 
   "Calling the GET self employment BISS endpoint" when {
@@ -111,7 +114,5 @@ class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
         response.status shouldBe Status.FORBIDDEN
       }
     }
-
   }
-
 }
