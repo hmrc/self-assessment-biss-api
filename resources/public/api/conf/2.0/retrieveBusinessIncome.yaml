@@ -2,35 +2,69 @@ get:
   summary: Retrieve a Business Income Source Summary (BISS)
   description: |
     This endpoint allows a developer to retrieve a running (year-to-date) summary of the income and expenditure for a specified self-employment, or property business during a tax year. A National Insurance number, business ID, tax year and type of business are required.
-    
+
     Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.
-    
+
     | Header Value (Gov-Test-Scenario) | Scenario                                                  |
     |----------------------------------|-----------------------------------------------------------|
     | N/A - DEFAULT                    | Simulates success response with profit.                   |
     | NOT_FOUND                        | Simulates the scenario where no data is found.            |
     | LOSS                             | Simulates success response with loss.                     |
     | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist. |
-
-
+  tags:
+    - not default
   parameters:
-  - $ref: "./pathParameters.yaml#/components/parameters/nino"
-  - $ref: "./pathParameters.yaml#/components/parameters/typeOfBusiness"
-  - $ref: "./pathParameters.yaml#/components/parameters/taxYear"
-  - $ref: "./pathParameters.yaml#/components/parameters/businessId"
-  - $ref: "./headers.yaml#/components/parameters/acceptHeader"
-  - $ref: "./headers.yaml#/components/parameters/contentTypeJson"
-  - $ref: "./headers.yaml#/components/parameters/testScenarioHeader"
+  - $ref: './pathParameters.yaml#/components/parameters/nino'
+  - $ref: './pathParameters.yaml#/components/parameters/typeOfBusiness'
+  - $ref: './pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './pathParameters.yaml#/components/parameters/businessId'
+  - $ref: './headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './headers.yaml#/components/parameters/testScenarioHeader'
   responses:
     "200":
-      description: "OK Response"
+      description: Successfully retrieved income summary
+      headers:
+        X-CorrelationId:
+          $ref: './headers.yaml#/components/parameters/correlationId'
       content:
         application/json:
-          example:
-            {
-              "message" : "Hello User"
-            }
-  security:
-    - user restricted:
-      - read:self-assessment
+          schema:
+            $ref: './schemas/retrieveBiss/retrieve_income_summary_response.json'
+          examples:
+            example-1:
+              description: Retrieve a Business Income Source Summary
+              externalValue: './examples/retrieveBusinessIncome/retrieve_income_summary_response.json'
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            bad nino format:
+              $ref: './errors.yaml#/components/examples/formatNino'
+            bad tax year format:
+              $ref: './errors.yaml#/components/examples/formatTaxYear'
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            client or agent not authorised:
+              $ref: './errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+    "404":
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            income source not found:
+              $ref: './errors.yaml#/components/examples/notFoundIncomeSource'
 
+  security:
+  - userRestricted:
+      - read:self-assessment

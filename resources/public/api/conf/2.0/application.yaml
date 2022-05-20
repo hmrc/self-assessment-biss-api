@@ -2,7 +2,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 2.0
+  version: "2.0"
   title: Business Income Source Summary (MTD)
   description: |
     # Overview
@@ -88,38 +88,8 @@ servers:
     description: Production
 
 components:
-  responses:
-
-#    badOrExpiredTokenResponse:
-#      description: |
-#        Bad or expired token.
-#        This can happen if the user or HMRC revoked or expired an access token.
-#        To fix, you should re-authenticate the user.
-#      content:
-#        application/json:
-#          example:
-#    forbiddenResponse:
-#      description: |
-#        Bad OAuth request (wrong consumer key, bad nonce, expired
-#        timestamp...). Unfortunately, re-authenticating the user won't help here.
-#      content:
-#        application/json:
-#          example:
-  parameters:
-
-
-#    acceptHeader:
-#      name: Accept
-#      in: header
-#      schema:
-#        type: string
-#        enum: [
-#            "application/vnd.hmrc.1.0+json",
-#            "application/vnd.hmrc.1.0+xml"
-#        ]
-#      required: true
   securitySchemes:
-    user restricted:
+    userRestricted:
       type: oauth2
       description: HMRC supports OAuth 2.0 for authenticating User-restricted API requests
       flows:
@@ -131,127 +101,5 @@ components:
             write:self-assessment: Some textual description
             read:self-assessment: Some textual description
 paths:
-  /hello/world:
-    get:
-      summary: Say hello world
-      description: |
-        A simple example for integrating with an unrestricted service.
-
-        Any request to this endpoint initiates a 'Hello World' response.
-      tags:
-        - api-example-microservice
-      parameters:
-        - $ref: '#/components/parameters/acceptHeader'
-      responses:
-        200:
-          description: "OK Response"
-          content:
-            application/json:
-              example:
-                {
-                  "message" : "Hello World"
-                }
-
-  /hello/user:
-    get:
-      summary: Say hello user
-      description: |
-        A simple example for integrating with a user-restricted service, using an OAuth 2.0 `access_token`.
-
-        Any authorised request to this endpoint initiates a 'Hello User' response.
-      tags:
-        - api-example-microservice
-      parameters:
-        - $ref: '#/components/parameters/acceptHeader'
-      responses:
-        200:
-          description: "OK Response"
-          content:
-            application/json:
-              example:
-                {
-                  "message" : "Hello User"
-                }
-        401:
-          description: "UNAUTHORISED Response"
-          content:
-            application/json:
-              example:
-                {
-                  "code": "MISSING_CREDENTIALS",
-                  "message": "Authentication information is not provided"
-                }
-      security:
-        - userScheme:
-            - hello
-
-  /hello/application:
-    get:
-      summary: Say hello application
-      description: |
-        A simple example for integrating with an application-restricted service, using an OAuth 2.0 `access_token`.
-
-        Any authorised request to this endpoint initiates a 'Hello Application' response.
-
-      tags:
-        - api-example-microservice
-      parameters:
-        - $ref: '#/components/parameters/acceptHeader'
-      responses:
-        200:
-          description: "OK Response"
-          content:
-            application/json:
-              example:
-                {
-                  "message" : "Hello Application"
-                }
-        401:
-          description: "UNAUTHORISED Response"
-          content:
-            application/json:
-              example:
-                {
-                  "code": "MISSING_CREDENTIALS",
-                  "message": "Authentication information is not provided"
-                }
-      security:
-        - appScheme: []
-
   /individuals/self-assessment/income-summary/{nino}/{typeOfBusiness}/{taxYear}/{businessId}:
-#    $ref: "./retrieveBusinessIncome.yaml"
-    get:
-      summary: Retrieve a Business Income Source Summary (BISS)
-      description: |
-        This endpoint allows a developer to retrieve a running (year-to-date) summary of the income and expenditure for a specified self-employment, or property business during a tax year. A National Insurance number, business ID, tax year and type of business are required.
-
-        Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.
-
-        | Header Value (Gov-Test-Scenario) | Scenario                                                  |
-        |----------------------------------|-----------------------------------------------------------|
-        | N/A - DEFAULT                    | Simulates success response with profit.                   |
-        | NOT_FOUND                        | Simulates the scenario where no data is found.            |
-        | LOSS                             | Simulates success response with loss.                     |
-        | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist. |
-      tags:
-        - not default
-      parameters:
-      - $ref: './pathParameters.yaml#/components/parameters/nino'
-      - $ref: './pathParameters.yaml#/components/parameters/typeOfBusiness'
-      - $ref: './pathParameters.yaml#/components/parameters/taxYear'
-      - $ref: './pathParameters.yaml#/components/parameters/businessId'
-      - $ref: './headers.yaml#/components/parameters/acceptHeader'
-      - $ref: './headers.yaml#/components/parameters/contentTypeJson'
-      - $ref: './headers.yaml#/components/parameters/testScenarioHeader'
-      responses:
-        "200":
-          description: "OK Response"
-          content:
-            application/json:
-              example:
-                {
-                  "message": "Hello User"
-                }
-      security:
-      - user restricted:
-          - read:self-assessment
+    $ref: "./retrieveBusinessIncome.yaml"
