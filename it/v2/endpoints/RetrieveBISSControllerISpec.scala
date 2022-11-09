@@ -57,17 +57,18 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
   }
 
   trait TysTest extends Test {
-    def downstreamUrl: String = s"individuals/self-assessment/income-summary/$nino/$incomeSourceType/23-24/$businessId"
+    def downstreamUrl: String = s"/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceType/biss"
   }
 
   trait NonTysTest extends Test {
-    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
+    def downstreamUrl: String            = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
+    def queryParams: Map[String, String] = Map("incomeSourceId" -> businessId)
   }
 
   "Calling the retrieve BISS endpoint" should {
     "return a valid response with status OK" when {
       "valid request is made" in new NonTysTest {
-        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), OK, downstreamResponseJsonFull)
+        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, queryParams, OK, downstreamResponseJsonFull)
 
         val response: WSResponse = await(request.get)
 
@@ -97,7 +98,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
           override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), OK, downstreamResponseJsonMin)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, queryParams, OK, downstreamResponseJsonMin)
 
           val response: WSResponse = await(request.get)
 
@@ -162,7 +163,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
       def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
-          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), downstreamStatus, errorBody(downstreamCode))
+          DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, queryParams, downstreamStatus, errorBody(downstreamCode))
 
           val response: WSResponse = await(request.get)
 
