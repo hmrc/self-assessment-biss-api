@@ -18,7 +18,7 @@ package v2.connectors
 
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.connectors.DownstreamUri.IfsUri
+import v2.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import v2.connectors.httpparsers.StandardDownstreamHttpParser._
 import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
@@ -33,13 +33,22 @@ class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppC
   def retrieveBiss(
       request: RetrieveBISSRequest)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
 
-    val nino             = request.nino.nino
-    val incomeSourceType = request.typeOfBusiness.toIncomeSourceType
-    val taxYear          = request.taxYear.asDownstream
-    val businessId       = request.businessId
+    import request._
+    val incomeSourceType = typeOfBusiness.toIncomeSourceType
 
-    val url = s"income-tax/income-sources/nino/$nino/$incomeSourceType/$taxYear/biss"
+    if (taxYear.useTaxYearSpecificApi) {
+      get(
+        uri = TaxYearSpecificIfsUri[RetrieveBISSResponse](
+          s"individuals/self-assessment/income-summary/${nino.nino}/$incomeSourceType/${taxYear.asTysDownstream}/$businessId"
+        )
+      )
+    } else {
+      get(
+        uri = IfsUri[RetrieveBISSResponse](s"income-tax/income-sources/nino/${nino.nino}/$incomeSourceType/${taxYear.asDownstream}/biss"),
+        queryParams = Seq("incomeSourceId" -> businessId)
+      )
+    }
 
-    get(uri = IfsUri[RetrieveBISSResponse](url), queryParams = Seq("incomeSourceId" -> businessId))
   }
+
 }

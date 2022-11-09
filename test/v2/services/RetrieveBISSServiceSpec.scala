@@ -34,7 +34,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
   private val response    = RetrieveBISSResponse(Total(income = 100.00, None, None, None, None), None, None)
 
   private implicit val correlationIdIn: String = "correlation-id-in"
-  private val correlationIdOut = "correlation-id-out"
+  private val correlationIdOut                 = "correlation-id-out"
 
   implicit val loggingContext: EndpointLogContext = EndpointLogContext("controller", "endpoint")
 
@@ -63,7 +63,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
           service.retrieveBiss(requestData).futureValue shouldBe Left(ErrorWrapper(correlationIdOut, error))
         }
 
-      val input = Seq(
+      val downstreamErrors = Seq(
         "INVALID_IDVALUE"              -> NinoFormatError,
         "INVALID_TAXYEAR"              -> TaxYearFormatError,
         "INVALID_IDTYPE"               -> DownstreamError,
@@ -78,7 +78,16 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"          -> DownstreamError
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      val tysErrors = Seq(
+        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+        "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+        "INVALID_CORRELATION_ID"    -> DownstreamError,
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_INCOME_SOURCETYPE" -> DownstreamError,
+        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+      )
+
+      (downstreamErrors ++ tysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

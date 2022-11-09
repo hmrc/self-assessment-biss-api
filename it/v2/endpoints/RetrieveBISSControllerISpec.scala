@@ -30,7 +30,7 @@ import play.api.test.Helpers.AUTHORIZATION
 
 class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
-  private trait Test {
+  trait Test {
 
     val taxYear            = "2020-21"
     val downstreamTaxYear  = "2021"
@@ -41,7 +41,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
     def uri: String = s"/$nino/$typeOfBusiness/$taxYear/$businessId"
 
-    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
+    def downstreamUrl: String
 
     def request: WSRequest = {
       AuditStub.audit()
@@ -51,14 +51,33 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
-      )
+        )
     }
+
+  }
+
+  trait TysTest extends Test {
+    def downstreamUrl: String = s"individuals/self-assessment/income-summary/$nino/$incomeSourceType/23-24/$businessId"
+  }
+
+  trait NonTysTest extends Test {
+    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
   }
 
   "Calling the retrieve BISS endpoint" should {
     "return a valid response with status OK" when {
-      "valid request is made" in new Test {
+      "valid request is made" in new NonTysTest {
         DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), OK, downstreamResponseJsonFull)
+
+        val response: WSResponse = await(request.get)
+
+        response.json shouldBe responseJsonFull
+        response.status shouldBe OK
+        response.header(CONTENT_TYPE) shouldBe Some(MimeTypes.JSON)
+      }
+
+      "valid TYS request is made" in new TysTest {
+        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, downstreamResponseJsonFull)
 
         val response: WSResponse = await(request.get)
 
@@ -73,8 +92,8 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       checkWith("foreign-property", "foreign-property")
       checkWith("foreign-property-fhl-eea", "fhl-property-eea")
 
-      def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit =
-        s"work for $requestTypeOfBusiness" in new Test {
+      def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit = {
+        s"work for $requestTypeOfBusiness" in new NonTysTest {
           override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
@@ -86,6 +105,20 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
           response.status shouldBe OK
           response.header(CONTENT_TYPE) shouldBe Some(MimeTypes.JSON)
         }
+
+        s"work for $requestTypeOfBusiness (TYS)" in new TysTest {
+          override val typeOfBusiness: String   = requestTypeOfBusiness
+          override val incomeSourceType: String = requestIncomeSourceType
+
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, downstreamResponseJsonMin)
+
+          val response: WSResponse = await(request.get)
+
+          response.json shouldBe responseJsonMin
+          response.status shouldBe OK
+          response.header(CONTENT_TYPE) shouldBe Some(MimeTypes.JSON)
+        }
+      }
     }
 
     "return error according to spec" when {
@@ -95,7 +128,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
                               requestTypeOfBusiness: String,
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new Test {
+        s"validation fails with ${expectedBody.code} error" in new NonTysTest {
           override val taxYear: String        = requestTaxYear
           override val nino: String           = requestNino
           override val businessId: String     = requestBusinessId
@@ -128,7 +161,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
            |}""".stripMargin
 
       def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
           DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, Map("incomeSourceId" -> businessId), downstreamStatus, errorBody(downstreamCode))
 
           val response: WSResponse = await(request.get)
@@ -139,7 +172,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         }
       }
 
-      val input = Seq(
+      val downstreamInput = Seq(
         (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError),
         (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, DownstreamError),
@@ -154,7 +187,18 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError)
       )
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+
+      val tysInput = Seq(
+        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_INCOME_SOURCETYPE", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      )
+
+      (downstreamInput ++ tysInput).foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

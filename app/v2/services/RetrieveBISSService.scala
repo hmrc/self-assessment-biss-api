@@ -38,7 +38,7 @@ class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector)(implicit 
       logContext: EndpointLogContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.retrieveBiss(request)).leftMap(mapDownstreamErrors(mappingToMtdError))
+      desResponseWrapper <- EitherT(connector.retrieveBiss(request)).leftMap(mapDownstreamErrors(downStreamErrors))
     } yield desResponseWrapper
 
     result.value
@@ -58,5 +58,16 @@ class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector)(implicit 
     "SERVER_ERROR"                 -> DownstreamError,
     "SERVICE_UNAVAILABLE"          -> DownstreamError
   )
+
+  private val tysErrors = Map(
+    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+    "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+    "INVALID_CORRELATION_ID"    -> DownstreamError,
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_INCOME_SOURCETYPE" -> DownstreamError,
+    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+  )
+
+  private val downStreamErrors: Map[String, MtdError] = mappingToMtdError ++ tysErrors
 
 }

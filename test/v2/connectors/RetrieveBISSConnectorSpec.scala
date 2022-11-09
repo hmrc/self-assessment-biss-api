@@ -28,6 +28,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
   val taxYearMtd        = "2018-19"
   val taxYearDownstream = "2019"
+  val taxYearTys        = "2023-24"
   val nino              = "AA123456A"
   val businessId        = "businessId"
 
@@ -39,6 +40,20 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
     val connector: RetrieveBISSConnector = new RetrieveBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
   }
 
+  trait NonTysTest {
+
+    val expectedUrl: String => String = (incomeSourceType: String) =>
+      s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceType/$taxYearDownstream/biss"
+
+  }
+
+  trait TysTest {
+
+    val expectedUrl: String => String = (incomeSourceType: String) =>
+      s"$baseUrl/individuals/self-assessment/income-summary/$nino/$incomeSourceType/23-24/$businessId"
+
+  }
+
   "retrieveBiss" should {
     "make a request to downstream as per the specification" when {
       withBusinessType(TypeOfBusiness.`uk-property-non-fhl`, "uk-property")
@@ -47,17 +62,27 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
       withBusinessType(TypeOfBusiness.`foreign-property-fhl-eea`, "fhl-property-eea")
       withBusinessType(TypeOfBusiness.`foreign-property`, "foreign-property")
 
-      def withBusinessType(typeOfBusiness: TypeOfBusiness, incomeSourceTypePathParam: String): Unit =
-        s"businessType is $typeOfBusiness" in new IfsTest with Test {
+      def withBusinessType(typeOfBusiness: TypeOfBusiness, incomeSourceTypePathParam: String): Unit = {
+        s"businessType is $typeOfBusiness and non TYS" in new IfsTest with NonTysTest with Test {
           val request: RetrieveBISSRequest = RetrieveBISSRequest(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearMtd), businessId)
 
-          val expected = Right(ResponseWrapper(correlationId, response))
+          val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 
-          val expectedUrl = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceTypePathParam/$taxYearDownstream/biss"
-          willGet(url = expectedUrl, parameters = Seq("incomeSourceId" -> businessId)) returns Future.successful(expected)
+          willGet(url = expectedUrl(incomeSourceTypePathParam), parameters = Seq("incomeSourceId" -> businessId)) returns Future.successful(expected)
 
           await(connector.retrieveBiss(request)) shouldBe expected
         }
+
+        s"businessType is $typeOfBusiness and TYS" in new TysIfsTest with TysTest with Test {
+          val request: RetrieveBISSRequest = RetrieveBISSRequest(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), businessId)
+
+          val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
+
+          willGet(url = expectedUrl(incomeSourceTypePathParam)) returns Future.successful(expected)
+
+          await(connector.retrieveBiss(request)) shouldBe expected
+        }
+      }
     }
   }
 
