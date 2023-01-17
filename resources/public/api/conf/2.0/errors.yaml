@@ -1,0 +1,29 @@
+components:
+  examples:
+    formatNino:
+      description: |
+        The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+        message: boooo bad nino
+
+    formatTaxYear:
+      description: |
+        The format of the supplied tax year field is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: boooo bad tax year
+
+    clientOrAgentNotAuthorised:
+      description: |
+        The client or agent is not authorised. This is because the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+        message: boooo bad client or agent
+
+    notFoundIncomeSource:
+      description: |
+        The supplied income source could not be found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: boooo bad resource

@@ -1,0 +1,41 @@
+components:
+  parameters:
+    nino:
+      name: nino
+      in: path
+      description: |
+        National Insurance number, in the format AA999999A
+      schema:
+        type: string
+        example: TC663795B
+    typeOfBusiness:
+      name: typeOfBusiness
+      in: path
+      description: |
+        The type of business the summary calculation is for.
+      schema:
+        type: string
+        enum: [
+            "foreign-property-fhl-eea",
+            "foreign-property",
+            "uk-property-non-fhl",
+            "uk-property-fhl",
+            "self-employment"
+        ]
+    taxYear:
+      name: taxYear
+      in: path
+      description: |
+        The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year for UK property and self-employment is 2017-18 and for foreign property, it is 2019-20. No gaps are allowed, for example, 2020-22 is not valid.
+      schema:
+        type: string
+        example: TC663795B
+    businessId:
+      name: businessId
+      in: path
+      description: |
+        An identifier for the business, unique to the customer. Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`
+      schema:
+        type: string
+        #      example: "XAIS12345678910"
+        pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
