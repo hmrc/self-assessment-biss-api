@@ -13,7 +13,8 @@ components:
       name: taxYear
       in: path
       description: |
-        The tax year to which the data applies. For example: 2022-23. The start year and end year must not span two tax years. The minimum tax year is 2022-23. No gaps are allowed, for example, 2022-24 is not valid. (The minimum tax year in Sandbox is 2021-22.)
+        The tax year to which the data applies. For example: 2022-23. The start year and end year must not span two tax years.
+        The minimum tax year is 2022-23. No gaps are allowed, for example, 2022-24 is not valid. (The minimum tax year in Sandbox is 2021-22.)
       schema:
         type: string
         example: 2022-23
@@ -32,7 +33,7 @@ components:
       name: typeOfBusiness
       in: path
       description: |
-        The type of business the summary calculation is for. Limited to the following possible values: <ul><li>`foreign-property-fhl-eea`<li>`foreign-property`<li>`uk-property-non-fhl`<li>`uk-property-fhl`<li>`self-employment`
+        The type of business the summary calculation is for.
       schema:
-        type: string
+        enum: [foreign-property-fhl-eea, foreign-property, uk-property-non-fhl, uk-property-fhl, self-employment]
       required: true
