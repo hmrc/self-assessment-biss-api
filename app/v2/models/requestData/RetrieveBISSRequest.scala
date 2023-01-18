@@ -16,6 +16,6 @@
 
 package v2.models.requestData
 
-import v2.models.domain.{Nino, TypeOfBusiness}
+import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
 
 case class RetrieveBISSRequest(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: String)

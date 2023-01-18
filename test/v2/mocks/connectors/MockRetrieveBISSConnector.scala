@@ -31,10 +31,10 @@ trait MockRetrieveBISSConnector extends MockFactory {
 
   object MockRetrieveBISSConnector {
 
-    def retrieveBiss(requestData: RetrieveBISSRequest, correlationId: String): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
+    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
       (mockConnector
         .retrieveBiss(_: RetrieveBISSRequest)(_: HeaderCarrier, _: String))
-        .expects(requestData, *, correlationId)
+        .expects(requestData, *, *)
     }
 
   }

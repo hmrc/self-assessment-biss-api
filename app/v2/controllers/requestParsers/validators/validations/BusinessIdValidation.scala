@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.errors.{BusinessIdFormatError, MtdError}
+import api.models.errors.{BusinessIdFormatError, MtdError}
 
 object BusinessIdValidation {
 

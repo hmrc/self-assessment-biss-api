@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import api.controllers.{BaseController, EndpointLogContext}
 import play.api.http.HttpEntity
 import play.api.mvc.{ResponseHeader, Result}
 import support.UnitSpec

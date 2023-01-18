@@ -16,15 +16,8 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.models.errors.{BusinessIdFormatError, NinoFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError, TypeOfBusinessFormatError}
 import support.UnitSpec
-import v2.models.errors.{
-  BusinessIdFormatError,
-  NinoFormatError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError,
-  TaxYearFormatError,
-  TypeOfBusinessFormatError
-}
 import v2.models.requestData.RetrieveBISSRawData
 
 class RetrieveBISSValidatorSpec extends UnitSpec {

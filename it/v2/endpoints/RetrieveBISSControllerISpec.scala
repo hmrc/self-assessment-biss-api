@@ -16,6 +16,18 @@
 
 package v2.endpoints
 
+import api.models.errors.{
+  BusinessIdFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleNoIncomeSubmissionsExist,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  TaxYearFormatError,
+  TypeOfBusinessFormatError
+}
 import play.api.http.HeaderNames._
 import play.api.http.MimeTypes
 import play.api.http.Status._
@@ -24,46 +36,9 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v2.fixtures.RetrieveBISSFixture
-import v2.models.errors._
 import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
-
-  trait Test {
-
-    val taxYear            = "2020-21"
-    val downstreamTaxYear  = "2021"
-    val nino: String       = "AA123456A"
-    val businessId: String = "XAIS12345678913"
-    val typeOfBusiness     = "self-employment"
-    val incomeSourceType   = "self-employment"
-
-    def uri: String = s"/$nino/$typeOfBusiness/$taxYear/$businessId"
-
-    def downstreamUrl: String
-
-    def request: WSRequest = {
-      AuditStub.audit()
-      AuthStub.authorised()
-      MtdIdLookupStub.ninoFound(nino)
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
-  trait TysTest extends Test {
-    def downstreamUrl: String = s"/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceType/biss"
-  }
-
-  trait NonTysTest extends Test {
-    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
-
-    def queryParams: Map[String, String] = Map("incomeSourceId" -> businessId)
-  }
 
   "Calling the retrieve BISS endpoint" should {
     "return a valid response with status OK" when {
@@ -176,30 +151,66 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       val downstreamInput = Seq(
         (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError),
-        (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_INCOMESOURCETYPE", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_INCOMESOURCETYPE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_INCOMESOURCEID", BAD_REQUEST, BusinessIdFormatError),
         (UNPROCESSABLE_ENTITY, "INCOME_SUBMISSIONS_NOT_EXIST", BAD_REQUEST, RuleNoIncomeSubmissionsExist),
-        (UNPROCESSABLE_ENTITY, "INVALID_ACCOUNTING_PERIOD", INTERNAL_SERVER_ERROR, DownstreamError),
-        (UNPROCESSABLE_ENTITY, "INVALID_QUERY_PARAM", INTERNAL_SERVER_ERROR, DownstreamError),
+        (UNPROCESSABLE_ENTITY, "INVALID_ACCOUNTING_PERIOD", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "INVALID_QUERY_PARAM", INTERNAL_SERVER_ERROR, InternalError),
         (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError)
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       val tysInput = Seq(
         (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
         (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_INCOME_SOURCETYPE", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_INCOME_SOURCETYPE", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
       (downstreamInput ++ tysInput).foreach(args => (serviceErrorTest _).tupled(args))
     }
+  }
+
+  trait Test {
+
+    val taxYear           = "2020-21"
+    val downstreamTaxYear = "2021"
+    val nino              = "AA123456A"
+    val businessId        = "XAIS12345678913"
+    val typeOfBusiness    = "self-employment"
+    val incomeSourceType  = "self-employment"
+
+    def uri: String = s"/$nino/$typeOfBusiness/$taxYear/$businessId"
+
+    def downstreamUrl: String
+
+    def request: WSRequest = {
+      AuditStub.audit()
+      AuthStub.authorised()
+      MtdIdLookupStub.ninoFound(nino)
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
+    }
+
+  }
+
+  trait TysTest extends Test {
+    def downstreamUrl: String = s"/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceType/biss"
+  }
+
+  trait NonTysTest extends Test {
+    def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/$incomeSourceType/$downstreamTaxYear/biss"
+
+    def queryParams: Map[String, String] = Map("incomeSourceId" -> businessId)
   }
 
 }

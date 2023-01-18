@@ -16,17 +16,16 @@
 
 package v2.mocks.services
 
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v2.controllers.EndpointLogContext
-import v2.models.errors.ErrorWrapper
-import v2.models.outcomes.ResponseWrapper
 import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
 import v2.services.RetrieveBISSService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveBISSService extends MockFactory {
 
@@ -36,8 +35,8 @@ trait MockRetrieveBISSService extends MockFactory {
 
     def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveBISSResponse]]]] = {
       (mockService
-        .retrieveBiss(_: RetrieveBISSRequest)(_: HeaderCarrier, _: String, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .retrieveBiss(_: RetrieveBISSRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

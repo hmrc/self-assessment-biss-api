@@ -16,12 +16,14 @@
 
 package v2.services
 
-import v2.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
+import api.models.errors.{BusinessIdFormatError, DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleNoIncomeSubmissionsExist, RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import v2.mocks.connectors.MockRetrieveBISSConnector
-import v2.models.domain.{Nino, TypeOfBusiness}
-import v2.models.errors._
-import v2.models.outcomes.ResponseWrapper
-import v2.models.requestData.{TaxYear, RetrieveBISSRequest}
+import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.Total
 
@@ -33,9 +35,6 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
   private val requestData = RetrieveBISSRequest(Nino("AA123456A"), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd("2019-20"), "XAIS12345678910")
   private val response    = RetrieveBISSResponse(Total(income = 100.00, None, None, None, None), None, None)
 
-  private implicit val correlationIdIn: String = "correlation-id-in"
-  private val correlationIdOut                 = "correlation-id-out"
-
   implicit val loggingContext: EndpointLogContext = EndpointLogContext("controller", "endpoint")
 
   trait Test extends MockRetrieveBISSConnector {
@@ -45,10 +44,11 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
   "retrieveBiss" should {
     "return a valid response" when {
       "a valid response is received from the downstream service" in new Test {
-        MockRetrieveBISSConnector.retrieveBiss(requestData, correlationIdIn) returns Future.successful(
-          Right(ResponseWrapper(correlationIdOut, response)))
+        MockRetrieveBISSConnector
+          .retrieveBiss(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        service.retrieveBiss(requestData).futureValue shouldBe Right(ResponseWrapper(correlationIdOut, response))
+        await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
 
@@ -57,37 +57,38 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the downstream service" in new Test {
 
-          MockRetrieveBISSConnector.retrieveBiss(requestData, correlationIdIn) returns Future.successful(
-            Left(ResponseWrapper(correlationIdOut, IfsErrors.single(IfsErrorCode(downstreamErrorCode)))))
+          MockRetrieveBISSConnector
+            .retrieveBiss(requestData) returns Future.successful(
+            Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode)))))
 
-          service.retrieveBiss(requestData).futureValue shouldBe Left(ErrorWrapper(correlationIdOut, error))
+          service.retrieveBiss(requestData).futureValue shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val downstreamErrors = Seq(
+      val errors = Seq(
         "INVALID_IDVALUE"              -> NinoFormatError,
         "INVALID_TAXYEAR"              -> TaxYearFormatError,
-        "INVALID_IDTYPE"               -> DownstreamError,
-        "INVALID_CORRELATIONID"        -> DownstreamError,
-        "INVALID_INCOMESOURCETYPE"     -> DownstreamError,
+        "INVALID_IDTYPE"               -> InternalError,
+        "INVALID_CORRELATIONID"        -> InternalError,
+        "INVALID_INCOMESOURCETYPE"     -> InternalError,
         "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
         "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
-        "INVALID_ACCOUNTING_PERIOD"    -> DownstreamError,
-        "INVALID_QUERY_PARAM"          -> DownstreamError,
+        "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
+        "INVALID_QUERY_PARAM"          -> InternalError,
         "NOT_FOUND"                    -> NotFoundError,
-        "SERVER_ERROR"                 -> DownstreamError,
-        "SERVICE_UNAVAILABLE"          -> DownstreamError
+        "SERVER_ERROR"                 -> InternalError,
+        "SERVICE_UNAVAILABLE"          -> InternalError
       )
 
-      val tysErrors = Seq(
+      val extraTysErrors = Seq(
         "INVALID_TAX_YEAR"          -> TaxYearFormatError,
         "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-        "INVALID_CORRELATION_ID"    -> DownstreamError,
+        "INVALID_CORRELATION_ID"    -> InternalError,
         "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "INVALID_INCOME_SOURCETYPE" -> DownstreamError,
+        "INVALID_INCOME_SOURCETYPE" -> InternalError,
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      (downstreamErrors ++ tysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 
