@@ -31,7 +31,7 @@ components:
         code: FORMAT_TYPE_OF_BUSINESS
         message: The provided typeOfBusiness is invalid
 
-    formatBusinessID:
+    formatBusinessId:
       description: |
         The format of the supplied Business ID field is not valid.
       value:
