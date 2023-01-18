@@ -16,8 +16,8 @@
 
 package v2.controllers.requestParsers.validators.validations
 
-import v2.models.domain.TypeOfBusiness
-import v2.models.errors.{MtdError, TypeOfBusinessFormatError}
+import api.models.domain.TypeOfBusiness
+import api.models.errors.{MtdError, TypeOfBusinessFormatError}
 
 object TypeOfBusinessValidation {
 

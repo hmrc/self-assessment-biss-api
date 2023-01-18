@@ -16,9 +16,10 @@
 
 package v2.connectors
 
-import v2.models.domain.{Nino, TypeOfBusiness}
-import v2.models.outcomes.ResponseWrapper
-import v2.models.requestData.{RetrieveBISSRequest, TaxYear}
+import api.connectors.ConnectorSpec
+import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
+import api.models.outcomes.ResponseWrapper
+import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.Total
 

@@ -16,11 +16,11 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
+import api.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import support.UnitSpec
 import v2.mocks.validators.MockRetrieveBISSValidator
-import v2.models.domain.{Nino, TypeOfBusiness}
-import v2.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest, TaxYear}
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
 
 class RetrieveBISSRequestDataParserSpec extends UnitSpec {
 

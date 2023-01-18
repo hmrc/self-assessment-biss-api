@@ -16,58 +16,53 @@
 
 package v2.services
 
-import cats.data.EitherT
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.BaseService
+import cats.implicits._
 import v2.connectors.RetrieveBISSConnector
-import v2.controllers.EndpointLogContext
-import v2.models.errors._
 import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
-import v2.support.ServiceSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector)(implicit ec: ExecutionContext) extends ServiceSupport with Logging {
+class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector) extends BaseService {
 
-  def retrieveBiss(request: RetrieveBISSRequest)(implicit
-      hc: HeaderCarrier,
-      correlationId: String,
-      logContext: EndpointLogContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
+  def retrieveBiss(request: RetrieveBISSRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.retrieveBiss(request)).leftMap(mapDownstreamErrors(downStreamErrors))
-    } yield desResponseWrapper
-
-    result.value
+    connector
+      .retrieveBiss(request)
+      .map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val mappingToMtdError = Map(
-    "INVALID_IDVALUE"              -> NinoFormatError,
-    "INVALID_TAXYEAR"              -> TaxYearFormatError,
-    "INVALID_IDTYPE"               -> DownstreamError,
-    "INVALID_CORRELATIONID"        -> DownstreamError,
-    "INVALID_INCOMESOURCETYPE"     -> DownstreamError,
-    "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
-    "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
-    "INVALID_ACCOUNTING_PERIOD"    -> DownstreamError,
-    "INVALID_QUERY_PARAM"          -> DownstreamError,
-    "NOT_FOUND"                    -> NotFoundError,
-    "SERVER_ERROR"                 -> DownstreamError,
-    "SERVICE_UNAVAILABLE"          -> DownstreamError
-  )
+  private val errorMap: Map[String, MtdError] = {
+    val errors = Map(
+      "INVALID_IDVALUE"              -> NinoFormatError,
+      "INVALID_TAXYEAR"              -> TaxYearFormatError,
+      "INVALID_IDTYPE"               -> InternalError,
+      "INVALID_CORRELATIONID"        -> InternalError,
+      "INVALID_INCOMESOURCETYPE"     -> InternalError,
+      "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
+      "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
+      "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
+      "INVALID_QUERY_PARAM"          -> InternalError,
+      "NOT_FOUND"                    -> NotFoundError,
+      "SERVER_ERROR"                 -> InternalError,
+      "SERVICE_UNAVAILABLE"          -> InternalError
+    )
 
-  private val tysErrors = Map(
-    "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-    "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-    "INVALID_CORRELATION_ID"    -> DownstreamError,
-    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-    "INVALID_INCOME_SOURCETYPE" -> DownstreamError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
-  )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"    -> InternalError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_INCOME_SOURCETYPE" -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
+    )
 
-  private val downStreamErrors: Map[String, MtdError] = mappingToMtdError ++ tysErrors
+    errors ++ extraTysErrors
+  }
 
 }

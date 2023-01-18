@@ -16,10 +16,10 @@
 
 package v2.controllers.requestParsers
 
+import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
 import javax.inject.Inject
 import v2.controllers.requestParsers.validators.RetrieveBISSValidator
-import v2.models.domain.{Nino, TypeOfBusiness}
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest, TaxYear}
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
 
 class RetrieveBISSRequestDataParser @Inject() (val validator: RetrieveBISSValidator) extends RequestParser[RetrieveBISSRawData, RetrieveBISSRequest] {
 

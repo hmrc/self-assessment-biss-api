@@ -16,10 +16,10 @@
 
 package utils
 
+import api.models.errors.{BadRequestError, ClientNotAuthenticatedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
 import javax.inject._
 import play.api._
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthorisationException
@@ -28,21 +28,15 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
-import v2.models.errors._
 
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject() (
-    config: Configuration,
-    auditConnector: AuditConnector,
-    httpAuditEvent: HttpAuditEvent
-)(implicit ec: ExecutionContext)
-    extends JsonErrorHandler(auditConnector, httpAuditEvent, config) {
+class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
+    extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
+    with Logging {
 
   import httpAuditEvent.dataEvent
-
-  val logger: Logger = Logger(getClass)
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
@@ -51,18 +45,22 @@ class ErrorHandler @Inject() (
     logger.warn(
       s"[ErrorHandler][onClientError] error in version 2, for (${request.method}) [${request.uri}] with status:" +
         s" $statusCode and message: $message")
+
     statusCode match {
+
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
-        Future.successful(BadRequest(Json.toJson(BadRequestError)))
+        Future.successful(BadRequest(BadRequestError.asJson))
+
       case NOT_FOUND =>
         auditConnector.sendEvent(dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request))
-        Future.successful(NotFound(Json.toJson(NotFoundError)))
+        Future.successful(NotFound(NotFoundError.asJson))
+
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED           => UnauthorisedError
+          case UNAUTHORIZED           => ClientNotAuthenticatedError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
-          case _                      => MtdError("INVALID_REQUEST", message)
+          case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
 
         auditConnector.sendEvent(
@@ -74,7 +72,7 @@ class ErrorHandler @Inject() (
           )
         )
 
-        Future.successful(Status(statusCode)(Json.toJson(errorCode)))
+        Future.successful(Status(statusCode)(errorCode.asJson))
     }
   }
 
@@ -85,14 +83,14 @@ class ErrorHandler @Inject() (
 
     val (status, errorCode, eventType) = ex match {
       case _: NotFoundException      => (NOT_FOUND, NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (UNAUTHORIZED, UnauthorisedError, "ClientError")
+      case _: AuthorisationException => (UNAUTHORIZED, ClientNotAuthenticatedError, "ClientError")
       case _: JsValidationException  => (BAD_REQUEST, BadRequestError, "ServerValidationError")
       case e: HttpException          => (e.responseCode, BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
         (e.reportAs, BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
-        (e.reportAs, DownstreamError, "ServerInternalError")
-      case _ => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
+        (e.reportAs, InternalError, "ServerInternalError")
+      case _ => (INTERNAL_SERVER_ERROR, InternalError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(
@@ -104,7 +102,7 @@ class ErrorHandler @Inject() (
       )
     )
 
-    Future.successful(Status(status)(Json.toJson(errorCode)))
+    Future.successful(Status(status)(errorCode.asJson))
   }
 
 }

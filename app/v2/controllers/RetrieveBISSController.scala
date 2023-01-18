@@ -16,22 +16,21 @@
 
 package v2.controllers
 
-import cats.data.EitherT
-import play.api.libs.json.Json
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v2.controllers.requestParsers.RetrieveBISSRequestDataParser
-import v2.models.errors._
 import v2.models.requestData.RetrieveBISSRawData
-import v2.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveBISSService}
+import v2.services.RetrieveBISSService
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         requestParser: RetrieveBISSRequestDataParser,
-                                        retrieveBISSService: RetrieveBISSService,
+                                        service: RetrieveBISSService,
                                         cc: ControllerComponents,
                                         val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
@@ -46,55 +45,17 @@ class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
 
   def retrieveBiss(nino: String, typeOfBusiness: String, taxYear: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = RetrieveBISSRawData(nino = nino, typeOfBusiness = typeOfBusiness, taxYear = taxYear, businessId = businessId)
 
-      val result =
-        for {
-          parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          response      <- EitherT(retrieveBISSService.retrieveBiss(parsedRequest))
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with correlationId: ${response.correlationId}"
-          )
+      val requestHandler =
+        RequestHandler
+          .withParser(requestParser)
+          .withService(service.retrieveBiss)
+          .withResultCreator(ResultCreator.plainJson(OK))
 
-          Ok(Json.toJson(response.responseData))
-            .withApiHeaders(response.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: ${errorWrapper.correlationId}")
-
-        errorResult(errorWrapper)
-          .withApiHeaders(errorWrapper.correlationId)
-      }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            BusinessIdFormatError,
-            TaxYearFormatError,
-            TypeOfBusinessFormatError,
-            RuleTaxYearNotSupportedError,
-            RuleTaxYearRangeInvalidError,
-            RuleTypeOfBusinessError,
-            RuleNoIncomeSubmissionsExist
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _               => unhandledError(errorWrapper)
+      requestHandler.handleRequest(rawData)
     }
 
 }
