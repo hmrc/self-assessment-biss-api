@@ -21,7 +21,7 @@ import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
 import cats.data.EitherT
 import cats.implicits._
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
@@ -75,7 +75,7 @@ object RequestHandler {
       * withResultCreator(ResultCreator.plainJson(successStatus))
       * }}}
       */
-    def withPlainJsonResult(successStatus: Int = Status.OK)(implicit ws: Writes[Output]): RequestHandlerBuilder[InputRaw, Input, Output] =
+    def withPlainJsonResult(successStatus: Int = OK)(implicit ws: Writes[Output]): RequestHandlerBuilder[InputRaw, Input, Output] =
       withResultCreator(ResultCreator.plainJson(successStatus))
 
     /** Shorthand for
@@ -83,7 +83,7 @@ object RequestHandler {
       * withResultCreator(ResultCreator.noContent)
       * }}}
       */
-    def withNoContentResult(successStatus: Int = Status.NO_CONTENT): RequestHandlerBuilder[InputRaw, Input, Output] =
+    def withNoContentResult(successStatus: Int = NO_CONTENT): RequestHandlerBuilder[InputRaw, Input, Output] =
       withResultCreator(ResultCreator.noContent(successStatus))
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
