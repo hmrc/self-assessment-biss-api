@@ -23,7 +23,7 @@ import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 import utils.Logging
 
-class ServiceSupportSpec extends UnitSpec {
+class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
   implicit val logContext: EndpointLogContext                = EndpointLogContext("ctrl", "ep")
   val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
