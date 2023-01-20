@@ -18,38 +18,41 @@ package api.models.audit
 
 import api.models.auth.UserDetails
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, OWrites}
+import play.api.libs.json.{JsPath, JsValue, OWrites}
 
-case class GenericAuditDetail(
-    userType: String,
-    agentReferenceNumber: Option[String],
-    nino: String,
-    taxYear: String,
-    `X-CorrelationId`: String,
-    auditResponse: AuditResponse
-)
+case class GenericAuditDetail(userType: String,
+                              agentReferenceNumber: Option[String],
+                              params: Map[String, String],
+                              requestBody: Option[JsValue],
+                              `X-CorrelationId`: String,
+                              auditResponse: AuditResponse)
 
 object GenericAuditDetail {
 
   implicit val writes: OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
-      (JsPath \ "nino").write[String] and
-      (JsPath \ "taxYear").write[String] and
+      JsPath.write[Map[String, String]] and
+      (JsPath \ "request").writeNullable[JsValue] and
       (JsPath \ "X-CorrelationId").write[String] and
       (JsPath \ "response").write[AuditResponse]
-  )(unlift(GenericAuditDetail.unapply))
+    )(unlift(GenericAuditDetail.unapply))
 
-  def apply(userDetails: UserDetails, nino: String, taxYear: String, `X-CorrelationId`: String, auditResponse: AuditResponse): GenericAuditDetail = {
+  def apply(userDetails: UserDetails,
+            params: Map[String, String],
+            requestBody: Option[JsValue],
+            `X-CorrelationId`: String,
+            auditResponse: AuditResponse): GenericAuditDetail = {
 
     GenericAuditDetail(
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
-      nino = nino,
-      taxYear = taxYear,
+      params = params,
+      requestBody = requestBody,
       `X-CorrelationId` = `X-CorrelationId`,
       auditResponse = auditResponse
     )
   }
 
 }
+

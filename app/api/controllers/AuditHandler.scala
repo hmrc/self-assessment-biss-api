@@ -30,15 +30,13 @@ object AuditHandler {
   def apply(auditService: AuditService,
             auditType: String,
             transactionName: String,
-            nino: String,
-            taxYear: String,
+            params: Map[String, String],
             requestBody: Option[JsValue] = None,
             includeResponse: Boolean = false): AuditHandler = new AuditHandler(
     auditService = auditService,
     auditType = auditType,
     transactionName = transactionName,
-    nino = nino,
-    taxYear = taxYear,
+    params = params,
     requestBody = requestBody,
     responseBodyMap = if (includeResponse) identity else _ => None
   )
@@ -48,22 +46,21 @@ object AuditHandler {
 case class AuditHandler(auditService: AuditService,
                         auditType: String,
                         transactionName: String,
-                        nino: String,
-                        taxYear: String,
+                        params: Map[String, String],
                         requestBody: Option[JsValue],
                         responseBodyMap: Option[JsValue] => Option[JsValue])
-    extends RequestContextImplicits {
+  extends RequestContextImplicits {
 
   def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Unit = {
+                                                                                                               ctx: RequestContext,
+                                                                                                               ec: ExecutionContext): Unit = {
     val auditEvent = {
       val auditResponse = AuditResponse(httpStatus, response.map(responseBodyMap).leftMap(ew => ew.auditErrors))
 
       val detail = GenericAuditDetail(
         userDetails = userDetails,
-        nino = nino,
-        taxYear = taxYear,
+        params = params,
+        requestBody = requestBody,
         `X-CorrelationId` = ctx.correlationId,
         auditResponse = auditResponse
       )
@@ -73,5 +70,4 @@ case class AuditHandler(auditService: AuditService,
 
     auditService.auditEvent(auditEvent)
   }
-
 }
