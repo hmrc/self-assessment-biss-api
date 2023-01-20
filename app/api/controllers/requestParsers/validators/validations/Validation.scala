@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators.validations
+package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.MtdError
-import play.api.libs.json._
-
-object JsonFormatValidation {
-
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A]): List[MtdError] = {
-
-    data.validate[A] match {
-      case JsSuccess(_, _) => NoValidationErrors
-      case _               => List(error)
-    }
-
-  }
-
-}
+trait Validation

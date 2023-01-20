@@ -21,7 +21,6 @@ import api.models.utils.JsonErrorValidators
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Json, Reads}
 import support.UnitSpec
-import v2.controllers.requestParsers.validators.validations.JsonFormatValidation
 
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 

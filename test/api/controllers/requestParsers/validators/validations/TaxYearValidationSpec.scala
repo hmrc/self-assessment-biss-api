@@ -18,7 +18,6 @@ package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.{RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import support.UnitSpec
-import v2.controllers.requestParsers.validators.validations.TaxYearValidation
 
 class TaxYearValidationSpec extends UnitSpec {
 

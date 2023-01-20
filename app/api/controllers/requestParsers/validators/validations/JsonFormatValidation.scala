@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators.validations
+package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{BusinessIdFormatError, MtdError}
+import api.controllers.requestParsers.validators.validations.validations.NoValidationErrors
+import api.models.errors.MtdError
+import play.api.libs.json.{JsSuccess, JsValue, Reads}
 
-object BusinessIdValidation {
+object JsonFormatValidation {
 
-  private val regex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A]): List[MtdError] = {
 
-  def validate(businessId: String): List[MtdError] = {
-    if (businessId.matches(regex)) NoValidationErrors else List(BusinessIdFormatError)
+    data.validate[A] match {
+      case JsSuccess(_, _) => NoValidationErrors
+      case _               => List(error)
+    }
+
   }
 
 }

@@ -16,9 +16,9 @@
 
 package v2.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.validations.{BusinessIdValidation, NinoValidation, TaxYearValidation, TypeOfBusinessValidation}
 import api.models.errors.MtdError
 import config.FixedConfig
-import v2.controllers.requestParsers.validators.validations._
 import v2.models.requestData.RetrieveBISSRawData
 
 class RetrieveBISSValidator extends Validator[RetrieveBISSRawData] with FixedConfig {

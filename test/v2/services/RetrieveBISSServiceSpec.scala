@@ -18,7 +18,19 @@ package v2.services
 
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
-import api.models.errors.{BusinessIdFormatError, DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleNoIncomeSubmissionsExist, RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.models.errors.{
+  BusinessIdFormatError,
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleNoIncomeSubmissionsExist,
+  RuleTaxYearNotSupportedError,
+  TaxYearFormatError
+}
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture

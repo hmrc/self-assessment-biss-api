@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators.validations
+package api.controllers.requestParsers.validators.validations
 
-trait Validation
+package object validations {
+
+  val NoValidationErrors = List()
+
+}
