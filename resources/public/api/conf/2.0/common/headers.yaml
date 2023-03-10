@@ -8,14 +8,14 @@ components:
       schema:
         type: string
         enum:
-          - "application/vnd.hmrc.1.0+json"
+          - "application/vnd.hmrc.2.0+json"
       required: true
 
-    authorization:
+    authorizationReadScope:
       name: "Authorization"
       in: header
       description: |
-        An OAuth 2.0 Bearer Token with the *write:self-assessment* or *read:self-assessment* scope.
+        An OAuth 2.0 Bearer Token with the *read:self-assessment* scope.
       schema:
         type: string
         example: Bearer bb7fed3fe10dd235a2ccda3d50fb
@@ -51,3 +51,5 @@ components:
       schema:
         type: string
         example: c75f40a6-a3df-4429-a697-471eeec46435
+      required: true
+

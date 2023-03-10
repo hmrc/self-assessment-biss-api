@@ -39,7 +39,7 @@ get:
     - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
     - $ref: './common/pathParameters.yaml#/components/parameters/typeOfBusiness'
     - $ref: './common/headers.yaml#/components/parameters/acceptJson'
-    - $ref: './common/headers.yaml#/components/parameters/authorization'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScope'
     - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
   security:
