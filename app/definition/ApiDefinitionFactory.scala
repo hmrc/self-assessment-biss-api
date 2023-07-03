@@ -17,7 +17,8 @@
 package definition
 
 import config.AppConfig
-import definition.Versions._
+import routing.{Version, Version2}
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
@@ -56,16 +57,17 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
-          apiVersion(VERSION_2)
+          APIVersion(
+            version = Version2,
+            status = buildAPIStatus(Version2),
+            endpointsEnabled = appConfig.endpointsEnabled(Version2)
+          )
         ),
         requiresTrust = None
       )
     )
 
-  private def apiVersion(version: String): APIVersion =
-    APIVersion(version = version, status = buildAPIStatus(version), endpointsEnabled = appConfig.endpointsEnabled(version))
-
-  private[definition] def buildAPIStatus(version: String): APIStatus = {
+  private[definition] def buildAPIStatus(version: Version): APIStatus = {
     APIStatus.parser
       .lift(appConfig.apiStatus(version))
       .getOrElse {

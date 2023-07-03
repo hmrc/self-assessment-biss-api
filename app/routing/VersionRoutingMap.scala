@@ -17,8 +17,6 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import definition.Versions.VERSION_2
-
 import javax.inject.Inject
 import play.api.routing.Router
 
@@ -29,16 +27,16 @@ import play.api.routing.Router
 trait VersionRoutingMap {
   val defaultRouter: Router
 
-  val map: Map[String, Router]
+  val map: Map[Version, Router]
 
-  final def versionRouter(version: String): Option[Router] = map.get(version)
+  final def versionRouter(version: Version): Option[Router] = map.get(version)
 }
 
 // Add routes corresponding to available versions...
 case class VersionRoutingMapImpl @Inject() (defaultRouter: Router, v2Router: v2.Routes) extends VersionRoutingMap {
 
-  val map: Map[String, Router] = Map(
-    VERSION_2 -> v2Router
+  val map: Map[Version, Router] = Map(
+    Version2 -> v2Router
   )
 
 }
