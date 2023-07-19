@@ -5,33 +5,14 @@ get:
     or property business during a tax year. A National Insurance number, business ID, tax year and type of business are required.
     
     ### Test data
-    <p>Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.</p>
-    <table>
-      <thead>
-          <tr>
-              <th>Header Value (Gov-Test-Scenario)</th>
-              <th>Scenario</th>
-          </tr>
-      </thead>
-      <tbody>
-              <tr>
-                  <td><p>N/A - DEFAULT</p></td>
-                  <td><p>Simulates success response with profit.</p></td>
-              </tr>
-              <tr>
-                  <td><p>NOT_FOUND</p></td>
-                  <td><p>Simulates the scenario where no data is found.</p></td>
-              </tr>
-              <tr>
-                  <td><p>LOSS</p></td>
-                  <td><p>Simulates success response with loss.</p></td>
-              </tr>
-              <tr>
-                  <td><p>NO_INCOME_SUBMISSIONS_EXIST</p></td>
-                  <td><p>Simulates the scenario where no income submissions exist.</p></td>
-              </tr>
-          </tbody>
-    </table>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                  |
+    |----------------------------------|-----------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response with profit.                   |
+    | NOT_FOUND                        | Simulates the scenario where no data is found.            |
+    | LOSS                             | Simulates success response with loss.                     |
+    | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist. |
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
