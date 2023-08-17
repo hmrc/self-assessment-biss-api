@@ -19,7 +19,7 @@ package v2.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 import api.models.outcomes.ResponseWrapper
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.{Loss, Profit, Total}
 
@@ -53,7 +53,8 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
         s"businessType is $typeOfBusiness and non TYS" in new IfsTest with Test {
           val expectedUrl = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceTypePathParam/$taxYearDownstream/biss"
 
-          val request: RetrieveBISSRequest = RetrieveBISSRequest(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearMtd), BusinessId(businessId))
+          val request: RetrieveBISSRequestData =
+            RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearMtd), BusinessId(businessId))
 
           val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 
@@ -63,8 +64,9 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
         }
 
         s"businessType is $typeOfBusiness and TYS" in new TysIfsTest with Test {
-          val expectedUrl                  = s"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
-          val request: RetrieveBISSRequest = RetrieveBISSRequest(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
+          val expectedUrl = s"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
+          val request: RetrieveBISSRequestData =
+            RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
 
           val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 

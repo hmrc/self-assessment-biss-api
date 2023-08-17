@@ -22,8 +22,8 @@ import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v2.controllers.requestParsers.MockRetrieveBISSRequestDataParser
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
+import v2.controllers.requestParsers.MockRetrieveBISSRequestDataDataParser
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequestData}
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.{Loss, Profit, Total}
 import v2.services.MockRetrieveBISSService
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class RetrieveBISSControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockRetrieveBISSRequestDataParser
+    with MockRetrieveBISSRequestDataDataParser
     with MockRetrieveBISSService {
 
   val response: RetrieveBISSResponse =
@@ -59,7 +59,7 @@ class RetrieveBISSControllerSpec
   private val typeOfBusiness = "uk-property-fhl"
   private val businessId     = "someBusinessId"
   private val rawData        = RetrieveBISSRawData(nino, typeOfBusiness, taxYear, businessId)
-  private val requestData    = RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
+  private val requestData    = RetrieveBISSRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
 
   "retrieveBiss" should {
     "return successful response with status OK" when {

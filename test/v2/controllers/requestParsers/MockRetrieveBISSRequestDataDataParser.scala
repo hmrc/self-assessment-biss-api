@@ -19,15 +19,15 @@ package v2.controllers.requestParsers
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequestData}
 
-trait MockRetrieveBISSRequestDataParser extends MockFactory {
+trait MockRetrieveBISSRequestDataDataParser extends MockFactory {
 
   val mockRequestParser: RetrieveBISSRequestDataParser = mock[RetrieveBISSRequestDataParser]
 
   object MockRetrieveBISSRequestDataParser {
 
-    def parse(data: RetrieveBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveBISSRequest]] = {
+    def parse(data: RetrieveBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveBISSRequestData]] = {
       (mockRequestParser.parseRequest(_: RetrieveBISSRawData)(_: String)).expects(data, *)
     }
 

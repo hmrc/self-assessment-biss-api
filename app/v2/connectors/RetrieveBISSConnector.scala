@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 
 import javax.inject.{Inject, Singleton}
@@ -32,7 +32,7 @@ class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppC
     extends BaseDownstreamConnector {
 
   def retrieveBiss(
-      request: RetrieveBISSRequest)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
+      request: RetrieveBISSRequestData)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
 
     import request._
     val incomeSourceType = typeOfBusiness.toIncomeSourceType

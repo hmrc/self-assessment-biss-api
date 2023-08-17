@@ -21,44 +21,45 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v2.connectors.RetrieveBISSConnector
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveBISSService @Inject()(connector: RetrieveBISSConnector) extends BaseService {
+class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector) extends BaseService {
 
   private val errorMap: Map[String, MtdError] = {
     val errors = Map(
-      "INVALID_IDVALUE" -> NinoFormatError,
-      "INVALID_TAXYEAR" -> TaxYearFormatError,
-      "INVALID_IDTYPE" -> InternalError,
-      "INVALID_CORRELATIONID" -> InternalError,
-      "INVALID_INCOMESOURCETYPE" -> InternalError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
+      "INVALID_IDVALUE"              -> NinoFormatError,
+      "INVALID_TAXYEAR"              -> TaxYearFormatError,
+      "INVALID_IDTYPE"               -> InternalError,
+      "INVALID_CORRELATIONID"        -> InternalError,
+      "INVALID_INCOMESOURCETYPE"     -> InternalError,
+      "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
       "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
-      "INVALID_ACCOUNTING_PERIOD" -> InternalError,
-      "INVALID_QUERY_PARAM" -> InternalError,
-      "NOT_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError
+      "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
+      "INVALID_QUERY_PARAM"          -> InternalError,
+      "NOT_FOUND"                    -> NotFoundError,
+      "SERVER_ERROR"                 -> InternalError,
+      "SERVICE_UNAVAILABLE"          -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID" -> InternalError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"    -> InternalError,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_INCOME_SOURCETYPE" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
 
     errors ++ extraTysErrors
   }
 
-  def retrieveBiss(request: RetrieveBISSRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
+  def retrieveBiss(
+      request: RetrieveBISSRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveBISSResponse]] = {
 
     connector
       .retrieveBiss(request)

@@ -19,14 +19,15 @@ package v2.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 import v2.controllers.requestParsers.validators.RetrieveBISSValidator
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequestData}
 
 import javax.inject.Inject
 
-class RetrieveBISSRequestDataParser @Inject() (val validator: RetrieveBISSValidator) extends RequestParser[RetrieveBISSRawData, RetrieveBISSRequest] {
+class RetrieveBISSRequestDataParser @Inject() (val validator: RetrieveBISSValidator)
+    extends RequestParser[RetrieveBISSRawData, RetrieveBISSRequestData] {
 
-  override protected def requestFor(data: RetrieveBISSRawData): RetrieveBISSRequest = {
-    RetrieveBISSRequest(Nino(data.nino), TypeOfBusiness.parser(data.typeOfBusiness), TaxYear.fromMtd(data.taxYear), BusinessId(data.businessId))
+  override protected def requestFor(data: RetrieveBISSRawData): RetrieveBISSRequestData = {
+    RetrieveBISSRequestData(Nino(data.nino), TypeOfBusiness.parser(data.typeOfBusiness), TaxYear.fromMtd(data.taxYear), BusinessId(data.businessId))
   }
 
 }

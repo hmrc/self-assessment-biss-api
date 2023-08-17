@@ -20,9 +20,9 @@ import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 import api.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import support.UnitSpec
 import v2.controllers.requestParsers.validators.MockRetrieveBISSValidator
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequestData}
 
-class RetrieveBISSRequestDataParserSpec extends UnitSpec {
+class RetrieveBISSRequestDataDataParserSpec extends UnitSpec {
 
   private val nino                      = "AA123456B"
   private val taxYear                   = "2018-19"
@@ -44,7 +44,7 @@ class RetrieveBISSRequestDataParserSpec extends UnitSpec {
         MockValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe Right(
-          RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId)))
+          RetrieveBISSRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId)))
       }
 
       "valid foreign property data is provided" in new Test {
@@ -52,7 +52,11 @@ class RetrieveBISSRequestDataParserSpec extends UnitSpec {
 
         parser.parseRequest(inputData.copy(typeOfBusiness = "foreign-property", taxYear = taxYearForForeignProperty)) shouldBe
           Right(
-            RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd(taxYearForForeignProperty), BusinessId(businessId)))
+            RetrieveBISSRequestData(
+              Nino(nino),
+              TypeOfBusiness.`foreign-property`,
+              TaxYear.fromMtd(taxYearForForeignProperty),
+              BusinessId(businessId)))
       }
     }
 

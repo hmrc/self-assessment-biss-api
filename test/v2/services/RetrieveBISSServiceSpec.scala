@@ -35,7 +35,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import v2.connectors.MockRetrieveBISSConnector
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.{Loss, Profit, Total}
 
@@ -45,7 +45,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
 
   // WLOG
   private val requestData =
-    RetrieveBISSRequest(Nino("AA123456A"), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd("2019-20"), BusinessId("XAIS12345678910"))
+    RetrieveBISSRequestData(Nino("AA123456A"), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd("2019-20"), BusinessId("XAIS12345678910"))
 
   private val response = RetrieveBISSResponse(Total(income = 100.00, 120.00, None, None, None), Profit(0.00, 0.00), Loss(20.0, 0.0))
 

@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 
 import scala.concurrent.Future
@@ -31,9 +31,9 @@ trait MockRetrieveBISSConnector extends MockFactory {
 
   object MockRetrieveBISSConnector {
 
-    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
+    def retrieveBiss(requestData: RetrieveBISSRequestData): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
       (mockConnector
-        .retrieveBiss(_: RetrieveBISSRequest)(_: HeaderCarrier, _: String))
+        .retrieveBiss(_: RetrieveBISSRequestData)(_: HeaderCarrier, _: String))
         .expects(requestData, *, *)
     }
 

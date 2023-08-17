@@ -18,4 +18,4 @@ package v2.models.requestData
 
 import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 
-case class RetrieveBISSRequest(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)
+case class RetrieveBISSRequestData(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)

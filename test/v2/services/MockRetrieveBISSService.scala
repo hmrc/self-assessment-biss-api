@@ -21,7 +21,7 @@ import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v2.models.requestData.RetrieveBISSRequest
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,9 +32,9 @@ trait MockRetrieveBISSService extends MockFactory {
 
   object MockRetrieveBISSService {
 
-    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveBISSResponse]]]] = {
+    def retrieveBiss(requestData: RetrieveBISSRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveBISSResponse]]]] = {
       (mockService
-        .retrieveBiss(_: RetrieveBISSRequest)(_: RequestContext, _: ExecutionContext))
+        .retrieveBiss(_: RetrieveBISSRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 
