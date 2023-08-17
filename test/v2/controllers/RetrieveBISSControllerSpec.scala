@@ -22,8 +22,8 @@ import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v2.controllers.requestParsers.MockRetrieveBISSRequestDataDataParser
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequestData}
+import v2.controllers.validators.MockRetrieveBISSValidatorFactory
+import v2.models.requestData.RetrieveBISSRequestData
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.{Loss, Profit, Total}
 import v2.services.MockRetrieveBISSService
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class RetrieveBISSControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockRetrieveBISSRequestDataDataParser
+    with MockRetrieveBISSValidatorFactory
     with MockRetrieveBISSService {
 
   val response: RetrieveBISSResponse =
@@ -58,16 +58,12 @@ class RetrieveBISSControllerSpec
   private val taxYear        = "2018-19"
   private val typeOfBusiness = "uk-property-fhl"
   private val businessId     = "someBusinessId"
-  private val rawData        = RetrieveBISSRawData(nino, typeOfBusiness, taxYear, businessId)
   private val requestData    = RetrieveBISSRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
 
   "retrieveBiss" should {
     "return successful response with status OK" when {
       "valid request" in new Test {
-
-        MockRetrieveBISSRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveBISSService
           .retrieveBiss(requestData)
@@ -79,19 +75,13 @@ class RetrieveBISSControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockRetrieveBISSRequestDataParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-
-        MockRetrieveBISSRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveBISSService
           .retrieveBiss(requestData)
@@ -107,7 +97,7 @@ class RetrieveBISSControllerSpec
     val controller = new RetrieveBISSController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      requestParser = mockRequestParser,
+      validatorFactory = mockRetrieveBISSValidatorFactory,
       service = mockService,
       cc = cc,
       idGenerator = mockIdGenerator

@@ -16,7 +16,6 @@
 
 package api.controllers
 
-import api.models.request.RawData
 import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{ResponseHeader, Result, Results}
@@ -26,24 +25,23 @@ case class ResultWrapper(httpStatus: Int, body: Option[JsValue]) {
   def asResult: Result = {
     body match {
       case Some(b) => Results.Status(httpStatus)(b)
-      case None => Result(header = ResponseHeader(httpStatus), body = HttpEntity.NoEntity)
+      case None    => Result(header = ResponseHeader(httpStatus), body = HttpEntity.NoEntity)
     }
   }
 
 }
 
-trait ResultCreator[InputRaw <: RawData, Input, Output] {
+trait ResultCreator[Input, Output] {
 
-  def createResult(raw: InputRaw, input: Input, output: Output): ResultWrapper
+  def createResult(input: Input, output: Output): ResultWrapper
 }
 
 object ResultCreator {
 
-  def noContent[InputRaw <: RawData, Input, Output](successStatus: Int = Status.NO_CONTENT): ResultCreator[InputRaw, Input, Output] =
-    (_: InputRaw, _, _: Output) => ResultWrapper(successStatus, None)
+  def noContent[Input, Output](successStatus: Int = Status.NO_CONTENT): ResultCreator[Input, Output] =
+    (_: Input, _: Output) => ResultWrapper(successStatus, None)
 
-  def plainJson[InputRaw <: RawData, Input, Output](successStatus: Int = Status.OK)(implicit
-                                                                                    ws: Writes[Output]): ResultCreator[InputRaw, Input, Output] =
-    (_: InputRaw, input, output: Output) => ResultWrapper(successStatus, Some(Json.toJson(output)))
+  def plainJson[Input, Output](successStatus: Int = Status.OK)(implicit ws: Writes[Output]): ResultCreator[Input, Output] =
+    (_: Input, output: Output) => ResultWrapper(successStatus, Some(Json.toJson(output)))
 
 }

@@ -19,22 +19,20 @@ package v2.controllers
 import api.controllers._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
-import v2.controllers.requestParsers.RetrieveBISSRequestDataParser
-import v2.models.requestData.RetrieveBISSRawData
+import utils.IdGenerator
+import v2.controllers.validators.RetrieveBISSValidatorFactory
 import v2.services.RetrieveBISSService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class RetrieveBISSController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       requestParser: RetrieveBISSRequestDataParser,
-                                       service: RetrieveBISSService,
-                                       cc: ControllerComponents,
-                                       val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
-    with Logging {
+class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        validatorFactory: RetrieveBISSValidatorFactory,
+                                        service: RetrieveBISSService,
+                                        cc: ControllerComponents,
+                                        val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -46,15 +44,15 @@ class RetrieveBISSController @Inject()(val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveBISSRawData(nino = nino, typeOfBusiness = typeOfBusiness, taxYear = taxYear, businessId = businessId)
+      val validator = validatorFactory.validator(nino = nino, typeOfBusiness = typeOfBusiness, taxYear = taxYear, businessId = businessId)
 
       val requestHandler =
         RequestHandler
-          .withParser(requestParser)
+          .withValidator(validator)
           .withService(service.retrieveBiss)
           .withResultCreator(ResultCreator.plainJson(OK))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

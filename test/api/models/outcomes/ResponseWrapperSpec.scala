@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package v2.models.requestData
+package api.models.outcomes
 
-import api.models.request.RawData
+import support.UnitSpec
 
-case class RetrieveBISSRawData(nino: String, typeOfBusiness: String, taxYear: String, businessId: String) extends RawData
+class ResponseWrapperSpec extends UnitSpec {
+
+  "ResponseWrapper" when {
+    "mapped" should {
+      "correctly map the wrapped response" in {
+        val wrappedResponse = ResponseWrapper[String](correlationId = "X-123", responseData = "cope")
+        wrappedResponse.map(_.replace('c', 'h')) shouldBe ResponseWrapper[String](correlationId = "X-123", responseData = "hope")
+      }
+    }
+  }
+
+}
