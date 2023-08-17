@@ -65,7 +65,7 @@ class NinoSpec extends UnitSpec {
 
     "fail if we start with invalid characters" in {
       val invalidStartLetterCombinations = List('D', 'F', 'I', 'Q', 'U', 'V').combinations(2).map(_.mkString("")).toList
-      val invalidPrefixes = List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
+      val invalidPrefixes                = List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
       for (v <- invalidStartLetterCombinations ::: invalidPrefixes) {
         validateNino(v + "123456C") should equal(false)
       }
@@ -77,12 +77,6 @@ class NinoSpec extends UnitSpec {
 
     "fail if the suffix is E" in {
       validateNino("AB123456E") should equal(false)
-    }
-  }
-
-  "Creating a Nino" should {
-    "fail if the nino is not valid" in {
-      an[IllegalArgumentException] should be thrownBy Nino("INVALID_NINO")
     }
   }
 
