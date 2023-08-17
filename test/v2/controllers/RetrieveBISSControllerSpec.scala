@@ -17,7 +17,7 @@
 package v2.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
@@ -59,7 +59,7 @@ class RetrieveBISSControllerSpec
   private val typeOfBusiness = "uk-property-fhl"
   private val businessId     = "someBusinessId"
   private val rawData        = RetrieveBISSRawData(nino, typeOfBusiness, taxYear, businessId)
-  private val requestData    = RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), businessId)
+  private val requestData    = RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
 
   "retrieveBiss" should {
     "return successful response with status OK" when {

@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package v2.models.requestData
+package api.controllers.validators.resolvers
 
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.errors.MtdError
+import cats.data.Validated
+import cats.data.Validated.{Invalid, Valid}
 
-case class RetrieveBISSRequest(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)
+import scala.util.{Failure, Success, Try}
+
+object ResolveBoolean extends Resolver[String, Boolean] {
+
+  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Boolean] =
+    Try {
+      value.toBoolean
+    } match {
+      case Success(result) => Valid(result)
+      case Failure(_)      => Invalid(List(requireError(error, path)))
+    }
+
+}

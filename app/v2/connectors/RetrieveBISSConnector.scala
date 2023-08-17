@@ -28,11 +28,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveBISSConnector @Inject()(val http: HttpClient, val appConfig: AppConfig)(implicit ec: ExecutionContext)
-  extends BaseDownstreamConnector {
+class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit ec: ExecutionContext)
+    extends BaseDownstreamConnector {
 
   def retrieveBiss(
-                    request: RetrieveBISSRequest)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
+      request: RetrieveBISSRequest)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
 
     import request._
     val incomeSourceType = typeOfBusiness.toIncomeSourceType
@@ -46,7 +46,7 @@ class RetrieveBISSConnector @Inject()(val http: HttpClient, val appConfig: AppCo
     } else {
       get(
         uri = IfsUri[RetrieveBISSResponse](s"income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYear.asDownstream}/biss"),
-        queryParams = Seq("incomeSourceId" -> businessId)
+        queryParams = Seq("incomeSourceId" -> s"$businessId")
       )
     }
 

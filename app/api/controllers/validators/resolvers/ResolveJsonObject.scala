@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package v2.models.requestData
+package api.controllers.validators.resolvers
 
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.errors.MtdError
+import cats.data.Validated
+import play.api.libs.json._
 
-case class RetrieveBISSRequest(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)
+class ResolveJsonObject[T](implicit val reads: Reads[T]) extends Resolver[JsValue, T] with JsonObjectResolving[T] {
+
+  def apply(data: JsValue, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], T] =
+    validate(data).leftMap(errs => withErrors(error, errs, path))
+
+}
