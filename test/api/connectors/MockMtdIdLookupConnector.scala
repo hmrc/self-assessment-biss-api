@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package v2.mocks.validators
+package api.connectors
 
-import api.models.errors.MtdError
-import org.scalamock.handlers.CallHandler1
+import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v2.controllers.requestParsers.validators.RetrieveBISSValidator
-import v2.models.requestData.RetrieveBISSRawData
+import uk.gov.hmrc.http.HeaderCarrier
 
-class MockRetrieveBISSValidator extends MockFactory {
-  val mockValidator: RetrieveBISSValidator = mock[RetrieveBISSValidator]
+import scala.concurrent.{ExecutionContext, Future}
 
-  object MockValidator {
+trait MockMtdIdLookupConnector extends MockFactory {
 
-    def validate(data: RetrieveBISSRawData): CallHandler1[RetrieveBISSRawData, List[MtdError]] = {
-      (mockValidator
-        .validate(_: RetrieveBISSRawData))
-        .expects(data)
+  val mockMtdIdLookupConnector: MtdIdLookupConnector = mock[MtdIdLookupConnector]
+
+  object MockedMtdIdLookupConnector {
+
+    def lookup(nino: String): CallHandler[Future[MtdIdLookupOutcome]] = {
+      (mockMtdIdLookupConnector
+        .getMtdId(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(nino, *, *)
     }
 
   }

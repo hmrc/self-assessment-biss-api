@@ -16,14 +16,14 @@
 
 package api.services
 
-import api.mocks.connectors.MockMtdIdLookupConnector
+import api.connectors.MockMtdIdLookupConnector
 import api.models.errors.{ClientNotAuthenticatedError, InternalError, NinoFormatError}
 
 import scala.concurrent.Future
 
 class MtdIdLookupServiceSpec extends ServiceSpec {
 
-  val nino = "AA123456A"
+  val nino        = "AA123456A"
   val invalidNino = "INVALID_NINO"
 
   trait Test extends MockMtdIdLookupConnector {

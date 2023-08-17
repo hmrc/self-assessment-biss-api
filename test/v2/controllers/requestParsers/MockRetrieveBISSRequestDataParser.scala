@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package api.mocks.services
+package v2.controllers.requestParsers
 
-import api.connectors.MtdIdLookupOutcome
-import api.services.MtdIdLookupService
+import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
+import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
 
-import scala.concurrent.{ExecutionContext, Future}
+trait MockRetrieveBISSRequestDataParser extends MockFactory {
 
-trait MockMtdIdLookupService extends MockFactory {
+  val mockRequestParser: RetrieveBISSRequestDataParser = mock[RetrieveBISSRequestDataParser]
 
-  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
+  object MockRetrieveBISSRequestDataParser {
 
-  object MockedMtdIdLookupService {
-
-    def lookup(nino: String): CallHandler[Future[MtdIdLookupOutcome]] = {
-      (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(nino, *, *)
+    def parse(data: RetrieveBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveBISSRequest]] = {
+      (mockRequestParser.parseRequest(_: RetrieveBISSRawData)(_: String)).expects(data, *)
     }
 
   }

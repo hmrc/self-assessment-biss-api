@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package v2.mocks.requestParsers
+package api.services
 
-import api.models.errors.ErrorWrapper
+import api.models.audit.AuditEvent
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v2.controllers.requestParsers.RetrieveBISSRequestDataParser
-import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
+import play.api.libs.json.Writes
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
-trait MockRetrieveBISSRequestDataParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockRequestParser: RetrieveBISSRequestDataParser = mock[RetrieveBISSRequestDataParser]
+trait MockAuditService extends MockFactory {
 
-  object MockRetrieveBISSRequestDataParser {
+  val mockAuditService: AuditService = stub[AuditService]
 
-    def parse(data: RetrieveBISSRawData): CallHandler[Either[ErrorWrapper, RetrieveBISSRequest]] = {
-      (mockRequestParser.parseRequest(_: RetrieveBISSRawData)(_: String)).expects(data, *)
+  object MockedAuditService {
+
+    def verifyAuditEvent[T](event: AuditEvent[T]): CallHandler[Future[AuditResult]] = {
+      (mockAuditService
+        .auditEvent(_: AuditEvent[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+        .verify(event, *, *, *)
+        .returning(Future.successful(AuditResult.Success))
     }
 
   }

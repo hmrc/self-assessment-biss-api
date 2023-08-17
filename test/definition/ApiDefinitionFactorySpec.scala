@@ -16,9 +16,8 @@
 
 package definition
 
-import config.ConfidenceLevelConfig
+import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus._
-import mocks.MockAppConfig
 import routing.Version2
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
@@ -42,7 +41,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
           definitionEnabled = true,
           authValidationEnabled = true)).anyNumberOfTimes()
 
-        private val readScope = "read:self-assessment"
+        private val readScope  = "read:self-assessment"
         private val writeScope = "write:self-assessment"
         apiDefinitionFactory.definition shouldBe
           Definition(

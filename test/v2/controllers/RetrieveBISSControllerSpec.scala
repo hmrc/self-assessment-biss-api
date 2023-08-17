@@ -22,24 +22,25 @@ import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v2.mocks.requestParsers.MockRetrieveBISSRequestDataParser
-import v2.mocks.services.MockRetrieveBISSService
+import v2.controllers.requestParsers.MockRetrieveBISSRequestDataParser
 import v2.models.requestData.{RetrieveBISSRawData, RetrieveBISSRequest}
 import v2.models.response.RetrieveBISSResponse
 import v2.models.response.common.{Loss, Profit, Total}
+import v2.services.MockRetrieveBISSService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveBISSControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveBISSRequestDataParser
     with MockRetrieveBISSService {
 
-  val response: RetrieveBISSResponse = RetrieveBISSResponse(Total(income = 100.00, expenses = 50.0, None, None, None), Profit(net = 0.0, taxable = 0.0), Loss(net = 50.0, taxable = 0.0))
-  val responseJson: JsValue = Json.parse(
-    """{
+  val response: RetrieveBISSResponse =
+    RetrieveBISSResponse(Total(income = 100.00, expenses = 50.0, None, None, None), Profit(net = 0.0, taxable = 0.0), Loss(net = 50.0, taxable = 0.0))
+
+  val responseJson: JsValue = Json.parse("""{
       |  "total": {
       |    "income": 100.00,
       |    "expenses": 50.00
@@ -53,11 +54,12 @@ class RetrieveBISSControllerSpec
       |    "taxable": 0.00
       |  }
       |}""".stripMargin)
-  private val taxYear = "2018-19"
+
+  private val taxYear        = "2018-19"
   private val typeOfBusiness = "uk-property-fhl"
-  private val businessId = "someBusinessId"
-  private val rawData = RetrieveBISSRawData(nino, typeOfBusiness, taxYear, businessId)
-  private val requestData = RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), businessId)
+  private val businessId     = "someBusinessId"
+  private val rawData        = RetrieveBISSRawData(nino, typeOfBusiness, taxYear, businessId)
+  private val requestData    = RetrieveBISSRequest(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), businessId)
 
   "retrieveBiss" should {
     "return successful response with status OK" when {

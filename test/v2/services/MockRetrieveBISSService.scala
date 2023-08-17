@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package v2.mocks.connectors
+package v2.services
 
-import api.connectors.DownstreamOutcome
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.RetrieveBISSConnector
 import v2.models.requestData.RetrieveBISSRequest
 import v2.models.response.RetrieveBISSResponse
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveBISSConnector extends MockFactory {
+trait MockRetrieveBISSService extends MockFactory {
 
-  val mockConnector: RetrieveBISSConnector = mock[RetrieveBISSConnector]
+  val mockService: RetrieveBISSService = mock[RetrieveBISSService]
 
-  object MockRetrieveBISSConnector {
+  object MockRetrieveBISSService {
 
-    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
-      (mockConnector
-        .retrieveBiss(_: RetrieveBISSRequest)(_: HeaderCarrier, _: String))
+    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveBISSResponse]]]] = {
+      (mockService
+        .retrieveBiss(_: RetrieveBISSRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

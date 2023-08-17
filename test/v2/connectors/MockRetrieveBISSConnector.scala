@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package api.mocks.services
+package v2.connectors
 
-import api.models.audit.AuditEvent
-import api.services.AuditService
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import v2.models.requestData.RetrieveBISSRequest
+import v2.models.response.RetrieveBISSResponse
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait MockAuditService extends MockFactory {
+trait MockRetrieveBISSConnector extends MockFactory {
 
-  val mockAuditService: AuditService = stub[AuditService]
+  val mockConnector: RetrieveBISSConnector = mock[RetrieveBISSConnector]
 
-  object MockedAuditService {
+  object MockRetrieveBISSConnector {
 
-    def verifyAuditEvent[T](event: AuditEvent[T]): CallHandler[Future[AuditResult]] = {
-      (mockAuditService
-        .auditEvent(_: AuditEvent[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
-        .verify(event, *, *, *)
-        .returning(Future.successful(AuditResult.Success))
+    def retrieveBiss(requestData: RetrieveBISSRequest): CallHandler[Future[DownstreamOutcome[RetrieveBISSResponse]]] = {
+      (mockConnector
+        .retrieveBiss(_: RetrieveBISSRequest)(_: HeaderCarrier, _: String))
+        .expects(requestData, *, *)
     }
 
   }

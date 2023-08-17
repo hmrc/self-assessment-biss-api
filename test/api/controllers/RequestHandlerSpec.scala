@@ -18,13 +18,12 @@ package api.controllers
 
 import api.controllers.requestParsers.RequestParser
 import api.mocks.MockIdGenerator
-import api.mocks.services.MockAuditService
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
 import api.models.errors.{ErrorWrapper, NinoFormatError}
 import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
-import api.services.ServiceOutcome
+import api.services.{MockAuditService, ServiceOutcome}
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
@@ -40,24 +39,25 @@ import scala.concurrent.{ExecutionContext, Future}
 class RequestHandlerSpec extends UnitSpec with MockAuditService with MockIdGenerator with Status with HeaderNames with ResultExtractors {
 
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
-  private val successCode = Status.ACCEPTED
+  private val successCode         = Status.ACCEPTED
 
   private val generatedCorrelationId = "generatedCorrelationId"
-  private val serviceCorrelationId = "serviceCorrelationId"
-  private val userDetails = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
-  private val mockService = mock[DummyService]
-  private val mockParser = mock[RequestParser[InputRaw.type, Input.type]]
+  private val serviceCorrelationId   = "serviceCorrelationId"
+  private val userDetails            = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
+  private val mockService            = mock[DummyService]
+  private val mockParser             = mock[RequestParser[InputRaw.type, Input.type]]
 
   MockIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier   = HeaderCarrier()
   implicit val ctx: RequestContext = RequestContext.from(mockIdGenerator, endpointLogContext)
 
   private def service =
     (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *)
+
   implicit val userRequest: UserRequest[AnyContent] = UserRequest[AnyContent](userDetails, FakeRequest())
 
   private def parseRequest =
@@ -150,7 +150,7 @@ class RequestHandlerSpec extends UnitSpec with MockAuditService with MockIdGener
       val params = Map("param" -> "value")
 
       val auditType = "type"
-      val txName = "txName"
+      val txName    = "txName"
 
       val requestBody = Some(JsString("REQUEST BODY"))
 

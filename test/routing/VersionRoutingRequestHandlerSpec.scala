@@ -17,7 +17,7 @@
 package routing
 
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.Play.materializer
 import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND}
 import play.api.test.Helpers.{contentAsJson, status}
