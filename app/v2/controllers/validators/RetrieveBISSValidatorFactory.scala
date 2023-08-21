@@ -18,11 +18,12 @@ package v2.controllers.validators
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear, ResolveTypeOfBusiness}
-import api.models.errors.MtdError
+import api.models.domain.TaxYear
+import api.models.domain.TypeOfBusiness._
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
-import v2.controllers.validators.RetrieveBISSValidator.validateBusinessRules
 import v2.models.requestData.RetrieveBISSRequestData
 
 import javax.inject.Singleton
@@ -32,6 +33,7 @@ class RetrieveBISSValidatorFactory {
 
   def validator(nino: String, typeOfBusiness: String, taxYear: String, businessId: String): Validator[RetrieveBISSRequestData] =
     new Validator[RetrieveBISSRequestData] {
+      private val foreignPropertyMinimumTaxYear = TaxYear.fromMtd("2019-20")
 
       def validate: Validated[Seq[MtdError], RetrieveBISSRequestData] =
         (
@@ -39,7 +41,19 @@ class RetrieveBISSValidatorFactory {
           ResolveTypeOfBusiness(typeOfBusiness),
           ResolveTaxYear(taxYear),
           ResolveBusinessId(businessId)
-        ).mapN(RetrieveBISSRequestData) andThen validateBusinessRules
+        ).mapN(RetrieveBISSRequestData) andThen validateTaxYear
+
+      private def validateTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
+        val minTaxYear = parsed.typeOfBusiness match {
+          case `foreign-property-fhl-eea` | `foreign-property`               => foreignPropertyMinimumTaxYear
+          case `uk-property-non-fhl` | `uk-property-fhl` | `self-employment` => TaxYear.minimumTaxYear
+        }
+
+        if (parsed.taxYear.year < minTaxYear.year)
+          Invalid(List(RuleTaxYearNotSupportedError))
+        else
+          Valid(parsed)
+      }
 
     }
 

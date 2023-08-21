@@ -28,8 +28,10 @@ trait AppConfig {
 
   lazy val desDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = desBaseUrl, env = desEnv, token = desToken, environmentHeaders = desEnvironmentHeaders)
+
   lazy val ifsDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = ifsBaseUrl, env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
+
   lazy val taxYearSpecificIfsDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = tysIfsBaseUrl, env = tysIfsEnv, token = tysIfsToken, environmentHeaders = tysIfsEnvironmentHeaders)
 
@@ -75,30 +77,30 @@ trait AppConfig {
 }
 
 @Singleton
-class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configuration) extends AppConfig {
+class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configuration) extends AppConfig {
 
   val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
   // DES Config
-  val desBaseUrl: String = config.baseUrl("des")
-  val desEnv: String = config.getString("microservice.services.des.env")
-  val desToken: String = config.getString("microservice.services.des.token")
+  val desBaseUrl: String                         = config.baseUrl("des")
+  val desEnv: String                             = config.getString("microservice.services.des.env")
+  val desToken: String                           = config.getString("microservice.services.des.token")
   val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
 
   // IFS Config
-  val ifsBaseUrl: String = config.baseUrl("ifs")
-  val ifsEnv: String = config.getString("microservice.services.ifs.env")
-  val ifsToken: String = config.getString("microservice.services.ifs.token")
+  val ifsBaseUrl: String                         = config.baseUrl("ifs")
+  val ifsEnv: String                             = config.getString("microservice.services.ifs.env")
+  val ifsToken: String                           = config.getString("microservice.services.ifs.token")
   val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
 
   // Tax Year Specific (TYS) IFS Config
-  val tysIfsBaseUrl: String = config.baseUrl("tys-ifs")
-  val tysIfsEnv: String = config.getString("microservice.services.tys-ifs.env")
-  val tysIfsToken: String = config.getString("microservice.services.tys-ifs.token")
+  val tysIfsBaseUrl: String                         = config.baseUrl("tys-ifs")
+  val tysIfsEnv: String                             = config.getString("microservice.services.tys-ifs.env")
+  val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
 
   // API Config
-  val apiGatewayContext: String = config.getString("api.gateway.context")
+  val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
 
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
@@ -122,10 +124,4 @@ object ConfidenceLevelConfig {
     )
   }
 
-}
-
-trait FixedConfig {
-  // Minimum tax year for MTD
-  val minimumTaxYear = 2018
-  val foreignPropertyMinTaxYear = 2020
 }
