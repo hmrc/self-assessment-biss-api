@@ -9,9 +9,8 @@ get:
     
     | Header Value (Gov-Test-Scenario) | Scenario                                                  |
     |----------------------------------|-----------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulates success response with profit.                   |
+    | N/A - DEFAULT                    | Simulates success response with profit and loss.                   |
     | NOT_FOUND                        | Simulates the scenario where no data is found.            |
-    | LOSS                             | Simulates success response with loss.                     |
     | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist. |
 
   parameters:
