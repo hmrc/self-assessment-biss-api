@@ -7,11 +7,11 @@ get:
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
-    | Header Value (Gov-Test-Scenario) | Scenario                                                  |
-    |----------------------------------|-----------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulates success response with profit and loss.                   |
-    | NOT_FOUND                        | Simulates the scenario where no data is found.            |
-    | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist. |
+    | Header Value (Gov-Test-Scenario) | Scenario                                                      |
+    |----------------------------------|---------------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response with total, profit and loss values.|
+    | NOT_FOUND                        | Simulates the scenario where no data is found.                |
+    | NO_INCOME_SUBMISSIONS_EXIST      | Simulates the scenario where no income submissions exist.     |
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
