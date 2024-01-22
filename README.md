@@ -10,14 +10,14 @@ expenditure for a specified self-employment, UK property business, or foreign pr
 
 - Scala 2.13.x
 - Java 11
-- sbt 1.7.x
-- [Service Manager](https://github.com/hmrc/sm2)
+- sbt 1.9.x
+- [Service Manager 2](https://github.com/hmrc/sm2)
 
 ## Development Setup
 
 Run the microservice from the console using: `sbt run` (starts on port 9785 by default)
 
-Start the service manager profile: `sm --start MTDFB_BISS`
+Start the service manager profile: `sm2 --start MTDFB_BISS`
 
 ## Run Tests
 

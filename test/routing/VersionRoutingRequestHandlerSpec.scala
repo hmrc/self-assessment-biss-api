@@ -18,22 +18,23 @@ package routing
 
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import config.MockAppConfig
-import play.api.Play.materializer
-import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND}
-import play.api.test.Helpers.{contentAsJson, status}
+import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.HeaderNames.ACCEPT
+import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND}
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{contentAsJson, status}
 import support.UnitSpec
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with GuiceOneAppPerSuite {
   test =>
 
-  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
+  implicit private val actorSystem: ActorSystem = ActorSystem("test")
+  val action: DefaultActionBuilder              = app.injector.instanceOf[DefaultActionBuilder]
 
   import play.api.mvc.Handler
   import play.api.routing.sird._
