@@ -17,8 +17,8 @@
 package v2.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import v2.models.response.RetrieveBISSResponse
-import v2.models.response.common.{Loss, Profit, Total}
+import v2.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v2.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
 
 trait RetrieveBISSFixture {
 
@@ -62,7 +62,7 @@ trait RetrieveBISSFixture {
     """.stripMargin)
 
   val responseFull: RetrieveBISSResponse =
-    RetrieveBISSResponse(
+    Def1_RetrieveBISSResponse(
       Total(
         income = 1.25,
         expenses = 2.25,
@@ -81,7 +81,7 @@ trait RetrieveBISSFixture {
     )
 
   val responseMin: RetrieveBISSResponse =
-    RetrieveBISSResponse(
+    Def1_RetrieveBISSResponse(
       Total(income = 100.50, expenses = 50.5, None, None, None),
       Profit(net = 45.25, taxable = 0.50),
       Loss(net = 50.00, taxable = 0.25)
