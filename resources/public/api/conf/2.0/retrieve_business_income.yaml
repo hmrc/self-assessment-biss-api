@@ -35,12 +35,12 @@ get:
       content:
         application/json:
           schema:
-            $ref: './schemas/retrieveBiss/retrieve_income_summary_response.json'
+            $ref: './schemas/retrieveBiss/def1/response.json'
           examples:
             example-1:
-              description: Retrieve a Business Income Source Summary
+              description: Example response given any tax year
               value:
-                $ref: './examples/retrieveBusinessIncome/retrieve_income_summary_response.json'
+                $ref: './examples/retrieveBiss/def1/response.json'
     "400":
       description: Bad request
       content:
