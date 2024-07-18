@@ -29,7 +29,7 @@ import v2.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
   private trait Test {
-    val nino = "AA123456A"
+    val nino               = "AA123456A"
     val businessId: String = "XAIS12345678913"
 
     def downstreamUrl: String = s"/income-tax/income-sources/nino/$nino/self-employment/2019/biss"
@@ -58,7 +58,7 @@ class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          MtdIdLookupStub.internalServerError(nino)
+          MtdIdLookupStub.error(nino, Status.INTERNAL_SERVER_ERROR)
         }
 
         val response: WSResponse = await(request.get())
@@ -67,6 +67,22 @@ class AuthISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
     }
 
     "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
+
+      "MTD ID lookup fails with a 403" should {
+
+        "return 403" in new Test {
+          override val nino: String = "AA123456A"
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            MtdIdLookupStub.error(nino, Status.FORBIDDEN)
+          }
+
+          val response: WSResponse = await(request.get())
+          response.status shouldBe Status.FORBIDDEN
+        }
+
+      }
 
       "return 200" in new Test {
         override def setupStubs(): StubMapping = {

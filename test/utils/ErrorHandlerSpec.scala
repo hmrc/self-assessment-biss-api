@@ -16,7 +16,7 @@
 
 package utils
 
-import api.models.errors.{BadRequestError, ClientNotAuthenticatedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
+import api.models.errors.{BadRequestError, ClientOrAgentNotAuthorisedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
@@ -71,8 +71,8 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
-      "appName" -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List.empty,
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List.empty,
       "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
       "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
     )
@@ -105,7 +105,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
       }
     }
 
@@ -144,7 +144,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
       }
     }
 
