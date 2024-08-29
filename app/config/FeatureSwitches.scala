@@ -18,8 +18,13 @@ package config
 
 import play.api.Configuration
 
-case class FeatureSwitches(featureSwitchConfig: Configuration)
+case class FeatureSwitches(featureSwitchConfig: Configuration){
+
+  def supportingAgentsAccessControlEnabled: Boolean =
+    featureSwitchConfig.getOptional[Boolean]("supporting-agents-access-control.enabled").getOrElse(true)
+
+}
 
 object FeatureSwitches {
-  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  def apply(appConfig: AppConfig):FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 }

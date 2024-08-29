@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package v2.stubs
+package api.models
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status._
-import support.WireMockMethods
+import api.models.auth.UserDetails
+import api.models.errors.MtdError
 
-object AuditStub extends WireMockMethods {
+package object outcomes {
 
-  private val auditUri: String = s"/write/audit.*"
-
-  def audit(): StubMapping = {
-    when(method = POST, uri = auditUri)
-      .thenReturn(status = NO_CONTENT)
-  }
+  type AuthOutcome = Either[MtdError, UserDetails]
 
 }

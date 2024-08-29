@@ -28,7 +28,7 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   val mockHost: String      = WireMockHelper.host
   val mockPort: String      = WireMockHelper.wireMockPort.toString
 
-  def servicesConfig: Map[String, String] = Map(
+  def servicesConfig: Map[String, Any] = Map(
     "microservice.services.des.host"           -> mockHost,
     "microservice.services.des.port"           -> mockPort,
     "microservice.services.ifs.host"           -> mockHost,

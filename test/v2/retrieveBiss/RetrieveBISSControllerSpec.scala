@@ -20,6 +20,8 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
+import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.retrieveBiss.def1.model.response.{Loss, Profit, Total}
@@ -33,7 +35,9 @@ class RetrieveBISSControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveBISSValidatorFactory
-    with MockRetrieveBISSService {
+    with MockRetrieveBISSService
+    with MockAppConfig
+    {
 
   val response: RetrieveBISSResponse =
     Def1_RetrieveBISSResponse(Total(income = 100.00, expenses = 50.0, None, None, None), Profit(net = 0.0, taxable = 0.0), Loss(net = 50.0, taxable = 0.0))
@@ -100,6 +104,12 @@ class RetrieveBISSControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = {
       controller.retrieveBiss(nino, typeOfBusiness, taxYear, businessId)(fakeGetRequest)

@@ -18,6 +18,7 @@ package v2.retrieveBiss
 
 import api.controllers._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 
@@ -29,8 +30,10 @@ class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
                                         validatorFactory: RetrieveBISSValidatorFactory,
                                         service: RetrieveBISSService,
                                         cc: ControllerComponents,
-                                        val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                        val idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends AuthorisedController(cc) {
+
+  override val endpointName: String = "retrieve-biss"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -52,5 +55,6 @@ class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
 
       requestHandler.handleRequest()
     }
+
 
 }
