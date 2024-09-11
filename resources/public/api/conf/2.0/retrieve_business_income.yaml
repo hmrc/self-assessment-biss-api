@@ -1,8 +1,10 @@
 get:
   summary: Retrieve a Business Income Source Summary (BISS)
   description: |
-    This endpoint allows a developer to retrieve a running (year-to-date) summary of the income and expenditure for a specified self-employment,
+    This endpoint allows you to retrieve a running (year-to-date) summary of the income and expenditure for a specified self-employment,
     or property business during a tax year. A National Insurance number, business ID, tax year and type of business are required.
+    
+    Note: this endpoint only supports submissions up to tax year 2024-25.
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.

@@ -83,6 +83,13 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
       )
     }
 
+    "given a tax year after 2024-25" in {
+      val result = validator(validNino, validTypeOfBusiness, "2025-26", validBusinessId).validateAndWrapResult()
+      result shouldBe Left(
+        ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+      )
+    }
+
     "an invalid min tax year is provided for UK property" in {
       val result = validator(validNino, validTypeOfBusiness, "2016-17", validBusinessId).validateAndWrapResult()
 

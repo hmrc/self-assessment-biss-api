@@ -21,61 +21,120 @@ import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 
-trait ResolvingTaxYear extends Resolver[String, TaxYear] {
+import java.time.Clock
+import scala.math.Ordering.Implicits.infixOrderingOps
 
-  private val taxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
+object ResolveTaxYear extends ResolverSupport {
 
-  protected def resolve(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] = {
-    if (taxYearFormat.matches(value)) {
-      val startTaxYearStart: Int = 2
-      val startTaxYearEnd: Int   = 4
+  private val taxYearFormat = "20([1-9][0-9])-([1-9][0-9])".r
 
-      val endTaxYearStart: Int = 5
-      val endTaxYearEnd: Int   = 7
-
-      val start = value.substring(startTaxYearStart, startTaxYearEnd).toInt
-      val end   = value.substring(endTaxYearStart, endTaxYearEnd).toInt
-
-      if (end - start == 1) {
+  val resolver: Resolver[String, TaxYear] = {
+    case value @ taxYearFormat(start, end) =>
+      if (end.toInt - start.toInt == 1)
         Valid(TaxYear.fromMtd(value))
-      } else {
-        Invalid(List(withError(error, RuleTaxYearRangeInvalid, path)))
-      }
+      else
+        Invalid(List(RuleTaxYearRangeInvalidError))
 
-    } else {
-      Invalid(List(withError(error, TaxYearFormatError, path)))
+    case _ => Invalid(List(TaxYearFormatError))
+  }
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
     }
+
+  /** Adaptor for existing callers.
+   */
+  def apply(minimumTaxYear: TaxYear, value: String): Validated[Seq[MtdError], TaxYear] = {
+    val resolver = ResolveTaxYearMinimum(minimumTaxYear)
+    resolver(value)
   }
 
 }
 
-object ResolveTaxYear extends ResolvingTaxYear {
+case class ResolveTaxYearMinimum(minimumTaxYear: TaxYear, error: MtdError = RuleTaxYearNotSupportedError) extends ResolverSupport {
 
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMin(minimumTaxYear, error)
 
-  def apply(minimumTaxYear: Int, value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < minimumTaxYear) {
-          Invalid(List(RuleTaxYearNotSupportedError))
-        } else {
-          Valid(taxYear)
-        }
-      }
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
 
 }
 
-object ResolveTysTaxYear extends ResolvingTaxYear {
+case class ResolveTaxYearMaximum(maximumTaxYear: TaxYear) extends ResolverSupport {
 
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < TaxYear.tysTaxYear) {
-          Invalid(List(InvalidTaxYearParameterError) ++ error)
-        } else {
-          Valid(taxYear)
-        }
-      }
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMax(maximumTaxYear, RuleTaxYearNotSupportedError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+
+}
+
+case class ResolveTaxYearMinMax(minMax: (TaxYear, TaxYear), minError: MtdError, maxError: MtdError) extends ResolverSupport {
+
+  private val (minimumTaxYear, maximumTaxYear) = minMax
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate
+      satisfiesMin(minimumTaxYear, minError) thenValidate
+      satisfiesMax(maximumTaxYear, maxError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+
+}
+
+object ResolveTaxYearMinMax {
+
+  def apply(minMax: (TaxYear, TaxYear), error: MtdError): ResolveTaxYearMinMax = {
+    ResolveTaxYearMinMax(minMax, error, error)
+  }
+
+  def apply(minMax: (TaxYear, TaxYear)): ResolveTaxYearMinMax = {
+    ResolveTaxYearMinMax(minMax, RuleTaxYearNotSupportedError, RuleTaxYearNotSupportedError)
+  }
+
+}
+
+case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError)(implicit clock: Clock) extends ResolverSupport {
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfies(incompleteTaxYearError)(_ < TaxYear.currentTaxYear)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+}
+
+object ResolveTysTaxYear extends ResolverSupport {
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
 
 }
