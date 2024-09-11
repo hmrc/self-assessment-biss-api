@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.retrieveBiss.def1
+package v3.def1
 
 import api.models.errors.{BusinessIdFormatError, InternalError, MtdError, NinoFormatError, NotFoundError, RuleNoIncomeSubmissionsExist, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError, TypeOfBusinessFormatError}
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
@@ -25,9 +25,9 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v2.fixtures.RetrieveBISSFixture
+import v3.fixtures.RetrieveBISSFixture
 
-class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
+class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
   "Calling the retrieve BISS endpoint" should {
     "return a valid response with status OK" when {
@@ -59,7 +59,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
       def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit = {
         s"work for $requestTypeOfBusiness" in new NonTysTest {
-          override val typeOfBusiness: String = requestTypeOfBusiness
+          override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, queryParams, OK, downstreamResponseJsonMin)
@@ -72,7 +72,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         }
 
         s"work for $requestTypeOfBusiness (TYS)" in new TysTest {
-          override val typeOfBusiness: String = requestTypeOfBusiness
+          override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, downstreamResponseJsonMin)
@@ -94,9 +94,9 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-          override val taxYear: String = requestTaxYear
-          override val nino: String = requestNino
-          override val businessId: String = requestBusinessId
+          override val taxYear: String        = requestTaxYear
+          override val nino: String           = requestNino
+          override val businessId: String     = requestBusinessId
           override val typeOfBusiness: String = requestTypeOfBusiness
 
           val response: WSResponse = await(request.get())
@@ -168,12 +168,12 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
   trait Test {
 
-    val taxYear = "2020-21"
+    val taxYear           = "2020-21"
     val downstreamTaxYear = "2021"
-    val nino = "AA123456A"
-    val businessId = "XAIS12345678913"
-    val typeOfBusiness = "self-employment"
-    val incomeSourceType = "self-employment"
+    val nino              = "AA123456A"
+    val businessId        = "XAIS12345678913"
+    val typeOfBusiness    = "self-employment"
+    val incomeSourceType  = "self-employment"
 
     def downstreamUrl: String
 
