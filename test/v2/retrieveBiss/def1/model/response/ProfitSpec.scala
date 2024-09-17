@@ -24,8 +24,8 @@ class ProfitSpec extends UnitSpec {
   private val json = Json.parse(
     """
       |{
-      |        "net": 0.00,
-      |        "taxable": 35.00
+      |   "net": 0.00,
+      |   "taxable": 35.00
       |}
       |""".stripMargin)
 

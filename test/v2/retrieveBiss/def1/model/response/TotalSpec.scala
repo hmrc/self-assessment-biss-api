@@ -24,11 +24,11 @@ class TotalSpec extends UnitSpec {
   private val json: JsValue = Json.parse(
     """
       |{
-      |        "income": 100.00,
-      |        "expenses": 50.00,
-      |        "additions": 5.00,
-      |        "deductions": 60.00,
-      |        "accountingAdjustments": -30.00
+      |  "income": 100.00,
+      |  "expenses": 50.00,
+      |  "additions": 5.00,
+      |  "deductions": 60.00,
+      |  "accountingAdjustments": -30.00
       |}
       |""".stripMargin)
 
