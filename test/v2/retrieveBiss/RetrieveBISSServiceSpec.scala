@@ -17,7 +17,8 @@
 package v2.retrieveBiss
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v2.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec

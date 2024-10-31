@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package api.models.domain
+package v3.retrieveBiss.model.domain
 
 import api.models.des.IncomeSourceType
-import api.models.domain.TypeOfBusiness._
+import v3.retrieveBiss.model.domain.TypeOfBusiness._
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
 
@@ -27,7 +27,7 @@ class TypeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
     "convert to IncomeSourceType" when {
 
       testConversion(`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`)
-      testConversion(`uk-property-non-fhl`, IncomeSourceType.`uk-property`)
+      testConversion(`uk-property`, IncomeSourceType.`uk-property`)
       testConversion(`foreign-property`, IncomeSourceType.`foreign-property`)
       testConversion(`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`)
       testConversion(`self-employment`, IncomeSourceType.`self-employment`)
@@ -38,5 +38,4 @@ class TypeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
         }
     }
   }
-
 }

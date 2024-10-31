@@ -16,7 +16,8 @@
 
 package v2.retrieveBiss.model.request
 
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v2.retrieveBiss.model.domain.TypeOfBusiness
 
 sealed trait RetrieveBISSRequestData {
   val nino: Nino

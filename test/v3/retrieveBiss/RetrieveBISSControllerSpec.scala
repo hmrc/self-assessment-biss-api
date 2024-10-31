@@ -17,7 +17,8 @@
 package v3.retrieveBiss
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig

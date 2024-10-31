@@ -17,9 +17,10 @@
 package v3.retrieveBiss.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear, ResolveTypeOfBusiness}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
+import v3.retrieveBiss.controllers.validators.resolvers.ResolveTypeOfBusiness
 import api.models.domain.TaxYear
-import api.models.domain.TypeOfBusiness._
+import v3.retrieveBiss.model.domain.TypeOfBusiness._
 import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.data.Validated._
@@ -44,8 +45,8 @@ class Def1_RetrieveBISSValidator(nino: String, typeOfBusiness: String, taxYear: 
 
   private def validateTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
     val minTaxYear = parsed.typeOfBusiness match {
-      case `foreign-property-fhl-eea` | `foreign-property`               => foreignPropertyMinimumTaxYear
-      case `uk-property-non-fhl` | `uk-property-fhl` | `self-employment` => TaxYear.minimumTaxYear
+      case `foreign-property-fhl-eea` | `foreign-property`       => foreignPropertyMinimumTaxYear
+      case `uk-property` | `uk-property-fhl` | `self-employment` => TaxYear.minimumTaxYear
     }
 
     if (parsed.taxYear.year < minTaxYear.year)

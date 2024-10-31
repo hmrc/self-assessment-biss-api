@@ -17,7 +17,8 @@
 package v2.retrieveBiss
 
 import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v2.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.outcomes.ResponseWrapper
 import v2.retrieveBiss.def1.model.response.{Loss, Profit, Total}
 import v2.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}

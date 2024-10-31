@@ -17,9 +17,10 @@
 package v2.retrieveBiss.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMaximum, ResolveTypeOfBusiness}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMaximum}
+import v2.retrieveBiss.controllers.validators.resolvers.ResolveTypeOfBusiness
 import api.models.domain.TaxYear
-import api.models.domain.TypeOfBusiness._
+import v2.retrieveBiss.model.domain.TypeOfBusiness._
 import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.data.Validated._

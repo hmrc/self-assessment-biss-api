@@ -16,7 +16,8 @@
 
 package v3.retrieveBiss.def1
 
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors._
 import support.UnitSpec
 import v3.retrieveBiss.model.request.Def1_RetrieveBISSRequestData

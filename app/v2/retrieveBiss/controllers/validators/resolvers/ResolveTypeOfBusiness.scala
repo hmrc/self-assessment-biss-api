@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package api.controllers.validators.resolvers
+package v2.retrieveBiss.controllers.validators.resolvers
 
-import api.models.domain.TypeOfBusiness
+import api.controllers.validators.resolvers.Resolver
+import v2.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors.{MtdError, TypeOfBusinessFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -34,5 +35,4 @@ object ResolveTypeOfBusiness extends Resolver[String, TypeOfBusiness] {
 
     }
   }
-
 }

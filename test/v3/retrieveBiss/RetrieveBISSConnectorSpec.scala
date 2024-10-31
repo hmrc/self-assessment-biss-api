@@ -17,7 +17,8 @@
 package v3.retrieveBiss
 
 import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear, TypeOfBusiness}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.outcomes.ResponseWrapper
 import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
 import v3.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
@@ -38,7 +39,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
   "retrieveBiss" should {
     "make a request to downstream as per the specification" when {
-      withBusinessType(TypeOfBusiness.`uk-property-non-fhl`, "uk-property")
+      withBusinessType(TypeOfBusiness.`uk-property`, "uk-property")
       withBusinessType(TypeOfBusiness.`uk-property-fhl`, "fhl-property-uk")
       withBusinessType(TypeOfBusiness.`self-employment`, "self-employment")
       withBusinessType(TypeOfBusiness.`foreign-property-fhl-eea`, "fhl-property-eea")
