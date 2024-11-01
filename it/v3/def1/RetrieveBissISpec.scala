@@ -53,7 +53,7 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
       checkWith("self-employment", "self-employment")
       checkWith("uk-property-fhl", "fhl-property-uk")
-      checkWith("uk-property-non-fhl", "uk-property")
+      checkWith("uk-property", "uk-property")
       checkWith("foreign-property", "foreign-property")
       checkWith("foreign-property-fhl-eea", "fhl-property-eea")
 
