@@ -22,7 +22,6 @@ import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
 import v3.retrieveBiss.model.request.Def1_RetrieveBISSRequestData
 import v3.retrieveBiss.model.response.Def1_RetrieveBISSResponse
@@ -32,66 +31,110 @@ import scala.concurrent.Future
 class RetrieveBISSServiceSpec extends ServiceSpec {
 
   // WLOG
-  private val requestData =
-    Def1_RetrieveBISSRequestData(Nino("AA123456A"), TypeOfBusiness.`foreign-property`, TaxYear.fromMtd("2019-20"), BusinessId("XAIS12345678910"))
+  private def requestData(taxYear: String): Def1_RetrieveBISSRequestData = Def1_RetrieveBISSRequestData(
+    nino = Nino("AA123456A"),
+    typeOfBusiness = TypeOfBusiness.`foreign-property`,
+    taxYear = TaxYear.fromMtd(taxYear),
+    businessId = BusinessId("XAIS12345678910")
+  )
 
-  private val response = Def1_RetrieveBISSResponse(Total(income = 100.00, 120.00, None, None, None), Profit(0.00, 0.00), Loss(20.0, 0.0))
+  private val response: Def1_RetrieveBISSResponse = Def1_RetrieveBISSResponse(
+    total = Total(income = 100.00, 120.00, None, None, None),
+    profit = Profit(0.00, 0.00),
+    loss = Loss(20.0, 0.0)
+  )
 
   implicit val loggingContext: EndpointLogContext = EndpointLogContext("controller", "endpoint")
 
-  trait Test extends MockRetrieveBISSConnector {
-    val service = new RetrieveBISSService(mockConnector)
+  private trait Test extends MockRetrieveBISSConnector {
+    val service: RetrieveBISSService = new RetrieveBISSService(mockConnector)
   }
 
-  "retrieveBiss" should {
-    "return a valid response" when {
-      "a valid response is received from the downstream service" in new Test {
-        MockRetrieveBISSConnector
-          .retrieveBiss(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
-      }
-    }
-
-    "return the error response as per the spec" when {
-
-      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the downstream service" in new Test {
-
+  "RetrieveBISSService" when {
+    "retrieveBiss" should {
+      "return a valid response" when {
+        "a valid response is received from the downstream service" in new Test {
           MockRetrieveBISSConnector
-            .retrieveBiss(requestData) returns Future.successful(
-            Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode)))))
+            .retrieveBiss(requestData("2025-26"))
+            .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-          service.retrieveBiss(requestData).futureValue shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.retrieveBiss(requestData("2025-26"))) shouldBe Right(ResponseWrapper(correlationId, response))
+        }
+      }
+
+      "return error response as per the spec" when {
+        def serviceError(taxYear: String, downstreamErrorMapping: Seq[(String, MtdError)]): Unit = {
+          val fullDownstreamErrorMap: Seq[(String, MtdError)] = downstreamErrorMapping ++ Seq(
+            "UNMATCHED_STUB_ERROR" -> RuleIncorrectGovTestScenarioError
+          )
+          fullDownstreamErrorMap.foreach { case (downstreamErrorCode, expectedError) =>
+            s"the $downstreamErrorCode error for tax year $taxYear is returned from the downstream service" in new Test {
+              MockRetrieveBISSConnector
+                .retrieveBiss(requestData(taxYear))
+                .returns(Future.successful(
+                  Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))
+                ))
+
+              await(service.retrieveBiss(requestData(taxYear))) shouldBe Left(ErrorWrapper(correlationId, expectedError))
+            }
+          }
         }
 
-      val errors = Seq(
-        "INVALID_IDVALUE"              -> NinoFormatError,
-        "INVALID_TAXYEAR"              -> TaxYearFormatError,
-        "INVALID_IDTYPE"               -> InternalError,
-        "INVALID_CORRELATIONID"        -> InternalError,
-        "INVALID_INCOMESOURCETYPE"     -> InternalError,
-        "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
-        "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
-        "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
-        "INVALID_QUERY_PARAM"          -> InternalError,
-        "NOT_FOUND"                    -> NotFoundError,
-        "SERVER_ERROR"                 -> InternalError,
-        "SERVICE_UNAVAILABLE"          -> InternalError
-      )
+        val api1415ErrorMap: Seq[(String, MtdError)] = Seq(
+          "INVALID_IDVALUE"              -> NinoFormatError,
+          "INVALID_TAXYEAR"              -> TaxYearFormatError,
+          "INVALID_IDTYPE"               -> InternalError,
+          "INVALID_CORRELATIONID"        -> InternalError,
+          "INVALID_INCOMESOURCETYPE"     -> InternalError,
+          "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
+          "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
+          "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
+          "INVALID_QUERY_PARAM"          -> InternalError,
+          "NOT_FOUND"                    -> NotFoundError,
+          "SERVER_ERROR"                 -> InternalError,
+          "SERVICE_UNAVAILABLE"          -> InternalError
+        )
 
-      val extraTysErrors = Seq(
-        "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-        "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-        "INVALID_CORRELATION_ID"    -> InternalError,
-        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-        "INVALID_INCOME_SOURCETYPE" -> InternalError,
-        "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
-      )
+        val api1871ErrorMap: Seq[(String, MtdError)] = Seq(
+          "INVALID_TAXABLE_ENTITY_ID"    -> NinoFormatError,
+          "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+          "INVALID_CORRELATION_ID"       -> InternalError,
+          "INVALID_INCOMESOURCE_TYPE"    -> InternalError,
+          "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+          "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
+          "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
+          "INVALID_QUERY_PARAM"          -> InternalError,
+          "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError,
+          "NOT_FOUND"                    -> NotFoundError,
+          "SERVER_ERROR"                 -> InternalError,
+          "SERVICE_UNAVAILABLE"          -> InternalError
+        )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        val api1879ErrorMap: Seq[(String, MtdError)] = Seq(
+          "INVALID_TAXABLE_ENTITY_ID"        -> NinoFormatError,
+          "INVALID_TAX_YEAR"                 -> TaxYearFormatError,
+          "INVALID_CORRELATION_ID"           -> InternalError,
+          "INVALID_INCOME_SOURCE_TYPE"       -> InternalError,
+          "INVALID_INCOME_SOURCE_ID"         -> BusinessIdFormatError,
+          "INCOME_SUBMISSIONS_NOT_EXIST"     -> RuleNoIncomeSubmissionsExist,
+          "INVALID_ACCOUNTING_PERIOD"        -> InternalError,
+          "INVALID_QUERY_PARAM"              -> InternalError,
+          "TAX_YEAR_NOT_SUPPORTED"           -> RuleTaxYearNotSupportedError,
+          "REQUESTED_TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+          "NOT_FOUND"                        -> NotFoundError,
+          "SERVER_ERROR"                     -> InternalError,
+          "SERVICE_UNAVAILABLE"              -> InternalError
+        )
+
+        val inputs: Seq[(String, Seq[(String, MtdError)])] = Seq(
+          ("2022-23", api1415ErrorMap),
+          ("2023-24", api1871ErrorMap),
+          ("2024-25", api1871ErrorMap),
+          ("2025-26", api1879ErrorMap)
+        )
+
+        inputs.foreach(args => (serviceError _).tupled(args))
+      }
     }
   }
-
 }

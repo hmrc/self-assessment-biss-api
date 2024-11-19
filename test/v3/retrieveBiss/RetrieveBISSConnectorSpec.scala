@@ -17,6 +17,7 @@
 package v3.retrieveBiss
 
 import api.connectors.ConnectorSpec
+import api.models.des.IncomeSourceType
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.outcomes.ResponseWrapper
@@ -28,56 +29,101 @@ import scala.concurrent.Future
 
 class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
-  val taxYearMtd        = "2018-19"
-  val taxYearDownstream = "2019"
-  val taxYearTys        = "2023-24"
-  val nino              = "AA123456A"
-  val businessId        = "businessId"
+  private val nino: String = "AA123456A"
+  private val businessId: String = "businessId"
+  private def taxYearMtd(taxYear: String): TaxYear = TaxYear.fromMtd(taxYear)
+  private def taxYearAsTysDownstream(taxYear: String): String = taxYearMtd(taxYear).asTysDownstream
+  private def taxYearAsDownstream(taxYear: String): String = taxYearMtd(taxYear).asDownstream
 
   // WLOG
-  val response: RetrieveBISSResponse = Def1_RetrieveBISSResponse(Total(100.00, 50.0, None, None, None), Profit(0, 0), Loss(100.0, 0.0))
+  private val response: RetrieveBISSResponse = Def1_RetrieveBISSResponse(
+    total = Total(100.00, 50.0, None, None, None),
+    profit = Profit(0, 0),
+    loss = Loss(100.0, 0.0)
+  )
 
-  "retrieveBiss" should {
-    "make a request to downstream as per the specification" when {
-      withBusinessType(TypeOfBusiness.`uk-property`, "uk-property")
-      withBusinessType(TypeOfBusiness.`uk-property-fhl`, "fhl-property-uk")
-      withBusinessType(TypeOfBusiness.`self-employment`, "self-employment")
-      withBusinessType(TypeOfBusiness.`foreign-property-fhl-eea`, "fhl-property-eea")
-      withBusinessType(TypeOfBusiness.`foreign-property`, "foreign-property")
+  "RetrieveBISSConnector" when {
+    "retrieveBiss" should {
+      "make a valid request to downstream as per the specification" when {
+        Seq(
+          ("2018-19", TypeOfBusiness.`self-employment`, IncomeSourceType.`self-employment`),
+          ("2019-20", TypeOfBusiness.`uk-property`, IncomeSourceType.`uk-property`),
+          ("2020-21", TypeOfBusiness.`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`),
+          ("2021-22", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
+          ("2022-23", TypeOfBusiness.`foreign-property`, IncomeSourceType.`foreign-property`)
+        ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
+          s"type of business is $typeOfBusiness and tax year is $taxYear (Non TYS)" in new IfsTest with Test {
+            val expectedUrl: String = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYearAsDownstream(taxYear)}/biss"
 
-      def withBusinessType(typeOfBusiness: TypeOfBusiness, incomeSourceTypePathParam: String): Unit = {
-        s"businessType is $typeOfBusiness and non TYS" in new IfsTest with Test {
-          val expectedUrl = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceTypePathParam/$taxYearDownstream/biss"
+            val request: RetrieveBISSRequestData =
+              Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 
-          val request: RetrieveBISSRequestData =
-            Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearMtd), BusinessId(businessId))
+            val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 
-          val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
+            willGet(url = expectedUrl, parameters = Seq("incomeSourceId" -> businessId)) returns Future.successful(expected)
 
-          willGet(url = expectedUrl, parameters = Seq("incomeSourceId" -> businessId)) returns Future.successful(expected)
-
-          await(connector.retrieveBiss(request)) shouldBe expected
+            await(connector.retrieveBiss(request)) shouldBe expected
+          }
         }
 
-        s"businessType is $typeOfBusiness and TYS" in new TysIfsTest with Test {
-          val expectedUrl = s"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
-          val request: RetrieveBISSRequestData =
-            Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
+        Seq(
+          ("2023-24", TypeOfBusiness.`self-employment`, IncomeSourceType.`self-employment`),
+          ("2024-25", TypeOfBusiness.`self-employment`, IncomeSourceType.`self-employment`),
+          ("2025-26", TypeOfBusiness.`self-employment`, IncomeSourceType.`01`),
+          ("2023-24", TypeOfBusiness.`uk-property`, IncomeSourceType.`uk-property`),
+          ("2024-25", TypeOfBusiness.`uk-property`, IncomeSourceType.`uk-property`),
+          ("2025-26", TypeOfBusiness.`uk-property`, IncomeSourceType.`02`),
+          ("2023-24", TypeOfBusiness.`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`),
+          ("2024-25", TypeOfBusiness.`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`),
+          ("2023-24", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
+          ("2024-25", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
+          ("2023-24", TypeOfBusiness.`foreign-property`, IncomeSourceType.`foreign-property`),
+          ("2024-25", TypeOfBusiness.`foreign-property`, IncomeSourceType.`foreign-property`),
+          ("2025-26", TypeOfBusiness.`foreign-property`, IncomeSourceType.`15`)
+        ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
+          def urlPrefix(taxYear: String): String = if (taxYearMtd(taxYear).year >= 2026) {
+            s"$baseUrl/income-tax/${taxYearAsTysDownstream(taxYear)}/income-sources"
+          } else {
+            s"$baseUrl/income-tax/income-sources/${taxYearAsTysDownstream(taxYear)}"
+          }
 
-          val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new TysIfsTest with Test {
+            val expectedUrl: String = s"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
+            val request: RetrieveBISSRequestData =
+              Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 
-          willGet(url = expectedUrl) returns Future.successful(expected)
+            val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 
-          await(connector.retrieveBiss(request)) shouldBe expected
+            willGet(url = expectedUrl) returns Future.successful(expected)
+
+            await(connector.retrieveBiss(request)) shouldBe expected
+          }
+        }
+      }
+
+      "return an IllegalArgumentException" when {
+        Seq(
+          ("2025-26", TypeOfBusiness.`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`),
+          ("2026-27", TypeOfBusiness.`uk-property-fhl`, IncomeSourceType.`fhl-property-uk`),
+          ("2025-26", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
+          ("2026-27", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`)
+        ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new TysIfsTest with Test {
+            val request: RetrieveBISSRequestData =
+              Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+
+            intercept[IllegalArgumentException] {
+              await(connector.retrieveBiss(request))
+            }.getMessage shouldBe s"Unsupported income source type: $incomeSourceType for tax year: ${taxYearMtd(taxYear).year}"
+          }
         }
       }
     }
   }
 
-  trait Test {
+  private trait Test {
     _: ConnectorTest =>
     val connector: RetrieveBISSConnector = new RetrieveBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }
-
 }

@@ -21,7 +21,7 @@ import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, Res
 import v3.retrieveBiss.controllers.validators.resolvers.ResolveTypeOfBusiness
 import api.models.domain.TaxYear
 import v3.retrieveBiss.model.domain.TypeOfBusiness._
-import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError, TypeOfBusinessFormatError}
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
@@ -41,18 +41,23 @@ class Def1_RetrieveBISSValidator(nino: String, typeOfBusiness: String, taxYear: 
       ResolveTypeOfBusiness(typeOfBusiness),
       ResolveTaxYear(taxYear),
       ResolveBusinessId(businessId)
-    ).mapN(Def1_RetrieveBISSRequestData) andThen validateTaxYear
+    ).mapN(Def1_RetrieveBISSRequestData) andThen validateWithTypeOfBusinessAndTaxYear
 
-  private def validateTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
-    val minTaxYear = parsed.typeOfBusiness match {
-      case `foreign-property-fhl-eea` | `foreign-property`       => foreignPropertyMinimumTaxYear
-      case `uk-property` | `uk-property-fhl` | `self-employment` => TaxYear.minimumTaxYear
+  private def validateWithTypeOfBusinessAndTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
+    (parsed.typeOfBusiness, parsed.taxYear.year) match {
+      case (`uk-property-fhl` | `foreign-property-fhl-eea`, year)
+        if year >= fhlPropertyMinimumTaxYear.year =>
+        Invalid(List(TypeOfBusinessFormatError))
+
+      case (`foreign-property-fhl-eea` | `foreign-property`, year)
+        if year < foreignPropertyMinimumTaxYear.year =>
+        Invalid(List(RuleTaxYearNotSupportedError))
+
+      case (`uk-property` | `uk-property-fhl` | `self-employment`, year)
+        if year < TaxYear.minimumTaxYear.year =>
+        Invalid(List(RuleTaxYearNotSupportedError))
+
+      case _ => Valid(parsed)
     }
-
-    if (parsed.taxYear.year < minTaxYear.year)
-      Invalid(List(RuleTaxYearNotSupportedError))
-    else
-      Valid(parsed)
   }
-
 }

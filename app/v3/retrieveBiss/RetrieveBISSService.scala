@@ -17,9 +17,9 @@
 package v3.retrieveBiss
 
 import api.controllers.RequestContext
-import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import v3.retrieveBiss.downstreamErrorMapping.RetrieveBISSDownstreamErrorMapping.errorMapFor
 import v3.retrieveBiss.model.request.RetrieveBISSRequestData
 import v3.retrieveBiss.model.response.RetrieveBISSResponse
 
@@ -34,35 +34,6 @@ class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector) extends B
 
     connector
       .retrieveBiss(request)
-      .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+      .map(_.leftMap(mapDownstreamErrors(errorMapFor(request.taxYear).errorMap)))
   }
-
-  private val downstreamErrorMap: Map[String, MtdError] = {
-    val errors = Map(
-      "INVALID_IDVALUE"              -> NinoFormatError,
-      "INVALID_TAXYEAR"              -> TaxYearFormatError,
-      "INVALID_IDTYPE"               -> InternalError,
-      "INVALID_CORRELATIONID"        -> InternalError,
-      "INVALID_INCOMESOURCETYPE"     -> InternalError,
-      "INVALID_INCOMESOURCEID"       -> BusinessIdFormatError,
-      "INCOME_SUBMISSIONS_NOT_EXIST" -> RuleNoIncomeSubmissionsExist,
-      "INVALID_ACCOUNTING_PERIOD"    -> InternalError,
-      "INVALID_QUERY_PARAM"          -> InternalError,
-      "NOT_FOUND"                    -> NotFoundError,
-      "SERVER_ERROR"                 -> InternalError,
-      "SERVICE_UNAVAILABLE"          -> InternalError
-    )
-
-    val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-      "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"    -> InternalError,
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_INCOME_SOURCETYPE" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
-    )
-
-    errors ++ extraTysErrors
-  }
-
 }

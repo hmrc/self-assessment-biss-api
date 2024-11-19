@@ -19,6 +19,7 @@ package v3.retrieveBiss
 import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.models.des.IncomeSourceType
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
@@ -35,28 +36,34 @@ class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppC
       request: RetrieveBISSRequestData)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
 
     import request._
-    val incomeSourceType = typeOfBusiness.toIncomeSourceType
+    val incomeSourceType: IncomeSourceType = typeOfBusiness.toIncomeSourceType(taxYear.year)
 
     request match {
       case def1: Def1_RetrieveBISSRequestData =>
         import def1._
-        val (downstreamUri, queryParam) =
-          if (taxYear.useTaxYearSpecificApi) {
-            (
-              TaxYearSpecificIfsUri[Def1_RetrieveBISSResponse](
-                s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"),
-              Nil)
-          } else {
-            (
-              IfsUri[Def1_RetrieveBISSResponse](s"income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYear.asDownstream}/biss"),
+
+        val (downstreamUri, queryParam) = taxYear.year match {
+          case year if year >= 2026 =>
+            (TaxYearSpecificIfsUri[Def1_RetrieveBISSResponse](
+              s"income-tax/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"),
+              Nil
+            )
+
+          case _ if taxYear.useTaxYearSpecificApi =>
+            (TaxYearSpecificIfsUri[Def1_RetrieveBISSResponse](
+              s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"),
+              Nil
+            )
+
+          case _ =>
+            (IfsUri[Def1_RetrieveBISSResponse](
+              s"income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYear.asDownstream}/biss"),
               List("incomeSourceId" -> s"$businessId")
             )
-          }
+        }
 
-        val response = get(downstreamUri, queryParam)
+        val response: Future[DownstreamOutcome[Def1_RetrieveBISSResponse]] = get(downstreamUri, queryParam)
         response
     }
-
   }
-
 }

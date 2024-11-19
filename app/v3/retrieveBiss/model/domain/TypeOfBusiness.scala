@@ -17,33 +17,74 @@
 package v3.retrieveBiss.model.domain
 
 import api.models.des.IncomeSourceType
+import api.models.domain.TaxYear
 import utils.enums.Enums
 
 sealed trait TypeOfBusiness {
-  def toIncomeSourceType: IncomeSourceType
+  def toIncomeSourceType(taxYear: Int): IncomeSourceType
 }
 
 object TypeOfBusiness {
 
-  val parser: PartialFunction[String, TypeOfBusiness] = Enums.parser[TypeOfBusiness]
+  val fhlPropertyMinimumTaxYear: TaxYear = TaxYear.fromMtd("2025-26")
+
+  private def incomeSourceTypeFor(preThresholdType: IncomeSourceType,
+                                  postThresholdType: Option[IncomeSourceType],
+                                  taxYear: Int): IncomeSourceType =
+    if (taxYear >= fhlPropertyMinimumTaxYear.year) {
+      postThresholdType.getOrElse(
+        throw new IllegalArgumentException(
+          s"Unsupported income source type: $preThresholdType for tax year: $taxYear"
+        )
+      )
+    } else {
+      preThresholdType
+    }
 
   case object `uk-property` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`uk-property`
+    override def toIncomeSourceType(taxYear: Int): IncomeSourceType =
+      incomeSourceTypeFor(
+        preThresholdType = IncomeSourceType.`uk-property`,
+        postThresholdType = Some(IncomeSourceType.`02`),
+        taxYear = taxYear
+      )
   }
 
   case object `uk-property-fhl` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-uk`
+    override def toIncomeSourceType(taxYear: Int): IncomeSourceType =
+      incomeSourceTypeFor(
+        preThresholdType = IncomeSourceType.`fhl-property-uk`,
+        postThresholdType = None,
+        taxYear = taxYear
+      )
   }
 
   case object `foreign-property` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`foreign-property`
+    override def toIncomeSourceType(taxYear: Int): IncomeSourceType =
+      incomeSourceTypeFor(
+        preThresholdType = IncomeSourceType.`foreign-property`,
+        postThresholdType = Some(IncomeSourceType.`15`),
+        taxYear = taxYear
+      )
   }
 
   case object `foreign-property-fhl-eea` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`fhl-property-eea`
+    override def toIncomeSourceType(taxYear: Int): IncomeSourceType =
+      incomeSourceTypeFor(
+        preThresholdType = IncomeSourceType.`fhl-property-eea`,
+        postThresholdType = None,
+        taxYear = taxYear
+      )
   }
 
   case object `self-employment` extends TypeOfBusiness {
-    override def toIncomeSourceType: IncomeSourceType = IncomeSourceType.`self-employment`
+    override def toIncomeSourceType(taxYear: Int): IncomeSourceType =
+      incomeSourceTypeFor(
+        preThresholdType = IncomeSourceType.`self-employment`,
+        postThresholdType = Some(IncomeSourceType.`01`),
+        taxYear = taxYear
+      )
   }
+
+  val parser: PartialFunction[String, TypeOfBusiness] = Enums.parser[TypeOfBusiness]
 }

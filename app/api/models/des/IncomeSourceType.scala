@@ -28,4 +28,10 @@ object IncomeSourceType {
   case object `self-employment` extends IncomeSourceType
 
   case object `fhl-property-eea` extends IncomeSourceType
+
+  case object `01` extends IncomeSourceType
+
+  case object `02` extends IncomeSourceType
+
+  case object `15` extends IncomeSourceType
 }
