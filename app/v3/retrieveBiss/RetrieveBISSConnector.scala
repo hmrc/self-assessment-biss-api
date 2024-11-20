@@ -16,12 +16,12 @@
 
 package v3.retrieveBiss
 
-import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import api.models.des.IncomeSourceType
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v3.retrieveBiss.downstreamUriBuilder.RetrieveBISSDownstreamUriBuilder
 import v3.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
 import v3.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
 
@@ -42,27 +42,14 @@ class RetrieveBISSConnector @Inject() (val http: HttpClient, val appConfig: AppC
       case def1: Def1_RetrieveBISSRequestData =>
         import def1._
 
-        val (downstreamUri, queryParam) = taxYear.year match {
-          case year if year >= 2026 =>
-            (TaxYearSpecificIfsUri[Def1_RetrieveBISSResponse](
-              s"income-tax/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"),
-              Nil
-            )
+        val uriBuilder: RetrieveBISSDownstreamUriBuilder[Def1_RetrieveBISSResponse] =
+          RetrieveBISSDownstreamUriBuilder.downstreamUriFor(taxYear)
 
-          case _ if taxYear.useTaxYearSpecificApi =>
-            (TaxYearSpecificIfsUri[Def1_RetrieveBISSResponse](
-              s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"),
-              Nil
-            )
+        val (downstreamUri, queryParams): (DownstreamUri[Def1_RetrieveBISSResponse], Seq[(String, String)]) =
+          uriBuilder.buildUri(nino, businessId, incomeSourceType, taxYear)
 
-          case _ =>
-            (IfsUri[Def1_RetrieveBISSResponse](
-              s"income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYear.asDownstream}/biss"),
-              List("incomeSourceId" -> s"$businessId")
-            )
-        }
+        val response: Future[DownstreamOutcome[Def1_RetrieveBISSResponse]] = get(downstreamUri, queryParams)
 
-        val response: Future[DownstreamOutcome[Def1_RetrieveBISSResponse]] = get(downstreamUri, queryParam)
         response
     }
   }
