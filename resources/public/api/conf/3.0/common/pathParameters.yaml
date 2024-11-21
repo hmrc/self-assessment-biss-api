@@ -49,5 +49,6 @@ components:
         - uk-property
         - self-employment
       schema:
+        type: string
         enum: [ foreign-property-fhl-eea, foreign-property, uk-property, uk-property-fhl, self-employment ]
       required: true
