@@ -5,7 +5,13 @@ get:
     specified self-employment or property business during a tax year. 
     A National Insurance number, business ID, tax year and type of business are required.
     
-    Note: From tax year 2025-26 onwards foreign-property-fhl-eea and uk-property-fhl business types are no longer valid.
+    <strong>
+      Note: From tax year 2025-26 onwards the following business types are no longer valid:
+        <ul>
+          <li>uk-property-fhl</li>
+          <li>foreign-property-fhl-eea</li>
+        </ul>
+    </strong>
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
