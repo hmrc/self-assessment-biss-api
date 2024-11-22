@@ -39,7 +39,7 @@ components:
 
         - foreign-property-fhl-eea
         - foreign-property
-        - uk-property-non-fhl
+        - uk-property
         - uk-property-fhl
         - self-employment
 

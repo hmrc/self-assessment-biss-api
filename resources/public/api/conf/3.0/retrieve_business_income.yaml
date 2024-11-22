@@ -8,8 +8,8 @@ get:
     <strong>
       Note: From tax year 2025-26 onwards the following business types are no longer valid:
         <ul>
-          <li>uk-property-fhl</li>
           <li>foreign-property-fhl-eea</li>
+          <li>uk-property-fhl</li>
         </ul>
     </strong>
     
