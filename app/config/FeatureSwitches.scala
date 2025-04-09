@@ -28,3 +28,20 @@ case class FeatureSwitches(featureSwitchConfig: Configuration){
 object FeatureSwitches {
   def apply(appConfig: AppConfig):FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 }
+
+/** This is just here for non-typesafe usage such as Handlebars using OasFeatureRewriter. In most cases, should use the API-specific
+ * XyzFeatureSwitches class instead.
+ */
+case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Configuration) {
+  def isEnabled(feature: String): Boolean = isConfigTrue(feature + ".enabled")
+
+  def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
+
+  private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+
+  def supportingAgentsAccessControlEnabled: Boolean = isEnabled("supporting-agents-access-control")
+}
+
+object ConfigFeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitches)
+}

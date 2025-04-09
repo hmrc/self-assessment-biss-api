@@ -23,7 +23,7 @@ import utils.Logging
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
+class ApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends Logging {
 
   lazy val definition: Definition =
     Definition(

@@ -77,6 +77,10 @@ trait AppConfig {
   def confidenceLevelConfig: ConfidenceLevelConfig
 
   def safeEndpointsEnabled(version: String): Boolean
+
+  def apiVersionReleasedInProduction(version: String): Boolean
+
+  def endpointReleasedInProduction(version: String, name: String): Boolean
 }
 
 @Singleton
@@ -111,6 +115,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
+  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
   def safeEndpointsEnabled(version: String): Boolean =
     configuration
@@ -124,6 +129,17 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
     configuration
       .getOptional[Map[String, Boolean]]("api.supporting-agent-endpoints")
       .getOrElse(Map.empty)
+
+  def apiVersionReleasedInProduction(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.api-released-in-production")
+
+  def endpointReleasedInProduction(version: String, name: String): Boolean = {
+    val versionReleasedInProd = apiVersionReleasedInProduction(version)
+    val path                  = s"api.$version.endpoints.released-in-production.$name"
+
+    val conf = configuration.underlying
+    if (versionReleasedInProd && conf.hasPath(path)) config.getBoolean(path) else versionReleasedInProd
+  }
+
 }
 
 case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEnabled: Boolean, authValidationEnabled: Boolean)

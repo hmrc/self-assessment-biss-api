@@ -29,7 +29,8 @@ object AppDependencies {
     "com.chuusai"                  %% "shapeless"                 % "2.4.0-M1",
     "org.json4s"                   %% "json4s-native"             % "4.1.0-M1",
     "org.json4s"                   %% "json4s-ext"                % "4.1.0-M1",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.18.1"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.18.1",
+    "com.github.jknack"             % "handlebars"                % "4.3.1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
