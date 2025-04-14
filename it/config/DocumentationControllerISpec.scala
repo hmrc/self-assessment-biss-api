@@ -73,7 +73,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
         withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
           version match {
             case Version2 => openAPI.getInfo.getTitle shouldBe "Business Income Source Summary (MTD)"
-            case Version3 => openAPI.getInfo.getTitle shouldBe "Business Income Source Summary (MTD) [test only]"
+            case Version3 => openAPI.getInfo.getTitle shouldBe "Business Income Source Summary (MTD)"
           }
         }
         openAPI.getInfo.getVersion shouldBe version.toString
