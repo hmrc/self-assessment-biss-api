@@ -16,6 +16,8 @@
 
 package definition
 
+import cats.implicits.catsSyntaxValidatedId
+import config.Deprecation.NotDeprecated
 import config.MockAppConfig
 import definition.APIStatus._
 import routing.{Version2, Version3}
@@ -34,6 +36,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         List(Version2, Version3).foreach { version =>
           MockedAppConfig.apiStatus(version) returns "ALPHA"
           MockedAppConfig.endpointsEnabled(version) returns false
+          MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
 
         apiDefinitionFactory.definition shouldBe
@@ -66,6 +69,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
         MockedAppConfig.apiStatus(Version2) returns "BETA"
+        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
         apiDefinitionFactory.buildAPIStatus(version = Version2) shouldBe BETA
       }
     }
@@ -73,6 +77,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
         MockedAppConfig.apiStatus(Version2) returns "ALPHO"
+        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
         apiDefinitionFactory.buildAPIStatus(version = Version2) shouldBe ALPHA
       }
     }

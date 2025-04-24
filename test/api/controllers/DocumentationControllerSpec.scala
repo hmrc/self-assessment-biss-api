@@ -35,7 +35,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
   private val apiVersionName = s"$latestEnabledApiVersion.0"
 
-  protected val apiVersion: Version =
+  override val apiVersion: Version =
     Versions
       .getFrom(apiVersionName)
       .getOrElse(fail(s"Matching Version object not found for $apiVersionName"))
