@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package v2.retrieveBiss
 
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import v2.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v2.retrieveBiss.model.domain.TypeOfBusiness
 import v2.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
 import v2.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
 
@@ -47,7 +48,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
       def withBusinessType(typeOfBusiness: TypeOfBusiness, incomeSourceTypePathParam: String): Unit = {
         s"businessType is $typeOfBusiness and non TYS" in new IfsTest with Test {
-          val expectedUrl = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceTypePathParam/$taxYearDownstream/biss"
+          val expectedUrl = url"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceTypePathParam/$taxYearDownstream/biss"
 
           val request: RetrieveBISSRequestData =
             Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearMtd), BusinessId(businessId))
@@ -60,7 +61,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
         }
 
         s"businessType is $typeOfBusiness and TYS" in new TysIfsTest with Test {
-          val expectedUrl = s"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
+          val expectedUrl = url"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
           val request: RetrieveBISSRequestData =
             Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
 

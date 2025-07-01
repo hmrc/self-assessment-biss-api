@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@ package v3.retrieveBiss
 import api.connectors.ConnectorSpec
 import api.models.des.IncomeSourceType
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
 import v3.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
 
+import java.net.URL
 import scala.concurrent.Future
 
 class RetrieveBISSConnectorSpec extends ConnectorSpec {
@@ -53,7 +55,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           ("2022-23", TypeOfBusiness.`foreign-property`, IncomeSourceType.`foreign-property`)
         ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
           s"type of business is $typeOfBusiness and tax year is $taxYear (Non TYS)" in new IfsTest with Test {
-            val expectedUrl: String = s"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYearAsDownstream(taxYear)}/biss"
+            val expectedUrl: URL = url"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYearAsDownstream(taxYear)}/biss"
 
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
@@ -88,7 +90,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           }
 
           s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new TysIfsTest with Test {
-            val expectedUrl: String = s"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
+            val expectedUrl: URL = url"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package api.connectors
 import api.connectors.MtdIdLookupConnector.Outcome
 import api.mocks.MockHttpClient
 import config.MockAppConfig
+import uk.gov.hmrc.http.StringContextOps
 
 import scala.concurrent.Future
 
@@ -40,9 +41,9 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
   "getMtdId" should {
     "return an MtdId" when {
       "the http client returns a mtd id" in new Test {
-        MockHttpClient
+        MockedHttpClient
           .get[MtdIdLookupConnector.Outcome](
-            url = s"$baseUrl/mtd-identifier-lookup/nino/$nino",
+            url = url"$baseUrl/mtd-identifier-lookup/nino/$nino",
             config = dummyHeaderCarrierConfig
           )
           .returns(Future.successful(Right(mtdId)))
@@ -58,8 +59,8 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
 
         val statusCode: Int = IM_A_TEAPOT
 
-        MockHttpClient
-          .get[MtdIdLookupConnector.Outcome](s"$baseUrl/mtd-identifier-lookup/nino/$nino", config = dummyHeaderCarrierConfig)
+        MockedHttpClient
+          .get[MtdIdLookupConnector.Outcome](url"$baseUrl/mtd-identifier-lookup/nino/$nino", config = dummyHeaderCarrierConfig)
           .returns(Future.successful(Left(MtdIdLookupConnector.Error(statusCode))))
 
         val result: Outcome = await(connector.getMtdId(nino))

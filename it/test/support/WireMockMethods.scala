@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package support
 
-import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Writes
@@ -48,7 +48,7 @@ trait WireMockMethods {
       }
 
       body match {
-        case Some(extractedBody) => uriMappingWithHeaders.withRequestBody(equalTo(extractedBody))
+        case Some(extractedBody) => uriMappingWithHeaders.withRequestBody(equalToJson(extractedBody))
         case None => uriMappingWithHeaders
       }
     }
