@@ -47,17 +47,6 @@ trait MockAppConfig extends TestSuite with MockFactory {
 
     def ifsEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.ifsEnvironmentHeaders).expects()
 
-    // TYS IFS Config
-    def tysIfsBaseUrl: CallHandler[String] = (() => mockAppConfig.tysIfsBaseUrl).expects()
-
-    def tysIfsToken: CallHandler[String] = (() => mockAppConfig.tysIfsToken).expects()
-
-    def tysIfsEnv: CallHandler[String] = (() => mockAppConfig.tysIfsEnv).expects()
-
-    def tysIfsEnvironment: CallHandler[String] = (() => mockAppConfig.tysIfsEnv).expects()
-
-    def tysIfsEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.tysIfsEnvironmentHeaders).expects()
-
     def mtdIdBaseUrl: CallHandler[String] = (() => mockAppConfig.mtdIdBaseUrl).expects()
 
     def featureSwitches: CallHandler[Configuration] = (() => mockAppConfig.featureSwitches: Configuration).expects()

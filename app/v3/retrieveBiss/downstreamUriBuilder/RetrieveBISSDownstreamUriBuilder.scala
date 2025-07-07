@@ -17,7 +17,7 @@
 package v3.retrieveBiss.downstreamUriBuilder
 
 import api.connectors.DownstreamUri
-import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import api.connectors.DownstreamUri.IfsUri
 import api.models.des.IncomeSourceType
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrieveBiss.model.response.RetrieveBISSResponse
@@ -53,7 +53,7 @@ object RetrieveBISSDownstreamUriBuilder {
                           incomeSourceType: IncomeSourceType,
                           taxYear: TaxYear): (DownstreamUri[RetrieveBISSResponse], Seq[(String, String)]) = {
 
-      val uri: TaxYearSpecificIfsUri[RetrieveBISSResponse] = TaxYearSpecificIfsUri[RetrieveBISSResponse](
+      val uri: IfsUri[RetrieveBISSResponse] = IfsUri[RetrieveBISSResponse](
         s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"
       )
 
@@ -67,7 +67,7 @@ object RetrieveBISSDownstreamUriBuilder {
                           incomeSourceType: IncomeSourceType,
                           taxYear: TaxYear): (DownstreamUri[RetrieveBISSResponse], Seq[(String, String)]) = {
 
-      val uri: TaxYearSpecificIfsUri[RetrieveBISSResponse] = TaxYearSpecificIfsUri[RetrieveBISSResponse](
+      val uri: IfsUri[RetrieveBISSResponse] = IfsUri[RetrieveBISSResponse](
         s"income-tax/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"
       )
 
@@ -78,7 +78,7 @@ object RetrieveBISSDownstreamUriBuilder {
   def downstreamUriFor[Resp](taxYear: TaxYear): RetrieveBISSDownstreamUriBuilder[Resp] = {
     val downstreamUriBuilder: RetrieveBISSDownstreamUriBuilder[RetrieveBISSResponse] = taxYear.year match {
       case year if year >= 2026                => Api1879
-      case  _ if taxYear.useTaxYearSpecificApi => Api1871
+      case  _ if taxYear.useTaxYearSpecificApi  => Api1871
       case _                                   => Api1415
     }
 

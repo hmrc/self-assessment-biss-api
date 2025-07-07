@@ -60,7 +60,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           await(connector.retrieveBiss(request)) shouldBe expected
         }
 
-        s"businessType is $typeOfBusiness and TYS" in new TysIfsTest with Test {
+        s"businessType is $typeOfBusiness and TYS" in new IfsTest with Test {
           val expectedUrl = url"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
           val request: RetrieveBISSRequestData =
             Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))

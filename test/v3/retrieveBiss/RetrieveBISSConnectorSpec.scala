@@ -89,7 +89,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
             s"$baseUrl/income-tax/income-sources/${taxYearAsTysDownstream(taxYear)}"
           }
 
-          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new TysIfsTest with Test {
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new IfsTest with Test {
             val expectedUrl: URL = url"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
@@ -110,7 +110,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           ("2025-26", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
           ("2026-27", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`)
         ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
-          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new TysIfsTest with Test {
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new IfsTest with Test {
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 

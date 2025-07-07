@@ -81,23 +81,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     "X-Session-Id"
   )
 
-  val requiredTysIfsHeaders: Seq[(String, String)] = Seq(
-    "Authorization"     -> "Bearer TYS-IFS-token",
-    "Environment"       -> "TYS-IFS-environment",
-    "User-Agent"        -> "this-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedTysIfsHeaders: Seq[String] = Seq(
-    "Accept",
-    "Gov-Test-Scenario",
-    "Content-Type",
-    "Location",
-    "X-Request-Timestamp",
-    "X-Session-Id"
-  )
-
   protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
     protected val baseUrl: String = "http://test-BaseUrl"
 
@@ -169,17 +152,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockedAppConfig.ifsToken returns "ifs-token"
     MockedAppConfig.ifsEnvironment returns "ifs-environment"
     MockedAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-
-  }
-
-  protected trait TysIfsTest extends ConnectorTest {
-
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
-
-    MockedAppConfig.tysIfsBaseUrl returns this.baseUrl
-    MockedAppConfig.tysIfsToken returns "TYS-IFS-token"
-    MockedAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
-    MockedAppConfig.tysIfsEnvironmentHeaders returns Some(allowedIfsHeaders)
 
   }
 

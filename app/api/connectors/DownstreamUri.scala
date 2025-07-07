@@ -24,6 +24,4 @@ object DownstreamUri {
   case class DesUri[Resp](value: String) extends DownstreamUri[Resp]
 
   case class IfsUri[Resp](value: String) extends DownstreamUri[Resp]
-
-  case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
 }
