@@ -45,4 +45,5 @@ class ResolveTypeOfBusinessSpec extends UnitSpec {
       result shouldBe Invalid(List(TypeOfBusinessFormatError))
     }
   }
+
 }

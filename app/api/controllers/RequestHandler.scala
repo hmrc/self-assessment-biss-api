@@ -38,10 +38,10 @@ import scala.concurrent.{ExecutionContext, Future}
 trait RequestHandler {
 
   def handleRequest()(implicit
-                      ctx: RequestContext,
-                      request: UserRequest[_],
-                      ec: ExecutionContext,
-                      appConfig: AppConfig
+      ctx: RequestContext,
+      request: UserRequest[?],
+      ec: ExecutionContext,
+      appConfig: AppConfig
   ): Future[Result]
 
 }
@@ -59,15 +59,15 @@ object RequestHandler {
   }
 
   case class RequestHandlerBuilder[Input, Output] private[RequestHandler] (
-                                                                            validator: Validator[Input],
-                                                                            service: Input => Future[ServiceOutcome[Output]],
-                                                                            errorHandling: ErrorHandling = ErrorHandling.Default,
-                                                                            resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-                                                                            auditHandler: Option[AuditHandler] = None,
-                                                                            modelHandler: Option[Output => Output] = None
-                                                                          ) extends RequestHandler {
+      validator: Validator[Input],
+      service: Input => Future[ServiceOutcome[Output]],
+      errorHandling: ErrorHandling = ErrorHandling.Default,
+      resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
+      auditHandler: Option[AuditHandler] = None,
+      modelHandler: Option[Output => Output] = None
+  ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
+    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[?], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -80,24 +80,23 @@ object RequestHandler {
       copy(modelHandler = Option(modelHandler))
 
     /** Shorthand for
-     * {{{
-     * withResultCreator(ResultCreator.plainJson(successStatus))
-     * }}}
-     */
+      * {{{
+      * withResultCreator(ResultCreator.plainJson(successStatus))
+      * }}}
+      */
     def withPlainJsonResult(successStatus: Int = Status.OK)(implicit ws: Writes[Output]): RequestHandlerBuilder[Input, Output] =
       withResultCreator(ResultCreator.plainJson(successStatus))
 
     /** Shorthand for
-     * {{{
-     * withResultCreator(ResultCreator.noContent)
-     * }}}
-     */
+      * {{{
+      * withResultCreator(ResultCreator.noContent)
+      * }}}
+      */
     def withNoContentResult(successStatus: Int = Status.NO_CONTENT): RequestHandlerBuilder[Input, Output] =
       withResultCreator(ResultCreator.noContent(successStatus))
 
     def withResultCreator(resultCreator: ResultCreator[Input, Output]): RequestHandlerBuilder[Input, Output] =
       copy(resultCreator = resultCreator)
-
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
@@ -137,10 +136,10 @@ object RequestHandler {
       }
 
       def handleRequest()(implicit
-                          ctx: RequestContext,
-                          request: UserRequest[_],
-                          ec: ExecutionContext,
-                          appConfig: AppConfig
+          ctx: RequestContext,
+          request: UserRequest[?],
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Future[Result] = {
 
         logger.info(
@@ -165,10 +164,10 @@ object RequestHandler {
       private def doWithContext[A](ctx: RequestContext)(f: RequestContext => A): A = f(ctx)
 
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
-                                                                                                ctx: RequestContext,
-                                                                                                request: UserRequest[_],
-                                                                                                ec: ExecutionContext,
-                                                                                                appConfig: AppConfig
+          ctx: RequestContext,
+          request: UserRequest[?],
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Result = {
 
         implicit val apiVersion: Version = Version(request)
@@ -186,10 +185,10 @@ object RequestHandler {
       }
 
       private def handleFailure(errorWrapper: ErrorWrapper)(implicit
-                                                            ctx: RequestContext,
-                                                            request: UserRequest[_],
-                                                            ec: ExecutionContext,
-                                                            appConfig: AppConfig
+          ctx: RequestContext,
+          request: UserRequest[?],
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Result = {
 
         implicit val apiVersion: Version = Version(request)
@@ -211,10 +210,10 @@ object RequestHandler {
         InternalServerError(InternalError.asJson)
       }
 
-      def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
-                                                                                            ctx: RequestContext,
-                                                                                            request: UserRequest[_],
-                                                                                            ec: ExecutionContext): Unit =
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+          ctx: RequestContext,
+          request: UserRequest[?],
+          ec: ExecutionContext): Unit =
         auditHandler.foreach { creator =>
           creator.performAudit(request.userDetails, httpStatus, response)
         }

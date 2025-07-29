@@ -50,7 +50,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
           .retrieveBiss(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.retrieveBiss(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        await(service.retrieveBiss(requestData)).shouldBe(Right(ResponseWrapper(correlationId, response)))
       }
     }
 
@@ -63,7 +63,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
             .retrieveBiss(requestData) returns Future.successful(
             Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode)))))
 
-          service.retrieveBiss(requestData).futureValue shouldBe Left(ErrorWrapper(correlationId, error))
+          service.retrieveBiss(requestData).futureValue.shouldBe(Left(ErrorWrapper(correlationId, error)))
         }
 
       val errors = Seq(
@@ -90,7 +90,7 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
         "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
     }
   }
 

@@ -82,13 +82,13 @@ class NinoSpec extends UnitSpec {
 
   "Formatting a Nino" should {
     "produce a formatted nino" in {
-      Nino("CS100700A").formatted shouldBe "CS 10 07 00 A"
+      Nino("CS100700A").formatted.shouldBe("CS 10 07 00 A")
     }
   }
 
   "Removing a suffix" should {
     "produce a nino without a suffix" in {
-      Nino("AA111111A").withoutSuffix shouldBe "AA111111"
+      Nino("AA111111A").withoutSuffix.shouldBe("AA111111")
     }
   }
 

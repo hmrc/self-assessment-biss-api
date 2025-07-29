@@ -38,7 +38,7 @@ object Def1_RetrieveBISSResponse {
     JsPath.read[Total] and
       JsPath.read[Profit] and
       JsPath.read[Loss]
-  )(Def1_RetrieveBISSResponse.apply _)
+  )(Def1_RetrieveBISSResponse.apply)
 
   implicit val writes: OWrites[Def1_RetrieveBISSResponse] = Json.writes[Def1_RetrieveBISSResponse]
 

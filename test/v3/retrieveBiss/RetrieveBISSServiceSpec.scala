@@ -71,9 +71,10 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
             s"the $downstreamErrorCode error for tax year $taxYear is returned from the downstream service" in new Test {
               MockRetrieveBISSConnector
                 .retrieveBiss(requestData(taxYear))
-                .returns(Future.successful(
-                  Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))
-                ))
+                .returns(
+                  Future.successful(
+                    Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))
+                  ))
 
               await(service.retrieveBiss(requestData(taxYear))) shouldBe Left(ErrorWrapper(correlationId, expectedError))
             }
@@ -133,8 +134,9 @@ class RetrieveBISSServiceSpec extends ServiceSpec {
           ("2025-26", api1879ErrorMap)
         )
 
-        inputs.foreach(args => (serviceError _).tupled(args))
+        inputs.foreach(args => serviceError.tupled(args))
       }
     }
   }
+
 }

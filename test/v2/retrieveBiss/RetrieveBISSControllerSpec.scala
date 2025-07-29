@@ -37,11 +37,13 @@ class RetrieveBISSControllerSpec
     with ControllerTestRunner
     with MockRetrieveBISSValidatorFactory
     with MockRetrieveBISSService
-    with MockAppConfig
-    {
+    with MockAppConfig {
 
   val response: RetrieveBISSResponse =
-    Def1_RetrieveBISSResponse(Total(income = 100.00, expenses = 50.0, None, None, None), Profit(net = 0.0, taxable = 0.0), Loss(net = 50.0, taxable = 0.0))
+    Def1_RetrieveBISSResponse(
+      Total(income = 100.00, expenses = 50.0, None, None, None),
+      Profit(net = 0.0, taxable = 0.0),
+      Loss(net = 50.0, taxable = 0.0))
 
   val responseJson: JsValue = Json.parse("""{
       |  "total": {
@@ -61,7 +63,9 @@ class RetrieveBISSControllerSpec
   private val taxYear        = "2018-19"
   private val typeOfBusiness = "uk-property-fhl"
   private val businessId     = "someBusinessId"
-  private val requestData    = Def1_RetrieveBISSRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
+
+  private val requestData =
+    Def1_RetrieveBISSRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
 
   "retrieveBiss" should {
     "return successful response with status OK" when {
@@ -97,7 +101,7 @@ class RetrieveBISSControllerSpec
 
   trait Test extends ControllerTest {
 
-    val controller = new RetrieveBISSController(
+    val controller: RetrieveBISSController = new RetrieveBISSController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveBISSValidatorFactory,

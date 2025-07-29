@@ -39,16 +39,16 @@ class TypeOfBusinessSpec extends UnitSpec {
   )
 
   private def testConversion(typeOfBusiness: TypeOfBusiness,
-                     incomeSourceType: IncomeSourceType,
-                     taxYear: Int,
-                     isExpectedToThrowException: Boolean): Unit =
+                             incomeSourceType: IncomeSourceType,
+                             taxYear: Int,
+                             isExpectedToThrowException: Boolean): Unit =
     s"type of business $typeOfBusiness for tax year $taxYear is provided" in {
       if (isExpectedToThrowException) {
         intercept[IllegalArgumentException] {
           typeOfBusiness.toIncomeSourceType(taxYear)
         }.getMessage shouldBe s"Unsupported income source type: $incomeSourceType for tax year: $taxYear"
       } else {
-        typeOfBusiness.toIncomeSourceType(taxYear) shouldBe incomeSourceType
+        typeOfBusiness.toIncomeSourceType(taxYear).shouldBe(incomeSourceType)
       }
     }
 
@@ -65,4 +65,5 @@ class TypeOfBusinessSpec extends UnitSpec {
       }
     }
   }
+
 }

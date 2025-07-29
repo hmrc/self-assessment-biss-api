@@ -35,13 +35,6 @@ trait ResolverSupport {
 
   }
 
-  implicit class ValidatorOps[A](validator: A => Option[Seq[MtdError]]) {
-    def thenValidate(other: Validator[A]): Validator[A] = a => validator(a).orElse(other(a))
-
-    def contramap[B](f: B => A): Validator[B] = b => validator(f(b))
-
-  }
-
   def satisfies[A](error: => MtdError)(predicate: A => Boolean): Validator[A] =
     a => Option.when(!predicate(a))(List(error))
 

@@ -97,4 +97,5 @@ class RetrieveBISSDownstreamErrorMappingSpec extends UnitSpec with ScalaCheckDri
       }
     }
   }
+
 }

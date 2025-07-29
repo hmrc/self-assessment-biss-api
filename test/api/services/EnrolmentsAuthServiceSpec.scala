@@ -91,7 +91,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .returns(Future.successful(retrievalsResult))
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
-        result shouldBe Right(UserDetails("", "Individual", None))
+        result.shouldBe(Right(UserDetails("", "Individual", None)))
       }
 
     def authorisedOrganisation(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =

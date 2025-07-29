@@ -44,7 +44,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class RequestHandlerSpec
-  extends UnitSpec
+    extends UnitSpec
     with MockAuditService
     with MockIdGenerator
     with Status
@@ -65,7 +65,6 @@ class RequestHandlerSpec
 
   case object Input
   case object Output { implicit val writes: OWrites[Output.type] = _ => successResponseJson }
-
 
   MockIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
@@ -94,6 +93,11 @@ class RequestHandlerSpec
     def validate: Validated[Seq[MtdError], Input.type] = Invalid(List(NinoFormatError))
   }
 
+  private val successRequestHandler =
+    RequestHandler
+      .withValidator(successValidatorForRequest)
+      .withService(mockService.service)
+
   "RequestHandler" when {
     "a request is successful" must {
       "return the correct response" in {
@@ -108,9 +112,9 @@ class RequestHandlerSpec
 
         val result = requestHandler.handleRequest()
 
-        contentAsJson(result) shouldBe successResponseJson
-        header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
-        status(result) shouldBe successCode
+        contentAsJson(result).shouldBe(successResponseJson)
+        header("X-CorrelationId", result).shouldBe(Some(serviceCorrelationId))
+        status(result).shouldBe(successCode)
       }
 
       "return no content if required" in {
@@ -125,11 +129,10 @@ class RequestHandlerSpec
 
         val result = requestHandler.handleRequest()
 
-        contentAsString(result) shouldBe ""
-        header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
-        status(result) shouldBe NO_CONTENT
+        contentAsString(result).shouldBe("")
+        header("X-CorrelationId", result).shouldBe(Some(serviceCorrelationId))
+        status(result).shouldBe(NO_CONTENT)
       }
-
 
       "a request is made to a deprecated version" must {
         "return the correct response" when {
@@ -153,13 +156,13 @@ class RequestHandlerSpec
 
             val result = requestHandler.handleRequest()
 
-            contentAsJson(result) shouldBe successResponseJson
-            header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
-            header("Deprecation", result) shouldBe Some("Tue, 17 Jan 2023 12:00:00 GMT")
-            header("Sunset", result) shouldBe Some("Wed, 17 Jan 2024 12:00:00 GMT")
-            header("Link", result) shouldBe Some("http://someUrl")
+            contentAsJson(result).shouldBe(successResponseJson)
+            header("X-CorrelationId", result).shouldBe(Some(serviceCorrelationId))
+            header("Deprecation", result).shouldBe(Some("Tue, 17 Jan 2023 12:00:00 GMT"))
+            header("Sunset", result).shouldBe(Some("Wed, 17 Jan 2024 12:00:00 GMT"))
+            header("Link", result).shouldBe(Some("http://someUrl"))
 
-            status(result) shouldBe successCode
+            status(result).shouldBe(successCode)
           }
 
           "only deprecatedOn exists" in {
@@ -336,6 +339,14 @@ class RequestHandlerSpec
 
           verifyAudit(serviceCorrelationId, AuditResponse(NinoFormatError.httpStatus, Left(List(AuditError(NinoFormatError.code)))))
         }
+      }
+    }
+    "withErrorHandling()" should {
+      "return a new RequestHandlerBuilder with the expected error handling" in {
+        class CustomErrorHandling extends ErrorHandling(null)
+
+        val result = successRequestHandler.withErrorHandling(new CustomErrorHandling)
+        result.errorHandling shouldBe a[CustomErrorHandling]
       }
     }
   }

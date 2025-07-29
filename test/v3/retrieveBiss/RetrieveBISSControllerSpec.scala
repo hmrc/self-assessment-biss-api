@@ -101,7 +101,7 @@ class RetrieveBISSControllerSpec
 
   trait Test extends ControllerTest {
 
-    val controller = new RetrieveBISSController(
+    val controller: RetrieveBISSController = new RetrieveBISSController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveBISSValidatorFactory,

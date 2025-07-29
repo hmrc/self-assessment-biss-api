@@ -60,7 +60,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
       def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit = {
         s"type of business is $requestTypeOfBusiness (Non TYS)" in new NonTysTest {
-          override val typeOfBusiness: String = requestTypeOfBusiness
+          override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, queryParams, OK, downstreamResponseJsonMin)
@@ -77,9 +77,11 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
           ("2024-25", "24-25")
         ).foreach { case (mtdTaxYear, downstreamTaxYear) =>
           s"type of business is $requestTypeOfBusiness and tax year is $mtdTaxYear (TYS)" in new TysTest(
-            mtdTaxYear, downstreamTaxYear, requestIncomeSourceType
+            mtdTaxYear,
+            downstreamTaxYear,
+            requestIncomeSourceType
           ) {
-            override val typeOfBusiness: String = requestTypeOfBusiness
+            override val typeOfBusiness: String   = requestTypeOfBusiness
             override val incomeSourceType: String = requestIncomeSourceType
 
             DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, downstreamResponseJsonMin)
@@ -102,10 +104,11 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
                               requestTypeOfBusiness: String,
                               expectedStatus: Int,
                               expectedBody: MtdError,
-                              scenario: Option[String]
-                             ): Unit = {
+                              scenario: Option[String]): Unit = {
         s"validation fails with ${expectedBody.code} error ${scenario.getOrElse("")}" in new TysTest(
-          requestTaxYear, downstreamTaxYear, "ignored"
+          requestTaxYear,
+          downstreamTaxYear,
+          "ignored"
         ) {
           override val taxYear: String        = requestTaxYear
           override val nino: String           = requestNino
@@ -130,7 +133,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         ("AA123456A", "2025-26", "25-26", "XAIS12345678913", "foreign-property-fhl-eea", BAD_REQUEST, TypeOfBusinessFormatError, Some("for fhl eea")),
         ("AA123456A", "2025-26", "25-26", "XAIS12345678913", "not-business-type", BAD_REQUEST, TypeOfBusinessFormatError, None)
       )
-      inputs.foreach(args => (validationErrorTest _).tupled(args))
+      inputs.foreach(args => validationErrorTest.tupled(args))
     }
 
     "a downstream service error" when {
@@ -160,7 +163,9 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
                               downstreamTaxYear: String,
                               incomeSourceType: String): Unit = {
         s"downstream returns the $downstreamCode error and status $downstreamStatus for tax year $mtdTaxYear (TYS)" in new TysTest(
-          mtdTaxYear, downstreamTaxYear, incomeSourceType
+          mtdTaxYear,
+          downstreamTaxYear,
+          incomeSourceType
         ) {
           DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
 
@@ -221,7 +226,7 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
-      api1415ErrorMap.foreach(args => (serviceErrorTestNonTys _).tupled(args))
+      api1415ErrorMap.foreach(args => serviceErrorTestNonTys.tupled(args))
 
       Seq(
         ("2024-25", "24-25", api1871ErrorMap, "self-employment"),
@@ -229,7 +234,13 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
       ).foreach { case (mtdTaxYear, downstreamTaxYear, errorMap, incomeSourceType) =>
         errorMap.foreach { case (downstreamStatus, downstreamCode, expectedStatus, expectedBody) =>
           serviceErrorTestTys(
-            downstreamStatus, downstreamCode, expectedStatus, expectedBody, mtdTaxYear, downstreamTaxYear, incomeSourceType
+            downstreamStatus,
+            downstreamCode,
+            expectedStatus,
+            expectedBody,
+            mtdTaxYear,
+            downstreamTaxYear,
+            incomeSourceType
           )
         }
       }
@@ -238,9 +249,9 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
   private trait Test {
 
-    val nino: String             = "AA123456A"
-    val businessId: String       = "XAIS12345678913"
-    val typeOfBusiness: String   = "self-employment"
+    val nino: String           = "AA123456A"
+    val businessId: String     = "XAIS12345678913"
+    val typeOfBusiness: String = "self-employment"
 
     def incomeSourceType: String
     def taxYear: String
@@ -266,11 +277,13 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
     def taxYear: String                              = mtdTaxYear
     private def taxYearMtd(taxYear: String): TaxYear = TaxYear.fromMtd(taxYear)
     def downstreamTaxYear: String                    = downstreamTysTaxYear
-    def downstreamUrl: String                        = if (taxYearMtd(taxYear).year >= 2026) {
+
+    def downstreamUrl: String = if (taxYearMtd(taxYear).year >= 2026) {
       s"/income-tax/$downstreamTaxYear/income-sources/$nino/$businessId/$incomeSourceType/biss"
     } else {
       s"/income-tax/income-sources/$downstreamTaxYear/$nino/$businessId/$incomeSourceType/biss"
     }
+
   }
 
   private trait NonTysTest extends Test {
@@ -281,4 +294,5 @@ class RetrieveBISSControllerISpec extends IntegrationBaseSpec with RetrieveBISSF
 
     def queryParams: Map[String, String] = Map("incomeSourceId" -> businessId)
   }
+
 }

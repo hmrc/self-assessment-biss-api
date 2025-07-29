@@ -37,6 +37,7 @@ object RetrieveBISSDownstreamErrorMapping {
   )
 
   case object Api1415 extends RetrieveBISSDownstreamErrorMapping {
+
     val errorMap: Map[String, MtdError] = commonErrorsMap ++ Map(
       "INVALID_IDVALUE"          -> NinoFormatError,
       "INVALID_TAXYEAR"          -> TaxYearFormatError,
@@ -45,9 +46,11 @@ object RetrieveBISSDownstreamErrorMapping {
       "INVALID_INCOMESOURCETYPE" -> InternalError,
       "INVALID_INCOMESOURCEID"   -> BusinessIdFormatError
     )
+
   }
 
   case object Api1871 extends RetrieveBISSDownstreamErrorMapping {
+
     val errorMap: Map[String, MtdError] = commonErrorsMap ++ Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR"          -> TaxYearFormatError,
@@ -56,9 +59,11 @@ object RetrieveBISSDownstreamErrorMapping {
       "INVALID_INCOMESOURCE_ID"   -> BusinessIdFormatError,
       "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError
     )
+
   }
 
   case object Api1879 extends RetrieveBISSDownstreamErrorMapping {
+
     private val errorsToRemove: Set[String] = Set(
       "INVALID_INCOMESOURCE_TYPE",
       "INVALID_INCOMESOURCE_ID"
@@ -78,4 +83,5 @@ object RetrieveBISSDownstreamErrorMapping {
     case ty if ty == TaxYear.fromMtd("2023-24") || ty == TaxYear.fromMtd("2024-25") => Api1871
     case _                                                                          => Api1415
   }
+
 }

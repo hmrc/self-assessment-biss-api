@@ -32,7 +32,7 @@ object ResolveDateRange extends Resolver[(String, String), DateRange] {
     (
       ResolveIsoDate(startDate, StartDateFormatError),
       ResolveIsoDate(endDate, EndDateFormatError)
-    ).mapN(resolveDateRange).andThen(identity)
+    ).mapN(resolveDateRange.apply).andThen(identity)
   }
 
   private def resolveDateRange(parsedStartDate: LocalDate, parsedEndDate: LocalDate): Validated[Seq[MtdError], DateRange] = {

@@ -26,7 +26,7 @@ object Loss {
   implicit val reads: Reads[Loss] = (
     (JsPath \ "netLoss").read[BigDecimal] and
       (JsPath \ "taxableLoss").read[BigDecimal]
-    ) (Loss.apply _)
+  )(Loss.apply)
 
   implicit val writes: OWrites[Loss] = Json.writes[Loss]
 

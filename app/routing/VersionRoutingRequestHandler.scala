@@ -24,7 +24,7 @@ import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
 import play.core.DefaultWebCommands
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Singleton, Provider}
 
 @Singleton
 class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,
@@ -36,7 +36,9 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     extends DefaultHttpRequestHandler(
       webCommands = new DefaultWebCommands,
       optDevContext = None,
-      router = () => versionRoutingMap.defaultRouter,
+      router = new Provider[Router] {
+        override def get(): Router = versionRoutingMap.defaultRouter
+      },
       errorHandler = errorHandler,
       configuration = httpConfiguration,
       filters = filters.filters

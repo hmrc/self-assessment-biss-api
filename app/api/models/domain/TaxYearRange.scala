@@ -19,12 +19,12 @@ package api.models.domain
 import java.time.Clock
 
 /** A tax year range.
- *
- * @param from
- *   the from date (where YYXX-ZZ is translated to 20XX-04-06)
- * @param to
- *   the to date (where YYXX-ZZ is translated to 20ZZ-04-05)
- */
+  *
+  * @param from
+  *   the from date (where YYXX-ZZ is translated to 20XX-04-06)
+  * @param to
+  *   the to date (where YYXX-ZZ is translated to 20ZZ-04-05)
+  */
 case class TaxYearRange(from: TaxYear, to: TaxYear)
 
 object TaxYearRange {
@@ -38,10 +38,10 @@ object TaxYearRange {
   def apply(taxYear: TaxYear): TaxYearRange = TaxYearRange(taxYear, taxYear)
 
   /** @param taxYear
-   *   tax year in MTD format (e.g. 2017-18)
-   * @return
-   *   a 1-year range e.g. 2017 to 2018
-   */
+    *   tax year in MTD format (e.g. 2017-18)
+    * @return
+    *   a 1-year range e.g. 2017 to 2018
+    */
   def fromMtd(taxYear: String): TaxYearRange = {
     val ty = TaxYear.fromMtd(taxYear)
     new TaxYearRange(ty, ty)

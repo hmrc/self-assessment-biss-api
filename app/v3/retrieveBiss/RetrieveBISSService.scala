@@ -36,4 +36,5 @@ class RetrieveBISSService @Inject() (connector: RetrieveBISSConnector) extends B
       .retrieveBiss(request)
       .map(_.leftMap(mapDownstreamErrors(errorMapFor(request.taxYear).errorMap)))
   }
+
 }

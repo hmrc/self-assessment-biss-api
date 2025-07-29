@@ -32,6 +32,32 @@ class VersionSpec extends UnitSpec {
     }
   }
 
+  "deserialized from Json" must {
+    "return Version2 for '2.0'" in {
+      val json   = Json.parse(""""2.0"""")
+      val result = Json.fromJson[Version](json)
+      result shouldBe JsSuccess(Version2)
+    }
+
+    "return Version3 for '3.0'" in {
+      val json   = Json.parse(""""3.0"""")
+      val result = Json.fromJson[Version](json)
+      result shouldBe JsSuccess(Version3)
+    }
+
+    "fail with JsError for unknown version" in {
+      val json   = Json.parse(""""4.0"""")
+      val result = Json.fromJson[Version](json)
+      result shouldBe JsError("Unrecognised version")
+    }
+
+    "fail with JsError if not a string" in {
+      val json   = Json.parse("123")
+      val result = Json.fromJson[Version](json)
+      result shouldBe a[JsError]
+    }
+  }
+
   "Versions" when {
     "retrieved from a request header" should {
       "return Version2 for valid header" in {

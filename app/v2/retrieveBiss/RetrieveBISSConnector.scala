@@ -43,10 +43,7 @@ class RetrieveBISSConnector @Inject() (val http: HttpClientV2, val appConfig: Ap
         import def1._
         val (downstreamUri, queryParam) =
           if (taxYear.useTaxYearSpecificApi) {
-            (
-              IfsUri[Def1_RetrieveBISSResponse](
-                s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"),
-              Nil)
+            (IfsUri[Def1_RetrieveBISSResponse](s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"), Nil)
           } else {
             (
               IfsUri[Def1_RetrieveBISSResponse](s"income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYear.asDownstream}/biss"),

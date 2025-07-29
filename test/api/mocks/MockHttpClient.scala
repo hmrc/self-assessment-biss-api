@@ -20,7 +20,7 @@ import izumi.reflect.Tag
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.{Assertion, TestSuite}
+import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
 import play.api.libs.ws.BodyWritable
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
@@ -46,16 +46,15 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .get(_: URL)(_: HeaderCarrier))
         .expects(assertArgs { (actualUrl: URL, hc: HeaderCarrier) =>
           {
-            val expectedUrl: String = UrlUtils.appendQueryParams(url.toString, parameters)
-            actualUrl.toString shouldBe expectedUrl
+            val expectedURL = UrlUtils.appendQueryParams(url.toString, parameters)
+            actualUrl.toString shouldBe expectedURL
 
-            val headersForUrl: Seq[(String, String)] = hc.headersForUrl(config)(actualUrl.toString)
+            val headersForUrl = hc.headersForUrl(config)(actualUrl.toString)
             assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
         .returns(mockRequestBuilder)
-
-      (mockRequestBuilder.execute(_: HttpReads[T], _: ExecutionContext)).expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
     def post[T](url: URL,
@@ -68,20 +67,18 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .expects(assertArgs { (actualUrl: URL, hc: HeaderCarrier) =>
           {
             actualUrl shouldBe url
-            val headersForUrl: Seq[(String, String)] = hc.headersForUrl(config)(actualUrl.toString)
+
+            val headersForUrl = hc.headersForUrl(config)(actualUrl.toString)
             assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
         .returns(mockRequestBuilder)
 
       (mockRequestBuilder
-        .withBody(_: JsValue)(_: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
+        .withBody(_: JsValue)(using _: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
         .expects(body, *, *, *)
         .returns(mockRequestBuilder)
-
-      (mockRequestBuilder
-        .execute(_: HttpReads[T], _: ExecutionContext))
-        .expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
     def put[T](url: URL,
@@ -94,19 +91,19 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .expects(assertArgs { (actualUrl: URL, hc: HeaderCarrier) =>
           {
             actualUrl shouldBe url
-            val headersForUrl: Seq[(String, String)] = hc.headersForUrl(config)(actualUrl.toString)
+
+            val headersForUrl = hc.headersForUrl(config)(actualUrl.toString)
             assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
         .returns(mockRequestBuilder)
 
       (mockRequestBuilder
-        .withBody(_: JsValue)(_: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
+        .withBody(_: JsValue)(using _: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
         .expects(body, *, *, *)
         .returns(mockRequestBuilder)
-
       (mockRequestBuilder
-        .execute(_: HttpReads[T], _: ExecutionContext))
+        .execute[T](using _: HttpReads[T], _: ExecutionContext))
         .expects(*, *)
     }
 
@@ -119,18 +116,19 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .expects(assertArgs { (actualUrl: URL, hc: HeaderCarrier) =>
           {
             actualUrl shouldBe url
-            val headersForUrl: Seq[(String, String)] = hc.headersForUrl(config)(actualUrl.toString)
+
+            val headersForUrl = hc.headersForUrl(config)(actualUrl.toString)
             assertHeaders(headersForUrl, requiredHeaders, excludedHeaders)
           }
         })
         .returns(mockRequestBuilder)
-
-      (mockRequestBuilder.execute(_: HttpReads[T], _: ExecutionContext)).expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
-    private def assertHeaders(actualHeaders: Seq[(String, String)],
-                              requiredHeaders: Seq[(String, String)],
-                              excludedHeaders: Seq[(String, String)]): Assertion = {
+    private def assertHeaders[T, I](actualHeaders: Seq[(String, String)],
+                                    requiredHeaders: Seq[(String, String)],
+                                    excludedHeaders: Seq[(String, String)]) = {
+
       actualHeaders should contain allElementsOf requiredHeaders
       actualHeaders should contain noElementsOf excludedHeaders
     }

@@ -39,12 +39,12 @@ object StandardDownstreamHttpParser extends HttpParser {
       doRead(url, response) { correlationId =>
         response.validateJson[A] match {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
-          case None => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+          case None      => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
         }
       }
 
   private def doRead[A](url: String, response: HttpResponse)(successOutcomeFactory: String => DownstreamOutcome[A])(implicit
-                                                                                                                    successCode: SuccessCode): DownstreamOutcome[A] = {
+      successCode: SuccessCode): DownstreamOutcome[A] = {
 
     val correlationId = retrieveCorrelationId(response)
 
@@ -62,7 +62,7 @@ object StandardDownstreamHttpParser extends HttpParser {
             s"Success response received from downstream with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
       case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _ => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+      case _                                                                     => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 

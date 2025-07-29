@@ -27,11 +27,11 @@ class SelfAssessmentBISSApiAuthAuthSupportingAgentsAllowedISpec extends AuthSupp
 
   val supportingAgentsAllowedEndpoint = "retrieve-biss"
 
-  val taxYear = "2020-21"
+  val taxYear           = "2020-21"
   val downstreamTaxYear = "2021"
-  val businessId = "XAIS12345678913"
-  val typeOfBusiness = "self-employment"
-  val incomeSourceType = "self-employment"
+  val businessId        = "XAIS12345678913"
+  val typeOfBusiness    = "self-employment"
+  val incomeSourceType  = "self-employment"
 
   val mtdUrl = s"/$nino/$typeOfBusiness/$taxYear/$businessId"
 
@@ -45,8 +45,7 @@ class SelfAssessmentBISSApiAuthAuthSupportingAgentsAllowedISpec extends AuthSupp
   override val expectedMtdSuccessStatus: Int = OK
 
   val maybeDownstreamResponseJson: Option[JsValue] = Some(
-    Json.parse(
-      """
+    Json.parse("""
         |{
         | "incomeSourceId": "XAIS12345678913",
         | "totalIncome": 1.25,
@@ -61,4 +60,5 @@ class SelfAssessmentBISSApiAuthAuthSupportingAgentsAllowedISpec extends AuthSupp
         |}
     """.stripMargin)
   )
+
 }

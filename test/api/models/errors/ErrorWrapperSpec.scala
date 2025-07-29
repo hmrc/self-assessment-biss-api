@@ -37,7 +37,7 @@ class ErrorWrapperSpec extends UnitSpec {
     )
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      Json.toJson(error).shouldBe(json)
     }
   }
 
@@ -54,7 +54,7 @@ class ErrorWrapperSpec extends UnitSpec {
     )
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      Json.toJson(error).shouldBe(json)
     }
   }
 
@@ -89,7 +89,7 @@ class ErrorWrapperSpec extends UnitSpec {
     )
 
     "generate the correct JSON" in {
-      Json.toJson(error) shouldBe json
+      Json.toJson(error).shouldBe(json)
     }
   }
 
@@ -98,15 +98,15 @@ class ErrorWrapperSpec extends UnitSpec {
 
     "return false" when {
       "given no matching errors" in {
-        errorWrapper.containsAnyOf(RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError) shouldBe false
+        errorWrapper.containsAnyOf(RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError).shouldBe(false)
       }
       "given a matching error in 'errors' but not the single 'error' which should be a BadRequestError" in {
-        errorWrapper.containsAnyOf(NinoFormatError, TaxYearFormatError, RuleTaxYearNotSupportedError) shouldBe false
+        errorWrapper.containsAnyOf(NinoFormatError, TaxYearFormatError, RuleTaxYearNotSupportedError).shouldBe(false)
       }
     }
     "return true" when {
       "given the 'single' BadRequestError" in {
-        errorWrapper.containsAnyOf(NinoFormatError, BadRequestError, TaxYearFormatError, RuleTaxYearNotSupportedError) shouldBe true
+        errorWrapper.containsAnyOf(NinoFormatError, BadRequestError, TaxYearFormatError, RuleTaxYearNotSupportedError).shouldBe(true)
       }
     }
   }
@@ -114,11 +114,11 @@ class ErrorWrapperSpec extends UnitSpec {
   "auditErrors" should {
     "handle errors = None" in {
       val errorWrapper = ErrorWrapper(correlationId, BadRequestError, None)
-      errorWrapper.auditErrors shouldBe Seq(AuditError(BadRequestError.code))
+      errorWrapper.auditErrors.shouldBe(Seq(AuditError(BadRequestError.code)))
     }
     "handle errors = Some(_)" in {
       val errorWrapper = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError)))
-      errorWrapper.auditErrors shouldBe Seq(AuditError(NinoFormatError.code), AuditError(BusinessIdFormatError.code))
+      errorWrapper.auditErrors.shouldBe(Seq(AuditError(NinoFormatError.code), AuditError(BusinessIdFormatError.code)))
     }
   }
 

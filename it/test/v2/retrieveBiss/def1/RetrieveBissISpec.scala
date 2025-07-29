@@ -59,7 +59,7 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
 
       def checkWith(requestTypeOfBusiness: String, requestIncomeSourceType: String): Unit = {
         s"work for $requestTypeOfBusiness" in new NonTysTest {
-          override val typeOfBusiness: String = requestTypeOfBusiness
+          override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, queryParams, OK, downstreamResponseJsonMin)
@@ -72,7 +72,7 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
         }
 
         s"work for $requestTypeOfBusiness (TYS)" in new TysTest {
-          override val typeOfBusiness: String = requestTypeOfBusiness
+          override val typeOfBusiness: String   = requestTypeOfBusiness
           override val incomeSourceType: String = requestIncomeSourceType
 
           DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, downstreamResponseJsonMin)
@@ -94,9 +94,9 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
                               expectedStatus: Int,
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-          override val taxYear: String = requestTaxYear
-          override val nino: String = requestNino
-          override val businessId: String = requestBusinessId
+          override val taxYear: String        = requestTaxYear
+          override val nino: String           = requestNino
+          override val businessId: String     = requestBusinessId
           override val typeOfBusiness: String = requestTypeOfBusiness
 
           val response: WSResponse = await(request.get())
@@ -115,7 +115,7 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
         ("AA123456A", "2018-19", "BadBusinessId", "self-employment", BAD_REQUEST, BusinessIdFormatError),
         ("AA123456A", "2018-19", "XAIS12345678913", "not-business-type", BAD_REQUEST, TypeOfBusinessFormatError)
       )
-      input.foreach(args => (validationErrorTest _).tupled(args))
+      input.foreach(args => validationErrorTest.tupled(args))
     }
 
     "a downstream service error" when {
@@ -162,18 +162,18 @@ class RetrieveBissISpec extends IntegrationBaseSpec with RetrieveBISSFixture {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
-      (downstreamInput ++ tysInput).foreach(args => (serviceErrorTest _).tupled(args))
+      (downstreamInput ++ tysInput).foreach(args => serviceErrorTest.tupled(args))
     }
   }
 
   trait Test {
 
-    val taxYear = "2020-21"
+    val taxYear           = "2020-21"
     val downstreamTaxYear = "2021"
-    val nino = "AA123456A"
-    val businessId = "XAIS12345678913"
-    val typeOfBusiness = "self-employment"
-    val incomeSourceType = "self-employment"
+    val nino              = "AA123456A"
+    val businessId        = "XAIS12345678913"
+    val typeOfBusiness    = "self-employment"
+    val incomeSourceType  = "self-employment"
 
     def downstreamUrl: String
 

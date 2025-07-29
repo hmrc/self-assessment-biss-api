@@ -57,7 +57,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
           willGet(url = expectedUrl, parameters = Seq("incomeSourceId" -> businessId)) returns Future.successful(expected)
 
-          await(connector.retrieveBiss(request)) shouldBe expected
+          await(connector.retrieveBiss(request)).shouldBe(expected)
         }
 
         s"businessType is $typeOfBusiness and TYS" in new IfsTest with Test {
@@ -69,14 +69,14 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
           willGet(url = expectedUrl) returns Future.successful(expected)
 
-          await(connector.retrieveBiss(request)) shouldBe expected
+          await(connector.retrieveBiss(request)).shouldBe(expected)
         }
       }
     }
   }
 
   trait Test {
-    _: ConnectorTest =>
+    this: ConnectorTest =>
     val connector: RetrieveBISSConnector = new RetrieveBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }

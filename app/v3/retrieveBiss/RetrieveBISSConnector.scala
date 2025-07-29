@@ -54,4 +54,5 @@ class RetrieveBISSConnector @Inject() (val http: HttpClientV2, val appConfig: Ap
         response
     }
   }
+
 }

@@ -41,23 +41,21 @@ class Def1_RetrieveBISSValidator(nino: String, typeOfBusiness: String, taxYear: 
       ResolveTypeOfBusiness(typeOfBusiness),
       ResolveTaxYear(taxYear),
       ResolveBusinessId(businessId)
-    ).mapN(Def1_RetrieveBISSRequestData) andThen validateWithTypeOfBusinessAndTaxYear
+    ).mapN(Def1_RetrieveBISSRequestData.apply) andThen validateWithTypeOfBusinessAndTaxYear
 
   private def validateWithTypeOfBusinessAndTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
     (parsed.typeOfBusiness, parsed.taxYear.year) match {
-      case (`uk-property-fhl` | `foreign-property-fhl-eea`, year)
-        if year >= fhlPropertyMinimumTaxYear.year =>
+      case (`uk-property-fhl` | `foreign-property-fhl-eea`, year) if year >= fhlPropertyMinimumTaxYear.year =>
         Invalid(List(TypeOfBusinessFormatError))
 
-      case (`foreign-property-fhl-eea` | `foreign-property`, year)
-        if year < foreignPropertyMinimumTaxYear.year =>
+      case (`foreign-property-fhl-eea` | `foreign-property`, year) if year < foreignPropertyMinimumTaxYear.year =>
         Invalid(List(RuleTaxYearNotSupportedError))
 
-      case (`uk-property` | `uk-property-fhl` | `self-employment`, year)
-        if year < TaxYear.minimumTaxYear.year =>
+      case (`uk-property` | `uk-property-fhl` | `self-employment`, year) if year < TaxYear.minimumTaxYear.year =>
         Invalid(List(RuleTaxYearNotSupportedError))
 
       case _ => Valid(parsed)
     }
   }
+
 }

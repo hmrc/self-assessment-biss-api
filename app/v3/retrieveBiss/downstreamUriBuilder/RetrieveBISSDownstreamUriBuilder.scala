@@ -23,15 +23,13 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrieveBiss.model.response.RetrieveBISSResponse
 
 sealed trait RetrieveBISSDownstreamUriBuilder[Resp] {
-  def buildUri(nino: Nino,
-               businessId: BusinessId,
-               incomeSourceType: IncomeSourceType,
-               taxYear: TaxYear): (DownstreamUri[Resp], Seq[(String, String)])
+  def buildUri(nino: Nino, businessId: BusinessId, incomeSourceType: IncomeSourceType, taxYear: TaxYear): (DownstreamUri[Resp], Seq[(String, String)])
 }
 
 object RetrieveBISSDownstreamUriBuilder {
 
   case object Api1415 extends RetrieveBISSDownstreamUriBuilder[RetrieveBISSResponse] {
+
     override def buildUri(nino: Nino,
                           businessId: BusinessId,
                           incomeSourceType: IncomeSourceType,
@@ -45,9 +43,11 @@ object RetrieveBISSDownstreamUriBuilder {
 
       (uri, queryParams)
     }
+
   }
 
   case object Api1871 extends RetrieveBISSDownstreamUriBuilder[RetrieveBISSResponse] {
+
     override def buildUri(nino: Nino,
                           businessId: BusinessId,
                           incomeSourceType: IncomeSourceType,
@@ -59,9 +59,11 @@ object RetrieveBISSDownstreamUriBuilder {
 
       (uri, Nil)
     }
+
   }
 
   case object Api1879 extends RetrieveBISSDownstreamUriBuilder[RetrieveBISSResponse] {
+
     override def buildUri(nino: Nino,
                           businessId: BusinessId,
                           incomeSourceType: IncomeSourceType,
@@ -73,15 +75,17 @@ object RetrieveBISSDownstreamUriBuilder {
 
       (uri, Nil)
     }
+
   }
 
   def downstreamUriFor[Resp](taxYear: TaxYear): RetrieveBISSDownstreamUriBuilder[Resp] = {
     val downstreamUriBuilder: RetrieveBISSDownstreamUriBuilder[RetrieveBISSResponse] = taxYear.year match {
-      case year if year >= 2026                => Api1879
-      case  _ if taxYear.useTaxYearSpecificApi  => Api1871
-      case _                                   => Api1415
+      case year if year >= 2026               => Api1879
+      case _ if taxYear.useTaxYearSpecificApi => Api1871
+      case _                                  => Api1415
     }
 
     downstreamUriBuilder.asInstanceOf[RetrieveBISSDownstreamUriBuilder[Resp]]
   }
+
 }

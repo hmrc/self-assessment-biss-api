@@ -16,7 +16,6 @@
 
 package v2.retrieveBiss.model.domain
 
-
 import api.models.des.IncomeSourceType
 import v2.retrieveBiss.model.domain.TypeOfBusiness._
 import support.UnitSpec
@@ -39,4 +38,5 @@ class TypeOfBusinessSpec extends UnitSpec with EnumJsonSpecSupport {
         }
     }
   }
+
 }

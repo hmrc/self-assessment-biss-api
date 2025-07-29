@@ -47,7 +47,7 @@ class RulesValidatorSpec extends UnitSpec {
     "combine valid results and return the parsed object" in {
       val parsed = TestParsedRequest(validNino, validTaxYear, valid1 = true, valid2 = true)
       val result = testRulesValidator.validateBusinessRules(parsed)
-      result shouldBe Valid(parsed)
+      result.shouldBe(Valid(parsed))
     }
 
     "catch a single invalid result and return the error" in {

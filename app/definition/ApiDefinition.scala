@@ -20,30 +20,15 @@ import play.api.libs.json.{Format, Json, OFormat}
 import routing.Version
 import utils.enums.Enums
 
-case class Parameter(name: String, required: Boolean = false)
-
-object Parameter {
-  implicit val formatParameter: OFormat[Parameter] = Json.format[Parameter]
+enum APIStatus {
+  case ALPHA, BETA, STABLE, DEPRECATED, RETIRED
 }
 
-case class PublishingException(message: String) extends Exception(message)
+object APIStatus {
+  val parser: PartialFunction[String, APIStatus] = Enums.parser(values)
 
-sealed trait APIStatus
+  given Format[APIStatus] = Enums.format(values)
 
-object APIStatus extends Enumeration {
-  val parser: PartialFunction[String, APIStatus] = Enums.parser[APIStatus]
-
-  case object ALPHA extends APIStatus
-
-  case object BETA extends APIStatus
-
-  case object STABLE extends APIStatus
-
-  case object DEPRECATED extends APIStatus
-
-  implicit val formatApiVersion: Format[APIStatus] = Enums.format[APIStatus]
-
-  case object RETIRED extends APIStatus
 }
 
 case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
@@ -75,6 +60,7 @@ case class APIDefinition(name: String,
 object APIDefinition {
   implicit val formatAPIDefinition: OFormat[APIDefinition] = Json.format[APIDefinition]
 }
+
 case class Definition(api: APIDefinition)
 
 object Definition {

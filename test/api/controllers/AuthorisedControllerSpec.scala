@@ -46,7 +46,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
         MockedEnrolmentsAuthService.authoriseUser()
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
-        status(result) shouldBe OK
+        status(result).shouldBe(OK)
       }
     }
 

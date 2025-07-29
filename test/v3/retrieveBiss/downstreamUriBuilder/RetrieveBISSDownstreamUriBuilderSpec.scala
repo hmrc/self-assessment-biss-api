@@ -26,8 +26,8 @@ import v3.retrieveBiss.model.response.RetrieveBISSResponse
 
 class RetrieveBISSDownstreamUriBuilderSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with TaxYearPropertyCheckSupport {
 
-  private val nino: Nino = Nino("AA123456A")
-  private val businessId: BusinessId = BusinessId("XAIS12345678910")
+  private val nino: Nino                         = Nino("AA123456A")
+  private val businessId: BusinessId             = BusinessId("XAIS12345678910")
   private val incomeSourceType: IncomeSourceType = IncomeSourceType.`self-employment`
 
   "RetrieveBISSDownstreamUriBuilder" should {
@@ -76,4 +76,5 @@ class RetrieveBISSDownstreamUriBuilderSpec extends UnitSpec with ScalaCheckDrive
       }
     }
   }
+
 }

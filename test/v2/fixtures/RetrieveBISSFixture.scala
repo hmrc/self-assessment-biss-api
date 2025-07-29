@@ -22,8 +22,7 @@ import v2.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSRe
 
 trait RetrieveBISSFixture {
 
-  val responseJsonFull: JsValue = Json.parse(
-    """
+  val responseJsonFull: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 1.25,
@@ -43,8 +42,7 @@ trait RetrieveBISSFixture {
       |}
     """.stripMargin)
 
-  val responseJsonMin: JsValue = Json.parse(
-    """
+  val responseJsonMin: JsValue = Json.parse("""
       |{
       |  "total": {
       |    "income": 100.50,
@@ -87,8 +85,7 @@ trait RetrieveBISSFixture {
       Loss(net = 50.00, taxable = 0.25)
     )
 
-  val downstreamResponseJsonFull: JsValue = Json.parse(
-    """
+  val downstreamResponseJsonFull: JsValue = Json.parse("""
       |{
       | "incomeSourceId": "XAIS12345678913",
       | "totalIncome": 1.25,
@@ -103,8 +100,7 @@ trait RetrieveBISSFixture {
       |}
     """.stripMargin)
 
-  val downstreamResponseJsonMin: JsValue = Json.parse(
-    """
+  val downstreamResponseJsonMin: JsValue = Json.parse("""
       |{
       | "incomeSourceId": "XAIS12345678913",
       | "totalIncome": 100.5,

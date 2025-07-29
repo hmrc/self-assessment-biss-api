@@ -56,5 +56,4 @@ class RetrieveBISSController @Inject() (val authService: EnrolmentsAuthService,
       requestHandler.handleRequest()
     }
 
-
 }

@@ -26,13 +26,13 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino: String = "AA123456A"
+  private val validNino: String       = "AA123456A"
   private val validBusinessId: String = "XAIS01234567890"
 
-  private val parsedNino: Nino = Nino(validNino)
-  private val parsedBusinessId: BusinessId = BusinessId(validBusinessId)
+  private val parsedNino: Nino                                             = Nino(validNino)
+  private val parsedBusinessId: BusinessId                                 = BusinessId(validBusinessId)
   private def parsedTypeOfBusiness(typeOfBusiness: String): TypeOfBusiness = TypeOfBusiness.parser(typeOfBusiness)
-  private def parsedTaxYear(taxYear: String): TaxYear = TaxYear.fromMtd(taxYear)
+  private def parsedTaxYear(taxYear: String): TaxYear                      = TaxYear.fromMtd(taxYear)
 
   private def validator(nino: String = validNino,
                         typeOfBusiness: String = "uk-property",
@@ -65,7 +65,7 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
         ("foreign-property", "2025-26")
       )
 
-      validTestInputs.foreach(args => (validTest _).tupled(args))
+      validTestInputs.foreach(args => validTest.tupled(args))
     }
 
     "return a single error" when {
@@ -94,7 +94,7 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
         ("invalid-type", "2025-26")
       )
 
-      typeOfBusinessTestInputs.foreach(args => (typeOfBusinessTest _).tupled(args))
+      typeOfBusinessTestInputs.foreach(args => typeOfBusinessTest.tupled(args))
 
       "an invalid tax year is provided" in {
         val result: Either[ErrorWrapper, RetrieveBISSRequestData] =
@@ -132,7 +132,7 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
         ("foreign-property", "2018-19")
       )
 
-      minimumTaxYearTestInputs.foreach(args => (minimumTaxYearTest _).tupled(args))
+      minimumTaxYearTestInputs.foreach(args => minimumTaxYearTest.tupled(args))
 
       "an invalid business ID is provided" in {
         val result: Either[ErrorWrapper, RetrieveBISSRequestData] =
@@ -159,4 +159,5 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

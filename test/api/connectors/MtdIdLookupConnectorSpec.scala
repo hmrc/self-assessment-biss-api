@@ -50,7 +50,7 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
 
         val result: Outcome = await(connector.getMtdId(nino))
 
-        result shouldBe Right(mtdId)
+        result.shouldBe(Right(mtdId))
       }
     }
 
@@ -65,7 +65,7 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
 
         val result: Outcome = await(connector.getMtdId(nino))
 
-        result shouldBe Left(MtdIdLookupConnector.Error(statusCode))
+        result.shouldBe(Left(MtdIdLookupConnector.Error(statusCode)))
       }
 
     }

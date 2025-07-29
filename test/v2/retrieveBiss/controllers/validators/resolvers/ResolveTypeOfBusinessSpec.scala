@@ -35,14 +35,15 @@ class ResolveTypeOfBusinessSpec extends UnitSpec {
       def resolve(value: String): Unit = {
         s"provided with a string of '$value'" in {
           val result = ResolveTypeOfBusiness(value)
-          result shouldBe Valid(TypeOfBusiness.parser(value))
+          result.shouldBe(Valid(TypeOfBusiness.parser(value)))
         }
       }
     }
 
     "return a TypeOfBusinessFormatError" in {
       val result = ResolveTypeOfBusiness("invalid")
-      result shouldBe Invalid(List(TypeOfBusinessFormatError))
+      result.shouldBe(Invalid(List(TypeOfBusinessFormatError)))
     }
   }
+
 }

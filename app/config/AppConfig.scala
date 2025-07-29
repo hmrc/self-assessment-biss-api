@@ -52,7 +52,7 @@ trait AppConfig {
   // IFS Config
   def ifsBaseUrl: String
 
-  def endpointAllowsSupportingAgents(endpointName: String):Boolean
+  def endpointAllowsSupportingAgents(endpointName: String): Boolean
   def ifsEnv: String
 
   def ifsToken: String
@@ -101,7 +101,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
 
   // API Config
-  val apiGatewayContext: String                = config.getString("api.gateway.context")
+  val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
 
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
@@ -109,7 +109,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
-  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+  def endpointsEnabled(version: String): Boolean  = config.getBoolean(s"api.$version.endpoints.enabled")
 
   val apiDocumentationUrl: String =
     config.getConfString("api.documentation-url", defString = s"https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/$appName")
@@ -120,7 +120,6 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
     .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 59)
     .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 59)
     .toFormatter()
-
 
   def deprecationFor(version: Version): Validated[String, Deprecation] = {
     val isApiDeprecated: Boolean = apiStatus(version) == "DEPRECATED"

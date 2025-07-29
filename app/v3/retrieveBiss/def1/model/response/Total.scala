@@ -33,7 +33,7 @@ object Total {
       (JsPath \ "totalAdditions").readNullable[BigDecimal] and
       (JsPath \ "totalDeductions").readNullable[BigDecimal] and
       (JsPath \ "accountingAdjustments").readNullable[BigDecimal]
-    ) (Total.apply _)
+  )(Total.apply)
 
   implicit val writes: OWrites[Total] = Json.writes[Total]
 }

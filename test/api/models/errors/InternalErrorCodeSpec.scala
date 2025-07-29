@@ -32,7 +32,7 @@ class InternalErrorCodeSpec extends UnitSpec {
     )
 
     "generate the correct error code" in {
-      json.as[DownstreamErrorCode] shouldBe DownstreamErrorCode("CODE")
+      json.as[DownstreamErrorCode].shouldBe(DownstreamErrorCode("CODE"))
     }
   }
 

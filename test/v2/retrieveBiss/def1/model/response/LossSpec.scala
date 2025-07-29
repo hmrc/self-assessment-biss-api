@@ -21,16 +21,14 @@ import support.UnitSpec
 
 class LossSpec extends UnitSpec {
 
-  private val json = Json.parse(
-    """
+  private val json = Json.parse("""
       |{
       |   "net": 0.00,
       |   "taxable": 35.00
       |}
       |""".stripMargin)
 
-  private val desJson = Json.parse(
-    """
+  private val desJson = Json.parse("""
       |{
       |    "netLoss": 0,
       |    "taxableLoss": 35.00
@@ -46,11 +44,11 @@ class LossSpec extends UnitSpec {
   "Loss" should {
 
     "write correctly to json" in {
-      Json.toJson(model) shouldBe json
+      Json.toJson(model).shouldBe(json)
     }
 
     "read correctly from a json" in {
-      desJson.as[Loss] shouldBe model
+      desJson.as[Loss].shouldBe(model)
     }
   }
 

@@ -43,7 +43,7 @@ class Def1_RetrieveBISSValidator(nino: String, typeOfBusiness: String, taxYear: 
       ResolveTypeOfBusiness(typeOfBusiness),
       resolveTaxYear(taxYear),
       ResolveBusinessId(businessId)
-    ).mapN(Def1_RetrieveBISSRequestData) andThen validateTaxYear
+    ).mapN(Def1_RetrieveBISSRequestData.apply) andThen validateTaxYear
 
   private def validateTaxYear(parsed: RetrieveBISSRequestData): Validated[Seq[MtdError], RetrieveBISSRequestData] = {
     val minTaxYear = parsed.typeOfBusiness match {

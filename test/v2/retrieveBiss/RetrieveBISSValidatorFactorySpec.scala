@@ -32,9 +32,9 @@ class RetrieveBISSValidatorFactorySpec extends UnitSpec {
 
   "validator" should {
     "return the parsed domain object" in {
-      val result: Validator[RetrieveBISSRequestData]= validatorFactory.validator(validNino, validTypeOfBusiness, validTaxYear, validBusinessId)
+      val result: Validator[RetrieveBISSRequestData] = validatorFactory.validator(validNino, validTypeOfBusiness, validTaxYear, validBusinessId)
 
-      result shouldBe a[Def1_RetrieveBISSValidator]
+      result.shouldBe(a[Def1_RetrieveBISSValidator])
     }
   }
 

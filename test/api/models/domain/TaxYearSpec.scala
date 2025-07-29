@@ -29,15 +29,15 @@ class TaxYearSpec extends UnitSpec {
 
     "constructed from an MTD tax year" should {
       "return the downstream tax value" in {
-        taxYear.asDownstream shouldBe "2024"
+        taxYear.asDownstream.shouldBe("2024")
       }
 
       "return the MTD tax year" in {
-        taxYear.asMtd shouldBe "2023-24"
+        taxYear.asMtd.shouldBe("2023-24")
       }
 
       "return the tax year in the 'Tax Year Specific API' format" in {
-        taxYear.asTysDownstream shouldBe "23-24"
+        taxYear.asTysDownstream.shouldBe("23-24")
       }
     }
 
@@ -57,7 +57,7 @@ class TaxYearSpec extends UnitSpec {
             datesAndExpectedYears.foreach { case (date, expectedYear) =>
               withClue(s"Given $date:") {
                 val result = TaxYear.fromIso(date)
-                result.year shouldBe expectedYear
+                result.year.shouldBe(expectedYear)
               }
             }
           }
@@ -72,7 +72,7 @@ class TaxYearSpec extends UnitSpec {
             datesAndExpectedYears.foreach { case (date, expectedYear) =>
               withClue(s"Given $date:") {
                 val result = TaxYear.containing(LocalDate.parse(date))
-                result.year shouldBe expectedYear
+                result.year.shouldBe(expectedYear)
               }
             }
           }
@@ -84,11 +84,11 @@ class TaxYearSpec extends UnitSpec {
 
     "constructed from a downstream tax year" should {
       "return the downstream tax value" in {
-        TaxYear.fromDownstream("2019").asDownstream shouldBe "2019"
+        TaxYear.fromDownstream("2019").asDownstream.shouldBe("2019")
       }
 
       "allow the MTD tax year to be extracted" in {
-        TaxYear.fromDownstream("2019").asMtd shouldBe "2018-19"
+        TaxYear.fromDownstream("2019").asMtd.shouldBe("2018-19")
       }
     }
 
@@ -103,7 +103,7 @@ class TaxYearSpec extends UnitSpec {
         }
 
         val result = TaxYear.now()
-        result.year shouldBe expectedYear
+        result.year.shouldBe(expectedYear)
       }
     }
 
@@ -145,7 +145,7 @@ class TaxYearSpec extends UnitSpec {
       }
 
       val result = TaxYear.currentTaxYear()
-      result.year shouldBe expectedYear
+      result.year.shouldBe(expectedYear)
     }
   }
 
@@ -153,15 +153,15 @@ class TaxYearSpec extends UnitSpec {
     "get April 5th and April 6th when ending on non-leap years" in {
       val taxYear = TaxYear.ending(2023)
 
-      taxYear.startDate shouldBe LocalDate.parse("2022-04-06")
-      taxYear.endDate shouldBe LocalDate.parse("2023-04-05")
+      taxYear.startDate.shouldBe(LocalDate.parse("2022-04-06"))
+      taxYear.endDate.shouldBe(LocalDate.parse("2023-04-05"))
     }
 
     "get April 5th and April 6th when ending on leap years" in {
       val taxYear = TaxYear.ending(2020)
 
-      taxYear.startDate shouldBe LocalDate.parse("2019-04-06")
-      taxYear.endDate shouldBe LocalDate.parse("2020-04-05")
+      taxYear.startDate.shouldBe(LocalDate.parse("2019-04-06"))
+      taxYear.endDate.shouldBe(LocalDate.parse("2020-04-05"))
     }
   }
 

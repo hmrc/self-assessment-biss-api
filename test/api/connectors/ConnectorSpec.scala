@@ -135,7 +135,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait DesTest extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
+    protected val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
 
     MockedAppConfig.desBaseUrl returns this.baseUrl
     MockedAppConfig.desToken returns "des-token"
@@ -146,7 +146,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait IfsTest extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
+    protected val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
 
     MockedAppConfig.ifsBaseUrl returns this.baseUrl
     MockedAppConfig.ifsToken returns "ifs-token"

@@ -60,7 +60,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         ResolveNino(nino),
         ResolveTaxYear(taxYear),
         jsonResolver(jsonBody, RuleIncorrectOrEmptyBodyError)
-      ).mapN(TestParsedRequest) andThen TestRulesValidator.validateBusinessRules
+      ).mapN(TestParsedRequest.apply) andThen TestRulesValidator.validateBusinessRules
 
   }
 
@@ -89,7 +89,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
       "given valid input" in {
         val validator = new TestValidator()
         val result    = validator.validateAndWrapResult()
-        result shouldBe Right(parsedRequest)
+        result.shouldBe(Right(parsedRequest))
       }
     }
 

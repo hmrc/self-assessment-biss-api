@@ -31,11 +31,11 @@ import scala.concurrent.Future
 
 class RetrieveBISSConnectorSpec extends ConnectorSpec {
 
-  private val nino: String = "AA123456A"
-  private val businessId: String = "businessId"
-  private def taxYearMtd(taxYear: String): TaxYear = TaxYear.fromMtd(taxYear)
+  private val nino: String                                    = "AA123456A"
+  private val businessId: String                              = "businessId"
+  private def taxYearMtd(taxYear: String): TaxYear            = TaxYear.fromMtd(taxYear)
   private def taxYearAsTysDownstream(taxYear: String): String = taxYearMtd(taxYear).asTysDownstream
-  private def taxYearAsDownstream(taxYear: String): String = taxYearMtd(taxYear).asDownstream
+  private def taxYearAsDownstream(taxYear: String): String    = taxYearMtd(taxYear).asDownstream
 
   // WLOG
   private val response: RetrieveBISSResponse = Def1_RetrieveBISSResponse(
@@ -124,8 +124,9 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
   }
 
   private trait Test {
-    _: ConnectorTest =>
+    this: ConnectorTest =>
     val connector: RetrieveBISSConnector = new RetrieveBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }
+
 }

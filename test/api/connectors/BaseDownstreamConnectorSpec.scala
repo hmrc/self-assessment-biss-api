@@ -40,8 +40,9 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
   implicit val httpReads: HttpReads[DownstreamOutcome[Result]] = mock[HttpReads[DownstreamOutcome[Result]]]
 
   trait Test extends MockHttpClient with MockAppConfig {
+
     val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
-      val http: HttpClientV2 = mockHttpClient
+      val http: HttpClientV2   = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
 
@@ -60,7 +61,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.post(body, DesUri[Result](url))).shouldBe(outcome)
       }
     }
 
@@ -75,7 +76,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.get(DesUri[Result](url), queryParams = qps)) shouldBe outcome
+        await(connector.get(DesUri[Result](url), queryParams = qps)).shouldBe(outcome)
       }
     }
 
@@ -89,7 +90,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.delete(DesUri[Result](url))) shouldBe outcome
+        await(connector.delete(DesUri[Result](url))).shouldBe(outcome)
       }
     }
 
@@ -104,7 +105,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(outcome))
 
-        await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.put(body, DesUri[Result](url))).shouldBe(outcome)
       }
     }
 
@@ -125,7 +126,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
               )
               .returns(Future.successful(outcome))
 
-            await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+            await(connector.put(body, DesUri[Result](url))).shouldBe(outcome)
           }
       }
     }
@@ -134,7 +135,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
   "for IFS" when {
     "post" must {
       "posts with the required IFS headers and returns the result" in new Test with IfsTest {
-        override implicit val hc: HeaderCarrier                    = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        override implicit val hc: HeaderCarrier           = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient
@@ -185,7 +186,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
 
     "put" must {
       "put with the required IFS headers and return result" in new Test with IfsTest {
-        override implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        override implicit val hc: HeaderCarrier          = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient

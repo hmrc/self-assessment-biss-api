@@ -35,4 +35,5 @@ object ResolveTypeOfBusiness extends Resolver[String, TypeOfBusiness] {
 
     }
   }
+
 }

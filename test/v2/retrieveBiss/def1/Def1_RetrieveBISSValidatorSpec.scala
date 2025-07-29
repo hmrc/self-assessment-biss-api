@@ -44,9 +44,10 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
       "passed a valid request" in {
         val result = validator(validNino, validTypeOfBusiness, validTaxYear, validBusinessId).validateAndWrapResult()
 
-        result shouldBe Right(
-          Def1_RetrieveBISSRequestData(parsedNino, parsedTypeOfBusiness, parsedTaxYear, parsedBusinessId)
-        )
+        result.shouldBe(
+          Right(
+            Def1_RetrieveBISSRequestData(parsedNino, parsedTypeOfBusiness, parsedTaxYear, parsedBusinessId)
+          ))
       }
     }
   }
@@ -55,64 +56,72 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
     "passed an invalid nino" in {
       val result = validator("invalid nino", validTypeOfBusiness, validTaxYear, validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, NinoFormatError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, NinoFormatError)
+        ))
     }
 
     "passed an invalid type of business" in {
       val result = validator(validNino, "invalid type of business", validTaxYear, validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, TypeOfBusinessFormatError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, TypeOfBusinessFormatError)
+        ))
     }
 
     "an invalid tax year is provided" in {
       val result = validator(validNino, validTypeOfBusiness, "invalid tax year", validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, TaxYearFormatError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, TaxYearFormatError)
+        ))
     }
 
     "an invalid tax year range is provided" in {
       val result = validator(validNino, validTypeOfBusiness, "2021-23", validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
+        ))
     }
 
     "given a tax year after 2024-25" in {
       val result = validator(validNino, validTypeOfBusiness, "2025-26", validBusinessId).validateAndWrapResult()
-      result shouldBe Left(
-        ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        ))
     }
 
     "an invalid min tax year is provided for UK property" in {
       val result = validator(validNino, validTypeOfBusiness, "2016-17", validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        ))
     }
 
     "an invalid min tax year is provided for Foreign property" in {
       val result = validator(validNino, "foreign-property", "2018-19", validBusinessId).validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        ))
     }
 
     "passed an invalid business id" in {
       val result = validator(validNino, validTypeOfBusiness, validTaxYear, "invalid business id").validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(correlationId, BusinessIdFormatError)
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(correlationId, BusinessIdFormatError)
+        ))
     }
   }
 
@@ -120,13 +129,14 @@ class Def1_RetrieveBISSValidatorSpec extends UnitSpec {
     "passed multiple invalid fields" in {
       val result = validator("invalid nino", "invalid type of business", "invalid tax year", "invalid business id").validateAndWrapResult()
 
-      result shouldBe Left(
-        ErrorWrapper(
-          correlationId,
-          BadRequestError,
-          Some(List(NinoFormatError, TaxYearFormatError, TypeOfBusinessFormatError, BusinessIdFormatError))
-        )
-      )
+      result.shouldBe(
+        Left(
+          ErrorWrapper(
+            correlationId,
+            BadRequestError,
+            Some(List(NinoFormatError, TaxYearFormatError, TypeOfBusinessFormatError, BusinessIdFormatError))
+          )
+        ))
     }
   }
 

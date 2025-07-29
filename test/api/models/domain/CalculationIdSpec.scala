@@ -23,7 +23,7 @@ class CalculationIdSpec extends UnitSpec {
   "toString" should {
     "return the CalculationId value" in {
       val calculationId = CalculationId("some id")
-      calculationId.toString shouldBe "some id"
+      calculationId.toString.shouldBe("some id")
     }
   }
 

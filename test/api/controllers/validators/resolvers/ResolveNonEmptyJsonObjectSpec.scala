@@ -20,9 +20,9 @@ import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.{Json, OFormat}
-import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker
+import utils.EmptinessChecker.field
 
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
@@ -34,7 +34,10 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
   // at least one of oneOf1 and oneOf2 must be included:
   implicit val emptinessChecker: EmptinessChecker[TestDataObject] = EmptinessChecker.use { o =>
-    "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
+    List(
+      field("oneOf1", o.oneOf1),
+      field("oneOf2", o.oneOf2)
+    )
   }
 
   private val resolveTestDataObject = new ResolveNonEmptyJsonObject[TestDataObject]()
@@ -67,10 +70,11 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "arrayField" : [{ "field1" : "Something" }]}""")
 
         val result = resolveTestDataWrapper(json)
-        result shouldBe Invalid(
-          List(
-            RuleIncorrectOrEmptyBodyError.withPath("/arrayField/0/field2")
-          ))
+        result.shouldBe(
+          Invalid(
+            List(
+              RuleIncorrectOrEmptyBodyError.withPath("/arrayField/0/field2")
+            )))
       }
 
       "a required field is missing in multiple array objects" in {

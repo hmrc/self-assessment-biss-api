@@ -47,8 +47,8 @@ import javax.inject.{Inject, Singleton}
           .collect {
             case line if !line.toLowerCase.contains("[test only]") =>
               val components: Array[String] = line.split("summary: ")
-              val whitespace: String = components(0)
-              val summary: String = components(1).replace("\"", "")
+              val whitespace: String        = components(0)
+              val summary: String           = components(1).replace("\"", "")
 
               val replacement = s"""${whitespace}summary: "$summary [test only]""""
 

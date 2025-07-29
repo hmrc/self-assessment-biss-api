@@ -30,12 +30,19 @@ import play.api.test.{FakeRequest, ResultExtractors}
 import routing.{Version, Version3}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.MockIdGenerator
 import cats.implicits.catsSyntaxValidatedId
+import utils.MockIdGenerator
 
 import scala.concurrent.Future
 
-abstract class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService with MockAppConfig  {
+abstract class ControllerBaseSpec
+    extends UnitSpec
+    with Status
+    with MimeTypes
+    with HeaderNames
+    with ResultExtractors
+    with MockAuditService
+    with MockAppConfig {
   protected val apiVersion: Version = Version3
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
@@ -53,8 +60,7 @@ abstract class ControllerBaseSpec extends UnitSpec with Status with MimeTypes wi
 }
 
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator with RealAppConfig {
-  _: ControllerBaseSpec =>
-
+  this: ControllerBaseSpec =>
   protected val nino: String  = validNino
   protected val correlationId = "X-123"
 
@@ -77,12 +83,12 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     protected def runOkTest(expectedStatus: Int, maybeExpectedResponseBody: Option[JsValue] = None): Unit = {
       val result: Future[Result] = callController()
 
-      status(result) shouldBe expectedStatus
-      header("X-CorrelationId", result) shouldBe Some(correlationId)
+      status(result).shouldBe(expectedStatus)
+      header("X-CorrelationId", result).shouldBe(Some(correlationId))
 
       maybeExpectedResponseBody match {
-        case Some(jsBody) => contentAsJson(result) shouldBe jsBody
-        case None         => contentType(result) shouldBe empty
+        case Some(jsBody) => contentAsJson(result).shouldBe(jsBody)
+        case None         => contentType(result).shouldBe(empty)
       }
 
       checkEmaConfig()
@@ -91,10 +97,10 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     protected def runErrorTest(expectedError: MtdError): Unit = {
       val result: Future[Result] = callController()
 
-      status(result) shouldBe expectedError.httpStatus
-      header("X-CorrelationId", result) shouldBe Some(correlationId)
+      status(result).shouldBe(expectedError.httpStatus)
+      header("X-CorrelationId", result).shouldBe(Some(correlationId))
 
-      contentAsJson(result) shouldBe Json.toJson(expectedError)
+      contentAsJson(result).shouldBe(Json.toJson(expectedError))
     }
 
     private def checkEmaConfig(): Unit = {
@@ -107,13 +113,13 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
             fail(s"Controller endpoint name \"${controller.endpointName}\" not found in application.conf.")
           )
 
-      realAppConfig.endpointAllowsSupportingAgents(controller.endpointName) shouldBe endpointSupportingAgentsAllowed
+      realAppConfig.endpointAllowsSupportingAgents(controller.endpointName).shouldBe(endpointSupportingAgentsAllowed)
     }
 
   }
 
   trait AuditEventChecking[DETAIL] {
-    _: ControllerTest =>
+    this: ControllerTest =>
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[DETAIL]
 

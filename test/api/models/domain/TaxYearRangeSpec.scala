@@ -28,7 +28,7 @@ class TaxYearRangeSpec extends UnitSpec {
       "given an MTD-format taxYear" in {
         val taxYear              = TaxYear.fromMtd("2019-20")
         val result: TaxYearRange = TaxYearRange.fromMtd("2019-20")
-        result shouldBe TaxYearRange(taxYear)
+        result.shouldBe(TaxYearRange(taxYear))
       }
     }
   }
@@ -37,8 +37,8 @@ class TaxYearRangeSpec extends UnitSpec {
     "return the correct taxYearStart and taxYearEnd respectively" when {
       "given a valid taxYear" in {
         val range: TaxYearRange = TaxYearRange.fromMtd("2019-20")
-        range.from.startDate shouldBe LocalDate.parse("2019-04-06")
-        range.to.endDate shouldBe LocalDate.parse("2020-04-05")
+        range.from.startDate.shouldBe(LocalDate.parse("2019-04-06"))
+        range.to.endDate.shouldBe(LocalDate.parse("2020-04-05"))
       }
     }
   }
@@ -47,7 +47,7 @@ class TaxYearRangeSpec extends UnitSpec {
     "return a TaxYearRange from the 'subtracted' tax year to the current tax year" in {
       implicit val clock: Clock = Clock.fixed(LocalDate.parse("2023-04-01").atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
 
-      TaxYearRange.todayMinus(years = 4) shouldBe TaxYearRange(TaxYear.fromMtd("2018-19"), TaxYear.fromMtd("2022-23"))
+      TaxYearRange.todayMinus(years = 4).shouldBe(TaxYearRange(TaxYear.fromMtd("2018-19"), TaxYear.fromMtd("2022-23")))
     }
   }
 
