@@ -16,22 +16,13 @@
 
 package api.models.des
 
-sealed trait IncomeSourceType
-
-object IncomeSourceType {
-  case object `uk-property` extends IncomeSourceType
-
-  case object `fhl-property-uk` extends IncomeSourceType
-
-  case object `foreign-property` extends IncomeSourceType
-
-  case object `self-employment` extends IncomeSourceType
-
-  case object `fhl-property-eea` extends IncomeSourceType
-
-  case object `01` extends IncomeSourceType
-
-  case object `02` extends IncomeSourceType
-
-  case object `15` extends IncomeSourceType
+enum IncomeSourceType {
+  case `uk-property`
+  case `fhl-property-uk`
+  case `foreign-property`
+  case `self-employment`
+  case `fhl-property-eea`
+  case `01`
+  case `02`
+  case `15`
 }

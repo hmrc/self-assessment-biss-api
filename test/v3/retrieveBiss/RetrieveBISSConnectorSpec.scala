@@ -124,7 +124,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
   }
 
   private trait Test {
-    this: ConnectorTest =>
+    self: ConnectorTest =>
     val connector: RetrieveBISSConnector = new RetrieveBISSConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }

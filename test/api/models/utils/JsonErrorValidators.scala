@@ -20,7 +20,7 @@ import play.api.libs.json._
 import support.UnitSpec
 
 trait JsonErrorValidators {
-  this: UnitSpec =>
+  self: UnitSpec =>
 
   type JsError  = (JsPath, Seq[JsonValidationError])
   type JsErrors = Seq[JsError]
