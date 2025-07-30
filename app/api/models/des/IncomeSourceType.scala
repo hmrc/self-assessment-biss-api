@@ -17,12 +17,5 @@
 package api.models.des
 
 enum IncomeSourceType {
-  case `uk-property`
-  case `fhl-property-uk`
-  case `foreign-property`
-  case `self-employment`
-  case `fhl-property-eea`
-  case `01`
-  case `02`
-  case `15`
+  case `uk-property`, `fhl-property-uk`, `foreign-property`, `self-employment`, `fhl-property-eea`, `01`, `02`, `15`
 }
