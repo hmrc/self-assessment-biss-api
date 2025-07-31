@@ -36,9 +36,10 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     extends DefaultHttpRequestHandler(
       webCommands = new DefaultWebCommands,
       optDevContext = None,
-      router = new Provider[Router] {
-        override def get(): Router = versionRoutingMap.defaultRouter
-      },
+      router = (() => versionRoutingMap.defaultRouter): Provider[Router],
+//      router = new Provider[Router] {
+//        override def get(): Router = versionRoutingMap.defaultRouter
+//      },
       errorHandler = errorHandler,
       configuration = httpConfiguration,
       filters = filters.filters
