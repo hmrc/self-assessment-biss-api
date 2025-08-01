@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,55 +21,63 @@ import support.UnitSpec
 
 class TotalSpec extends UnitSpec {
 
-  private val json: JsValue = Json.parse("""
+  private val json: JsValue = Json.parse(
+    """
       |{
-      |        "income": 100.00,
-      |        "expenses": 50.00,
-      |        "additions": 5.00,
-      |        "deductions": 60.00,
-      |        "accountingAdjustments": -30.00
+      |  "income": 100.00,
+      |  "expenses": 50.00,
+      |  "additions": 5.00,
+      |  "deductions": 60.00,
+      |  "accountingAdjustments": -30.00
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  private val desJson: JsValue = Json.parse("""
+  private val downstreamJson: JsValue = Json.parse(
+    """
       |{
-      |    "incomeSourceID": "string",
-      |    "totalIncome": 100.00,
-      |    "totalExpenses": 50.00,
-      |    "totalAdditions": 5.00,
-      |    "totalDeductions": 60.00,
-      |    "accountingAdjustments": -30.00
+      |  "incomeSourceId": "string",
+      |  "totalIncome": 100.00,
+      |  "totalExpenses": 50.00,
+      |  "totalAdditions": 5.00,
+      |  "totalDeductions": 60.00,
+      |  "accountingAdjustments": -30.00
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  private val minDesJson: JsValue = Json.parse("""
+  private val minDownstreamJson: JsValue = Json.parse(
+    """
       |{
-      |    "totalIncome": 100.00,
-      |    "totalExpenses": 0.00
+      |  "totalIncome": 100.00,
+      |  "totalExpenses": 0.00
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  private val minJson: JsValue = Json.parse("""
+  private val minJson: JsValue = Json.parse(
+    """
       |{
-      |    "income": 100.00,
-      |    "expenses": 0.0
+      |  "income": 100.00,
+      |  "expenses": 0.0
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val model: Total = Total(
-    100.00,
-    50.00,
-    Some(5.00),
-    Some(60.00),
-    Some(-30.00)
+    income = 100.00,
+    expenses = 50.00,
+    additions = Some(5.00),
+    deductions = Some(60.00),
+    accountingAdjustments = Some(-30.00)
   )
 
   private val minModel: Total = Total(
-    100.00,
-    0.00,
-    None,
-    None,
-    None
+    income = 100.00,
+    expenses = 0.00,
+    additions = None,
+    deductions = None,
+    accountingAdjustments = None
   )
 
   "Total" should {
@@ -77,16 +85,17 @@ class TotalSpec extends UnitSpec {
     "write correctly to json" in {
       Json.toJson(model) shouldBe json
     }
+
     "write correctly to a minimal json" in {
       Json.toJson(minModel) shouldBe minJson
     }
 
     "read correctly from a json" in {
-      desJson.as[Total] shouldBe model
+      downstreamJson.as[Total] shouldBe model
     }
 
     "read correctly from a minimal json" in {
-      minDesJson.as[Total] shouldBe minModel
+      minDownstreamJson.as[Total] shouldBe minModel
     }
   }
 

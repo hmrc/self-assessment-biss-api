@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.models.des
+package api.models.downstream
 
 enum IncomeSourceType {
   case `uk-property`, `fhl-property-uk`, `foreign-property`, `self-employment`, `fhl-property-eea`, `01`, `02`, `15`

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,30 @@
 
 package v3.retrieveBiss.def1.model.response
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class LossSpec extends UnitSpec {
 
-  private val json = Json.parse("""
+  private val json: JsValue = Json.parse(
+    """
       |{
-      |        "net": 0.00,
-      |        "taxable": 35.00
+      |  "net": 0.00,
+      |  "taxable": 35.00
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  private val desJson = Json.parse("""
+  private val downstreamJson: JsValue = Json.parse(
+    """
       |{
-      |    "netLoss": 0,
-      |    "taxableLoss": 35.00
+      |  "netLoss": 0,
+      |  "taxableLoss": 35.00
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  private val model =
-    Loss(
-      0,
-      35.00
-    )
+  private val model: Loss = Loss(net = 0, taxable = 35.00)
 
   "Loss" should {
 
@@ -48,7 +48,7 @@ class LossSpec extends UnitSpec {
     }
 
     "read correctly from a json" in {
-      desJson.as[Loss] shouldBe model
+      downstreamJson.as[Loss] shouldBe model
     }
   }
 

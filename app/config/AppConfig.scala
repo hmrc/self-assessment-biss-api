@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,32 +32,42 @@ import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
 
-  lazy val desDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = desBaseUrl, env = desEnv, token = desToken, environmentHeaders = desEnvironmentHeaders)
-
-  lazy val ifsDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = ifsBaseUrl, env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
-
   def mtdIdBaseUrl: String
-
-  // DES Config
-  def desBaseUrl: String
-
-  def desEnv: String
-
-  def desToken: String
-
-  def desEnvironmentHeaders: Option[Seq[String]]
 
   // IFS Config
   def ifsBaseUrl: String
 
-  def endpointAllowsSupportingAgents(endpointName: String): Boolean
   def ifsEnv: String
 
   def ifsToken: String
 
   def ifsEnvironmentHeaders: Option[Seq[String]]
+
+  lazy val ifsDownstreamConfig: DownstreamConfig = DownstreamConfig(
+    baseUrl = ifsBaseUrl,
+    env = ifsEnv,
+    token = ifsToken,
+    environmentHeaders = ifsEnvironmentHeaders
+  )
+
+  // HIP Config
+  def hipBaseUrl: String
+
+  def hipEnv: String
+
+  def hipClientId: String
+
+  def hipClientSecret: String
+
+  def hipEnvironmentHeaders: Option[Seq[String]]
+
+  lazy val hipDownstreamConfig: BasicAuthDownstreamConfig = BasicAuthDownstreamConfig(
+    baseUrl = hipBaseUrl,
+    env = hipEnv,
+    clientId = hipClientId,
+    clientSecret = hipClientSecret,
+    environmentHeaders = hipEnvironmentHeaders
+  )
 
   // API Config
   def apiGatewayContext: String
@@ -76,6 +86,8 @@ trait AppConfig {
 
   def apiDocumentationUrl: String
 
+  def endpointAllowsSupportingAgents(endpointName: String): Boolean
+
   def apiVersionReleasedInProduction(version: String): Boolean
 
   def endpointReleasedInProduction(version: String, name: String): Boolean
@@ -88,17 +100,18 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
 
   val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
-  // DES Config
-  val desBaseUrl: String                         = config.baseUrl("des")
-  val desEnv: String                             = config.getString("microservice.services.des.env")
-  val desToken: String                           = config.getString("microservice.services.des.token")
-  val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
-
   // IFS Config
   val ifsBaseUrl: String                         = config.baseUrl("ifs")
   val ifsEnv: String                             = config.getString("microservice.services.ifs.env")
   val ifsToken: String                           = config.getString("microservice.services.ifs.token")
   val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
+
+  // HIP Config
+  val hipBaseUrl: String                         = config.baseUrl("hip")
+  val hipEnv: String                             = config.getString("microservice.services.hip.env")
+  val hipClientId: String                        = config.getString("microservice.services.hip.clientId")
+  val hipClientSecret: String                    = config.getString("microservice.services.hip.clientSecret")
+  val hipEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.hip.environmentHeaders")
 
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")

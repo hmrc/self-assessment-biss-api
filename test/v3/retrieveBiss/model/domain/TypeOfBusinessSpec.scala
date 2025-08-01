@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v3.retrieveBiss.model.domain
 
-import api.models.des.IncomeSourceType
-import v3.retrieveBiss.model.domain.TypeOfBusiness._
+import api.models.downstream.IncomeSourceType
+import v3.retrieveBiss.model.domain.TypeOfBusiness.*
 import support.UnitSpec
 
 class TypeOfBusinessSpec extends UnitSpec {

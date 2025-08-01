@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package api.support
 
 import api.controllers.EndpointLogContext
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
@@ -45,7 +45,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
   object ErrorBvr extends MtdError("msg", "bvr", BAD_REQUEST)
 
-  "mapping Des errors" when {
+  "mapping downstream errors" when {
     "single error" when {
       "the error code is in the map provided" must {
         "use the mapping and wrap" in {

@@ -16,9 +16,9 @@
 
 package v3.retrieveBiss
 
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import api.models.des.IncomeSourceType
+import api.models.downstream.IncomeSourceType
 import config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,12 +36,12 @@ class RetrieveBISSConnector @Inject() (val http: HttpClientV2, val appConfig: Ap
   def retrieveBiss(
       request: RetrieveBISSRequestData)(implicit hc: HeaderCarrier, correlationId: String): Future[DownstreamOutcome[RetrieveBISSResponse]] = {
 
-    import request._
+    import request.*
     val incomeSourceType: IncomeSourceType = typeOfBusiness.toIncomeSourceType(taxYear.year)
 
     request match {
       case def1: Def1_RetrieveBISSRequestData =>
-        import def1._
+        import def1.*
 
         val uriBuilder: RetrieveBISSDownstreamUriBuilder[Def1_RetrieveBISSResponse] =
           RetrieveBISSDownstreamUriBuilder.downstreamUriFor(taxYear)

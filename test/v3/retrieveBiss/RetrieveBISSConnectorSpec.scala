@@ -17,7 +17,7 @@
 package v3.retrieveBiss
 
 import api.connectors.ConnectorSpec
-import api.models.des.IncomeSourceType
+import api.models.downstream.IncomeSourceType
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps

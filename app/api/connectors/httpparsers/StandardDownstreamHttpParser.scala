@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package api.connectors.httpparsers
 import api.connectors.DownstreamOutcome
 import api.models.errors.{InternalError, OutboundError}
 import api.models.outcomes.ResponseWrapper
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -27,7 +27,7 @@ object StandardDownstreamHttpParser extends HttpParser {
 
   case class SuccessCode(status: Int) extends AnyVal
 
-  // Return Right[DesResponse[Unit]] as success response has no body - no need to assign it a value
+  // Return Right[DownstreamResponse[Unit]] as success response has no body - no need to assign it a value
   implicit def readsEmpty(implicit successCode: SuccessCode = SuccessCode(NO_CONTENT)): HttpReads[DownstreamOutcome[Unit]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(url, response) { correlationId =>
