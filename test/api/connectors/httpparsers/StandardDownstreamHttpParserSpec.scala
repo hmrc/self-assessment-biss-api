@@ -70,6 +70,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" must {
@@ -100,6 +101,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" must {
@@ -180,6 +182,26 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       |   ]
       |}
     """.stripMargin
+  )
+
+  val multipleFailureErrorTypesJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "origin": "HIP",
+       |  "response": {
+       |    "failures": [
+       |      {
+       |        "type": "CODE 1",
+       |        "reason": "MESSAGE 1"
+       |      },
+       |      {
+       |        "type": "CODE 2",
+       |        "reason": "MESSAGE 2"
+       |      }
+       |    ]
+       |  }
+       |}
+      """.stripMargin
   )
 
   val malformedErrorJson: JsValue = Json.parse(
@@ -274,6 +296,22 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
           .read(method, url, httpResponse)
           .shouldBe(Left(
             ResponseWrapper(correlationId, OutboundError(BVRError, Some(Seq(MtdError("BVR1", "", BAD_REQUEST), MtdError("BVR2", "", BAD_REQUEST)))))))
+      }
+    }
+  }
+
+  private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
+    "receiving a response with multiple HIP errors containing top level error codes" should {
+      "return a Left ResponseWrapper containing the extracted error codes" in {
+        val httpResponse = HttpResponse(
+          UNPROCESSABLE_ENTITY,
+          multipleFailureErrorTypesJson,
+          Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("CODE 1"), DownstreamErrorCode("CODE 2"))))
+        )
       }
     }
   }

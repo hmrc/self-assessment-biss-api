@@ -18,10 +18,11 @@ package v3.retrieveBiss
 
 import api.connectors.ConnectorSpec
 import api.models.downstream.IncomeSourceType
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.*
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
-import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.def1.model.response.*
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
 import v3.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
@@ -83,16 +84,36 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           ("2024-25", TypeOfBusiness.`foreign-property`, IncomeSourceType.`foreign-property`),
           ("2025-26", TypeOfBusiness.`foreign-property`, IncomeSourceType.`15`)
         ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
-          def urlPrefix(taxYear: String): String = if (taxYearMtd(taxYear).year >= 2026) {
-            s"$baseUrl/income-tax/${taxYearAsTysDownstream(taxYear)}/income-sources"
-          } else {
-            s"$baseUrl/income-tax/income-sources/${taxYearAsTysDownstream(taxYear)}"
+          def urlPrefix(taxYear: String, isHip: Boolean): String = {
+            (taxYearMtd(taxYear).year >= 2026, isHip) match {
+              case (true, true)   => s"$baseUrl/itsa/income-tax/v1/${taxYearAsTysDownstream(taxYear)}/income-sources"
+              case (false, true)  => s"$baseUrl/itsa/income-tax/v1/income-sources/${taxYearAsTysDownstream(taxYear)}"
+              case (true, false)  => s"$baseUrl/income-tax/${taxYearAsTysDownstream(taxYear)}/income-sources"
+              case (false, false) => s"$baseUrl/income-tax/income-sources/${taxYearAsTysDownstream(taxYear)}"
+            }
           }
 
-          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new IfsTest with Test {
-            val expectedUrl: URL = url"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS) (IFS enabled)" in new IfsTest with Test {
+            val expectedUrl: URL = url"${urlPrefix(taxYear, false)}/$nino/$businessId/$incomeSourceType/biss"
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+
+            MockedAppConfig.featureSwitches.returns(
+              Configuration("ifs_hip_migration_1871.enabled" -> false, "ifs_hip_migration_1879.enabled" -> false))
+
+            val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
+
+            willGet(url = expectedUrl) returns Future.successful(expected)
+
+            await(connector.retrieveBiss(request)) shouldBe expected
+          }
+
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS) (HIP enabled)" in new HipTest with Test {
+            val expectedUrl: URL = url"${urlPrefix(taxYear, true)}/$nino/$businessId/$incomeSourceType/biss"
+            val request: RetrieveBISSRequestData =
+              Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+
+            MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1871.enabled" -> true, "ifs_hip_migration_1879.enabled" -> true))
 
             val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 
@@ -110,7 +131,7 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           ("2025-26", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`),
           ("2026-27", TypeOfBusiness.`foreign-property-fhl-eea`, IncomeSourceType.`fhl-property-eea`)
         ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
-          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new IfsTest with Test {
+          s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new HipTest with Test {
             val request: RetrieveBISSRequestData =
               Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 

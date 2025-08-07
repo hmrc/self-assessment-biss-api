@@ -17,10 +17,11 @@
 package v2.retrieveBiss
 
 import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.*
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
-import v2.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v2.retrieveBiss.def1.model.response.*
 import v2.retrieveBiss.model.domain.TypeOfBusiness
 import v2.retrieveBiss.model.request.{Def1_RetrieveBISSRequestData, RetrieveBISSRequestData}
 import v2.retrieveBiss.model.response.{Def1_RetrieveBISSResponse, RetrieveBISSResponse}
@@ -60,10 +61,26 @@ class RetrieveBISSConnectorSpec extends ConnectorSpec {
           await(connector.retrieveBiss(request)).shouldBe(expected)
         }
 
-        s"businessType is $typeOfBusiness and TYS" in new IfsTest with Test {
+        s"businessType is $typeOfBusiness and TYS (IFS enabled)" in new IfsTest with Test {
           val expectedUrl = url"$baseUrl/income-tax/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
           val request: RetrieveBISSRequestData =
             Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
+
+          MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1871.enabled" -> false))
+
+          val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
+
+          willGet(url = expectedUrl) returns Future.successful(expected)
+
+          await(connector.retrieveBiss(request)).shouldBe(expected)
+        }
+
+        s"businessType is $typeOfBusiness and TYS (HIP enabled)" in new HipTest with Test {
+          val expectedUrl = url"$baseUrl/itsa/income-tax/v1/income-sources/23-24/$nino/$businessId/$incomeSourceTypePathParam/biss"
+          val request: RetrieveBISSRequestData =
+            Def1_RetrieveBISSRequestData(Nino(nino), typeOfBusiness, TaxYear.fromMtd(taxYearTys), BusinessId(businessId))
+
+          MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1871.enabled" -> true))
 
           val expected: Right[Nothing, ResponseWrapper[RetrieveBISSResponse]] = Right(ResponseWrapper(correlationId, response))
 

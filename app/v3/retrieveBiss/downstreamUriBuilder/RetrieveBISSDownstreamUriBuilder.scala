@@ -17,10 +17,10 @@
 package v3.retrieveBiss.downstreamUriBuilder
 
 import api.connectors.DownstreamUri
-import api.connectors.DownstreamUri.IfsUri
-import api.models.downstream.IncomeSourceType
+import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import config.AppConfig
+import api.models.downstream.IncomeSourceType
+import config.{AppConfig, ConfigFeatureSwitches}
 import v3.retrieveBiss.model.response.RetrieveBISSResponse
 
 sealed trait RetrieveBISSDownstreamUriBuilder[Resp] {
@@ -53,9 +53,15 @@ object RetrieveBISSDownstreamUriBuilder {
     override def buildUri(nino: Nino, businessId: BusinessId, incomeSourceType: IncomeSourceType, taxYear: TaxYear)(implicit
         appConfig: AppConfig): (DownstreamUri[RetrieveBISSResponse], Seq[(String, String)]) = {
 
-      val uri: DownstreamUri[RetrieveBISSResponse] = IfsUri[RetrieveBISSResponse](
-        s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"
-      )
+      val uri: DownstreamUri[RetrieveBISSResponse] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1871")) {
+        HipUri[RetrieveBISSResponse](
+          s"itsa/income-tax/v1/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"
+        )
+      } else {
+        IfsUri[RetrieveBISSResponse](
+          s"income-tax/income-sources/${taxYear.asTysDownstream}/$nino/$businessId/$incomeSourceType/biss"
+        )
+      }
 
       (uri, Nil)
     }
@@ -67,9 +73,15 @@ object RetrieveBISSDownstreamUriBuilder {
     override def buildUri(nino: Nino, businessId: BusinessId, incomeSourceType: IncomeSourceType, taxYear: TaxYear)(implicit
         appConfig: AppConfig): (DownstreamUri[RetrieveBISSResponse], Seq[(String, String)]) = {
 
-      val uri: DownstreamUri[RetrieveBISSResponse] = IfsUri[RetrieveBISSResponse](
-        s"income-tax/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"
-      )
+      val uri: DownstreamUri[RetrieveBISSResponse] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1879")) {
+        HipUri[RetrieveBISSResponse](
+          s"itsa/income-tax/v1/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"
+        )
+      } else {
+        IfsUri[RetrieveBISSResponse](
+          s"income-tax/${taxYear.asTysDownstream}/income-sources/$nino/$businessId/$incomeSourceType/biss"
+        )
+      }
 
       (uri, Nil)
     }
