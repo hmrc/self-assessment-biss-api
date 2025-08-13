@@ -26,7 +26,7 @@ class ProfitSpec extends UnitSpec {
       |{
       |  "net": 0.00,
       |  "taxable": 35.00,
-      |  "adjusted": 30.00
+      |  "adjusted": 35.00
       |}
     """.stripMargin
   )
@@ -36,7 +36,7 @@ class ProfitSpec extends UnitSpec {
       |{
       |  "netProfit": 0,
       |  "taxableProfit": 35.00,
-      |  "adjustedProfit": 35.09,
+      |  "adjustedProfit": 35.00
       |}
     """.stripMargin
   )

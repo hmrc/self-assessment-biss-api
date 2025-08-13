@@ -58,7 +58,8 @@ class RetrieveBissControllerSpec
       |  },
       |  "profit": {
       |    "net": 0.00,
-      |    "taxable": 0.00
+      |    "taxable": 0.00,
+      |    "adjusted": 35.00
       |  },
       |  "outstandingBusinessIncome": 35.00
       |}""".stripMargin)
