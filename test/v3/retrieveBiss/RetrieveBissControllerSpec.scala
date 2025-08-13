@@ -42,8 +42,10 @@ class RetrieveBissControllerSpec
   val response: RetrieveBissResponse =
     Def1_RetrieveBissResponse(
       Total(income = 100.00, expenses = 50.0, None, None, None),
-      Profit(net = 0.0, taxable = 0.0),
-      Loss(net = 50.0, taxable = 0.0))
+      Profit(net = 0.0, taxable = 0.0, Some(35.00)),
+      Loss(net = 50.0, taxable = 0.0),
+      outstandingBusinessIncome = Some(35.00)
+    )
 
   val responseJson: JsValue = Json.parse("""{
       |  "total": {
@@ -57,7 +59,8 @@ class RetrieveBissControllerSpec
       |  "profit": {
       |    "net": 0.00,
       |    "taxable": 0.00
-      |  }
+      |  },
+      |  "outstandingBusinessIncome": 35.00
       |}""".stripMargin)
 
   private val taxYear        = "2018-19"

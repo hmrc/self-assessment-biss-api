@@ -33,12 +33,14 @@ trait RetrieveBissFixture {
       |  },
       |  "profit": {
       |    "net": 3.25,
-      |    "taxable": 8.25
+      |    "taxable": 8.25,
+      |    "adjusted": 11.25
       |  },
       |  "loss": {
       |    "net": 4.25,
       |    "taxable": 9.25
-      |  }
+      |  },
+      |  "outstandingBusinessIncome": 10.25
       |}
     """.stripMargin)
 
@@ -70,19 +72,22 @@ trait RetrieveBissFixture {
       ),
       Profit(
         net = 3.25,
-        taxable = 8.25
+        taxable = 8.25,
+        adjusted = Some(11.25)
       ),
       Loss(
         net = 4.25,
         taxable = 9.25
-      )
+      ),
+      outstandingBusinessIncome = Some(10.25)
     )
 
   val responseMin: RetrieveBissResponse =
     Def1_RetrieveBissResponse(
       Total(income = 100.50, expenses = 50.5, None, None, None),
-      Profit(net = 45.25, taxable = 0.50),
-      Loss(net = 50.00, taxable = 0.25)
+      Profit(net = 45.25, taxable = 0.50, None),
+      Loss(net = 50.00, taxable = 0.25),
+      None
     )
 
   val downstreamResponseJsonFull: JsValue = Json.parse("""
@@ -96,7 +101,9 @@ trait RetrieveBissFixture {
       | "totalDeductions": 6.25,
       | "accountingAdjustments": 7.25,
       | "taxableProfit": 8.25,
-      | "taxableLoss": 9.25
+      | "taxableLoss": 9.25,
+      | "outstandingBusinessIncome": 10.25,
+      | "adjustedProfit": 11.25
       |}
     """.stripMargin)
 

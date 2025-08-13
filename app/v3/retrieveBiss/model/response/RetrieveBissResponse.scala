@@ -30,14 +30,16 @@ object RetrieveBissResponse {
 
 }
 
-case class Def1_RetrieveBissResponse(total: Total, profit: Profit, loss: Loss) extends RetrieveBissResponse
+case class Def1_RetrieveBissResponse(total: Total, profit: Profit, loss: Loss, outstandingBusinessIncome: Option[BigDecimal])
+    extends RetrieveBissResponse
 
 object Def1_RetrieveBissResponse {
 
   implicit val reads: Reads[Def1_RetrieveBissResponse] = (
     JsPath.read[Total] and
       JsPath.read[Profit] and
-      JsPath.read[Loss]
+      JsPath.read[Loss] and
+      (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal]
   )(Def1_RetrieveBissResponse.apply)
 
   implicit val writes: OWrites[Def1_RetrieveBissResponse] = Json.writes[Def1_RetrieveBissResponse]

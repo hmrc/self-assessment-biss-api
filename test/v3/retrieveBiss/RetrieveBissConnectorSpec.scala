@@ -41,8 +41,9 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
   // WLOG
   private val response: RetrieveBissResponse = Def1_RetrieveBissResponse(
     total = Total(100.00, 50.0, None, None, None),
-    profit = Profit(0, 0),
-    loss = Loss(100.0, 0.0)
+    profit = Profit(0, 0, Some(35.00)),
+    loss = Loss(100.0, 0.0),
+    outstandingBusinessIncome = Some(35.00)
   )
 
   "RetrieveBissConnector" when {

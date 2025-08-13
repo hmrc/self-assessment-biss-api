@@ -25,7 +25,8 @@ class ProfitSpec extends UnitSpec {
     """
       |{
       |  "net": 0.00,
-      |  "taxable": 35.00
+      |  "taxable": 35.00,
+      |  "adjusted": 30.00
       |}
     """.stripMargin
   )
@@ -34,12 +35,13 @@ class ProfitSpec extends UnitSpec {
     """
       |{
       |  "netProfit": 0,
-      |  "taxableProfit": 35.00
+      |  "taxableProfit": 35.00,
+      |  "adjustedProfit": 35.09,
       |}
     """.stripMargin
   )
 
-  private val model: Profit = Profit(net = 0, taxable = 35.00)
+  private val model: Profit = Profit(net = 0, taxable = 35.00, adjusted = Some(35.00))
 
   "Profit" should {
 
