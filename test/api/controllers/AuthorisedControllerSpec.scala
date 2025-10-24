@@ -46,7 +46,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
         MockedEnrolmentsAuthService.authoriseUser()
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
-        status(result).shouldBe(OK)
+        status(result) shouldBe OK
       }
     }
 
@@ -58,7 +58,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
 
         MockedEnrolmentsAuthService
           .authoriseAgent(mtdId)
-          .returns(Future.successful(Right(UserDetails("", "Agent", Some("arn")))))
+          .returns(Future.successful(Right(UserDetails(mtdId, "Agent", Some("arn")))))
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
@@ -71,7 +71,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockAppConfig {
 
         MockedEnrolmentsAuthService
           .authoriseAgent(mtdId, supportingAgentAccessAllowed = true)
-          .returns(Future.successful(Right(UserDetails("", "Agent", Some("arn")))))
+          .returns(Future.successful(Right(UserDetails(mtdId, "Agent", Some("arn")))))
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
