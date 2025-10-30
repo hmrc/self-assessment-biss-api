@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxValidatedId
 import config.Deprecation.NotDeprecated
 import config.MockAppConfig
 import definition.APIStatus._
-import routing.{Version2, Version3}
+import routing.Version3
 import support.UnitSpec
 
 class ApiDefinitionFactorySpec extends UnitSpec {
@@ -33,7 +33,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class with endpoint version settings taken from configuration" in new Test {
-        List(Version2, Version3).foreach { version =>
+        List(Version3).foreach { version =>
           MockedAppConfig.apiStatus(version) returns "ALPHA"
           MockedAppConfig.endpointsEnabled(version) returns false
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
@@ -47,11 +47,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               context = "api.gateway.context",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
-                APIVersion(
-                  version = Version2,
-                  status = ALPHA,
-                  endpointsEnabled = false
-                ),
                 APIVersion(
                   version = Version3,
                   status = ALPHA,
@@ -68,17 +63,17 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
-        MockedAppConfig.apiStatus(Version2) returns "BETA"
-        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
-        apiDefinitionFactory.buildAPIStatus(version = Version2) shouldBe BETA
+        MockedAppConfig.apiStatus(Version3) returns "BETA"
+        MockedAppConfig.deprecationFor(Version3).returns(NotDeprecated.valid).anyNumberOfTimes()
+        apiDefinitionFactory.buildAPIStatus(version = Version3) shouldBe BETA
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockedAppConfig.apiStatus(Version2) returns "ALPHO"
-        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
-        apiDefinitionFactory.buildAPIStatus(version = Version2) shouldBe ALPHA
+        MockedAppConfig.apiStatus(Version3) returns "ALPHA"
+        MockedAppConfig.deprecationFor(Version3).returns(NotDeprecated.valid).anyNumberOfTimes()
+        apiDefinitionFactory.buildAPIStatus(version = Version3) shouldBe ALPHA
       }
     }
   }

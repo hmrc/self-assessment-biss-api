@@ -17,13 +17,52 @@
 package definition
 
 import definition.APIStatus.ALPHA
-import routing.Version2
+import play.api.libs.json.{JsValue, Json}
+import routing.Version3
 import support.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 
-  val apiVersion: APIVersion       = APIVersion(Version2, ALPHA, endpointsEnabled = false)
+  val apiVersion: APIVersion       = APIVersion(Version3, ALPHA, endpointsEnabled = false)
   val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", Seq("e"), Seq(apiVersion), Some(false))
+  val definition: Definition       = Definition(apiDefinition)
+
+  private val apiVersionJson: JsValue = Json.parse(s"""
+       |{
+       | "version": "3.0",
+       |"status": "ALPHA",
+       |"endpointsEnabled": false
+       |}
+       |""".stripMargin)
+
+  private val apiDefinitionJson: JsValue = Json.parse(s"""{
+       |"name": "b",
+       |"description": "c",
+       |"context": "d",
+       |"categories": ["e"],
+       |"versions": [$apiVersionJson],
+       |"requiresTrust": false
+       |}
+       |""".stripMargin)
+
+  private val definitionJson: JsValue = Json.parse(s"""{
+       |"api": $apiDefinitionJson
+       |}
+       |""".stripMargin)
+
+  "Definition" when {
+    "the full model is present" should {
+      "correctly write the model to json" in {
+        Json.toJson(definition) shouldBe definitionJson
+      }
+    }
+
+    "the full Json is present" should {
+      "correctly read JSON to a model" in {
+        definitionJson.as[Definition] shouldBe definition
+      }
+    }
+  }
 
   "APIDefinition" when {
     "the 'name' parameter is empty" should {

@@ -21,7 +21,7 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import routing.{Version2, Version3}
+import routing.Version3
 import support.IntegrationBaseSpec
 
 import scala.util.Try
@@ -42,11 +42,6 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |    "categories":["INCOME_TAX_MTD"],
        |    "versions":[
        |      {
-       |        "version":"2.0",
-       |        "status":"DEPRECATED",
-       |        "endpointsEnabled":true
-       |      },
-       |      {
        |        "version":"3.0",
        |        "status":"BETA",
        |        "endpointsEnabled":true
@@ -66,7 +61,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    List(Version2, Version3).foreach { version =>
+    List(Version3).foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/${version.name}/application.yaml")
 
@@ -77,7 +72,6 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
         openAPI.getOpenapi shouldBe "3.0.3"
         withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
           version match {
-            case Version2 => openAPI.getInfo.getTitle shouldBe "Business Income Source Summary (MTD)"
             case Version3 => openAPI.getInfo.getTitle shouldBe "Business Income Source Summary (MTD)"
           }
         }

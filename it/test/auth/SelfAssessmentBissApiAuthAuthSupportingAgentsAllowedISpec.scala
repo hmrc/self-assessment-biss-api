@@ -23,7 +23,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 
 class SelfAssessmentBissApiAuthAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 
-  val callingApiVersion = "2.0"
+  val callingApiVersion = "3.0"
 
   val supportingAgentsAllowedEndpoint = "retrieve-biss"
 

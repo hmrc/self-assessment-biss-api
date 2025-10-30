@@ -108,6 +108,14 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       }
     }
 
+    "Upstream4xxResponse thrown" in new Test() {
+      val ex: UpstreamErrorResponse = UpstreamErrorResponse("client error", TOO_MANY_REQUESTS, TOO_MANY_REQUESTS, None.orNull)
+      val result: Future[Result]    = handler.onServerError(requestHeader, ex)
+
+      status(result) shouldBe BAD_REQUEST
+      contentAsJson(result) shouldBe BadRequestError.asJson
+    }
+
     "return 415 with error body" when {
       "unsupported body and header is supplied" in new Test() {
         val result: Future[Result] = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
@@ -184,6 +192,14 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         status(result) shouldBe INTERNAL_SERVER_ERROR
         contentAsJson(result) shouldBe InternalError.asJson
       }
+    }
+
+    "Upstream5xxResponse thrown" in new Test() {
+      val ex: UpstreamErrorResponse = UpstreamErrorResponse("server error", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE, None.orNull)
+      val result: Future[Result]    = handler.onServerError(requestHeader, ex)
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+      contentAsJson(result) shouldBe InternalError.asJson
     }
 
   }
