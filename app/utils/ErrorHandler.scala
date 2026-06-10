@@ -19,8 +19,8 @@ package utils
 import api.models.errors.*
 import play.api.*
 import play.api.http.Status.*
-import play.api.mvc.Results.*
 import play.api.mvc.*
+import play.api.mvc.Results.*
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -88,6 +88,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
       case _: NotFoundException                                                  => (NotFoundError, "ResourceNotFound")
       case _: AuthorisationException                                             => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
       case _: JsValidationException                                              => (BadRequestError, "ServerValidationError")
+      case e: GatewayTimeoutException                                            => (GatewayTimeoutError, "ServerTimeoutError")
       case e: HttpException                                                      => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if timeoutStatusCodes.contains(e.statusCode) => (GatewayTimeoutError, "ServerTimeoutError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
