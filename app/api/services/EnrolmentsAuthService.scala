@@ -16,18 +16,19 @@
 
 package api.services
 
-import config.AppConfig
 import api.models.auth.UserDetails
-import api.models.errors.{InternalError, _}
+import api.models.errors.{InternalError, *}
 import api.models.outcomes.AuthOutcome
 import api.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import config.AppConfig
 import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 

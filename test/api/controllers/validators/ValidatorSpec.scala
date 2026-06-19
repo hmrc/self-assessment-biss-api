@@ -18,10 +18,10 @@ package api.controllers.validators
 
 import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json, Reads}

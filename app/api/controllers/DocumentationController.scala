@@ -19,15 +19,15 @@ package api.controllers
 import config.rewriters.DocumentationRewriters
 import controllers.RewriteableAssets
 import definition.ApiDefinitionFactory
-import play.api.libs.json.Json
-import play.api.Configuration
 import org.apache.pekko.stream.Materializer
-import play.filters.cors.CORSActionBuilder
-import scala.concurrent.ExecutionContext
+import play.api.Configuration
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.filters.cors.CORSActionBuilder
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class DocumentationController @Inject() (

@@ -18,7 +18,6 @@ package v3.retrieveBiss
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
@@ -26,6 +25,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.Def1_RetrieveBissRequestData
 import v3.retrieveBiss.model.response.{Def1_RetrieveBissResponse, RetrieveBissResponse}
 

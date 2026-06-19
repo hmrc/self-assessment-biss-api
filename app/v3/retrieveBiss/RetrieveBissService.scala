@@ -18,7 +18,7 @@ package v3.retrieveBiss
 
 import api.controllers.RequestContext
 import api.services.{BaseService, ServiceOutcome}
-import cats.implicits._
+import cats.implicits.*
 import v3.retrieveBiss.downstreamErrorMapping.RetrieveBissDownstreamErrorMapping.errorMapFor
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
 import v3.retrieveBiss.model.response.RetrieveBissResponse

@@ -24,7 +24,7 @@ import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
 import play.core.DefaultWebCommands
 
-import javax.inject.{Inject, Singleton, Provider}
+import javax.inject.{Inject, Provider, Singleton}
 
 @Singleton
 class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,

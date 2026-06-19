@@ -22,7 +22,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceOutcome
 import cats.data.EitherT
 import cats.data.Validated.Valid
-import cats.implicits._
+import cats.implicits.*
 import config.AppConfig
 import config.Deprecation.Deprecated
 import play.api.http.Status

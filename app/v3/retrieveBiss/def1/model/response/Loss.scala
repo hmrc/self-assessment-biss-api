@@ -16,7 +16,7 @@
 
 package v3.retrieveBiss.def1.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class Loss(net: BigDecimal, taxable: BigDecimal)

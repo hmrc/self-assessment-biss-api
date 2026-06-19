@@ -17,7 +17,7 @@
 package v3.retrieveBiss.downstreamErrorMapping
 
 import api.models.domain.TaxYear
-import api.models.errors._
+import api.models.errors.*
 
 import scala.math.Ordered.orderingToOrdered
 

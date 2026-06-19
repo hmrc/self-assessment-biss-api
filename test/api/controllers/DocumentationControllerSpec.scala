@@ -17,13 +17,13 @@
 package api.controllers
 
 import com.typesafe.config.ConfigFactory
+import config.rewriters.*
 import config.rewriters.DocumentationRewriters.CheckAndRewrite
-import config.rewriters._
 import config.{MockAppConfig, RealAppConfig}
+import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
+import definition.*
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.testkit.NoMaterializer
-import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
-import definition._
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}

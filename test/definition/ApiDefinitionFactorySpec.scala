@@ -19,7 +19,7 @@ package definition
 import cats.implicits.catsSyntaxValidatedId
 import config.Deprecation.NotDeprecated
 import config.MockAppConfig
-import definition.APIStatus._
+import definition.APIStatus.*
 import routing.Version3
 import support.UnitSpec
 

@@ -17,7 +17,7 @@
 package v3.retrieveBiss.downstreamUriBuilder
 
 import api.connectors.DownstreamUri
-import api.connectors.DownstreamUri.{IfsUri, HipUri}
+import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.downstream.IncomeSourceType
 import config.AppConfig

@@ -16,8 +16,8 @@
 
 package v3.retrieveBiss.model.domain
 
-import api.models.downstream.IncomeSourceType
 import api.models.domain.TaxYear
+import api.models.downstream.IncomeSourceType
 import utils.enums.Enums
 
 enum TypeOfBusiness(val preThresholdType: IncomeSourceType, val postThresholdType: Option[IncomeSourceType]) {

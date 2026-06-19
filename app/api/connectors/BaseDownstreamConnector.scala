@@ -18,8 +18,8 @@ package api.connectors
 
 import config.AppConfig
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json._
-import play.api.libs.ws._
+import play.api.libs.json.*
+import play.api.libs.ws.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 import utils.{Logging, UrlUtils}

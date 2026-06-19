@@ -17,8 +17,8 @@
 package v3.retrieveBiss.model.domain
 
 import api.models.downstream.IncomeSourceType
-import v3.retrieveBiss.model.domain.TypeOfBusiness.*
 import support.UnitSpec
+import v3.retrieveBiss.model.domain.TypeOfBusiness.*
 
 class TypeOfBusinessSpec extends UnitSpec {
 
