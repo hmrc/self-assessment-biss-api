@@ -18,14 +18,14 @@ package v3.retrieveBiss.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
-import v3.retrieveBiss.controllers.validators.resolvers.ResolveTypeOfBusiness
 import api.models.domain.TaxYear
-import v3.retrieveBiss.model.domain.TypeOfBusiness.*
 import api.models.errors.{MtdError, RuleTaxYearNotSupportedError, TypeOfBusinessFormatError}
 import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
+import v3.retrieveBiss.controllers.validators.resolvers.ResolveTypeOfBusiness
 import v3.retrieveBiss.model.domain.TypeOfBusiness
+import v3.retrieveBiss.model.domain.TypeOfBusiness.*
 import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
 
 import javax.inject.Singleton

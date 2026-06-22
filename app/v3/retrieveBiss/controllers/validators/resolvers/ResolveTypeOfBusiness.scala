@@ -17,10 +17,10 @@
 package v3.retrieveBiss.controllers.validators.resolvers
 
 import api.controllers.validators.resolvers.Resolver
-import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors.{MtdError, TypeOfBusinessFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 
 import scala.util.{Failure, Success, Try}
 

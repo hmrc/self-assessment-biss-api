@@ -16,10 +16,10 @@
 
 package v3.retrieveBiss.controllers.validators.resolvers
 
-import v3.retrieveBiss.model.domain.TypeOfBusiness
 import api.models.errors.TypeOfBusinessFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 
 class ResolveTypeOfBusinessSpec extends UnitSpec {
 

@@ -18,11 +18,11 @@ package v3.retrieveBiss
 
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrieveBiss.model.domain.TypeOfBusiness
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.Def1_RetrieveBissRequestData
 import v3.retrieveBiss.model.response.Def1_RetrieveBissResponse
 

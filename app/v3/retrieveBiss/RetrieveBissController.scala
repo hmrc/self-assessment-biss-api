@@ -16,7 +16,7 @@
 
 package v3.retrieveBiss
 
-import api.controllers._
+import api.controllers.*
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}

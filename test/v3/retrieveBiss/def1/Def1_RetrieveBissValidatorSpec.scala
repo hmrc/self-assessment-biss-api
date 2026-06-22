@@ -17,9 +17,9 @@
 package v3.retrieveBiss.def1
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrieveBiss.model.domain.TypeOfBusiness
-import api.models.errors._
+import api.models.errors.*
 import support.UnitSpec
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
 
 class Def1_RetrieveBissValidatorSpec extends UnitSpec {

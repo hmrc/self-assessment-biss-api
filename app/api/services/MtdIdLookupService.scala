@@ -18,8 +18,8 @@ package api.services
 
 import api.connectors.MtdIdLookupConnector
 import api.controllers.validators.resolvers.ResolveNino
-import api.models.errors.{ClientOrAgentNotAuthorisedError, InvalidBearerTokenError, NinoFormatError, _}
-import play.api.http.Status._
+import api.models.errors.{ClientOrAgentNotAuthorisedError, InvalidBearerTokenError, NinoFormatError, *}
+import play.api.http.Status.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
