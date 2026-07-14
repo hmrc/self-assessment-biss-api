@@ -29,13 +29,6 @@ object TypeOfBusinessFormatError extends MtdError("FORMAT_TYPE_OF_BUSINESS", "Th
 
 object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid", BAD_REQUEST)
 
-object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
-
-  def forPathAndRange(path: String, min: String, max: String): MtdError =
-    ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
-
-}
-
 // Rule Errors
 object RuleTaxYearNotSupportedError
     extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST)

@@ -23,14 +23,14 @@ import v3.retrieveBiss.model.domain.TypeOfBusiness
 
 import scala.util.{Failure, Success, Try}
 
-object ResolveTypeOfBusiness extends Resolver[String, TypeOfBusiness] {
+object ResolveTypeOfBusiness {
 
-  def apply(value: String, notUsedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TypeOfBusiness] = {
+  def apply(value: String): Validated[Seq[MtdError], TypeOfBusiness] = {
     Try {
       TypeOfBusiness.parser(value)
     } match {
       case Success(result: TypeOfBusiness) => Valid(result)
-      case Failure(_)                      => Invalid(List(requireError(Some(TypeOfBusinessFormatError), path)))
+      case Failure(_)                      => Invalid(List(TypeOfBusinessFormatError))
 
     }
   }

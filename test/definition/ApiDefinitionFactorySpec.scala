@@ -71,9 +71,27 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockedAppConfig.apiStatus(Version3) returns "ALPHA"
+        MockedAppConfig.apiStatus(Version3) returns "not-a-status"
         MockedAppConfig.deprecationFor(Version3).returns(NotDeprecated.valid).anyNumberOfTimes()
         apiDefinitionFactory.buildAPIStatus(version = Version3) shouldBe ALPHA
+      }
+    }
+
+    "the 'deprecatedOn' parameter is missing for a deprecated version" should {
+      "throw an exception" in new Test {
+        MockedAppConfig.apiStatus(Version3) returns "DEPRECATED"
+
+        MockedAppConfig
+          .deprecationFor(Version3)
+          .returns("deprecatedOn date is required for a deprecated version".invalid)
+          .anyNumberOfTimes()
+
+        val exception: Exception = intercept[Exception] {
+          apiDefinitionFactory.buildAPIStatus(version = Version3)
+        }
+
+        val exceptionMessage: String = exception.getMessage
+        exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
       }
     }
   }
