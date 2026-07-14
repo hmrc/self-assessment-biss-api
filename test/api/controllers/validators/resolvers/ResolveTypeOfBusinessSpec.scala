@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import api.models.errors.TypeOfBusinessFormatError
 import cats.data.Validated.{Invalid, Valid}
