@@ -123,18 +123,3 @@ case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYe
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
 }
-
-object ResolveTysTaxYear extends ResolverSupport {
-
-  val resolver: Resolver[String, TaxYear] =
-    ResolveTaxYear.resolver.thenValidate(satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError))
-
-  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
-
-  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
-    value match {
-      case Some(value) => resolver(value).map(Some(_))
-      case None        => Valid(None)
-    }
-
-}
