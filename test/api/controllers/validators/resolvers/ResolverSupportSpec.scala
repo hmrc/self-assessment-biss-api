@@ -1,0 +1,71 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package api.controllers.validators.resolvers
+
+import api.models.errors.MtdError
+import cats.data.Validated.{Invalid, Valid}
+import cats.implicits.catsSyntaxOption
+import support.UnitSpec
+
+class ResolverSupportSpec extends UnitSpec with ResolverSupport {
+  private val notIntegerError = MtdError("NOT_INT", "Not integer", 400)
+  private val outOfRangeError = MtdError("OUT_OF_RANGE", "Out of range", 400)
+
+  private val resolveInt: Resolver[String, Int] = _.toIntOption.toValid(List(notIntegerError))
+
+  "ResolverSupport" must {
+    "provide the ability to easily create predicate based validators" in {
+      val validator = satisfies[Int](outOfRangeError)(_ < 10)
+
+      validator(1) shouldBe None
+      validator(10) shouldBe Some(List(outOfRangeError))
+    }
+
+    "provide the ability to easily create minimum allowed based validators" in {
+      val validator = satisfiesMin[Int](10, outOfRangeError)
+
+      validator(9) shouldBe Some(List(outOfRangeError))
+      validator(10) shouldBe None
+      validator(11) shouldBe None
+    }
+
+    "provide the ability to easily create maximum allowed based validators" in {
+      val validator = satisfiesMax[Int](10, outOfRangeError)
+
+      validator(9) shouldBe None
+      validator(10) shouldBe None
+      validator(11) shouldBe Some(List(outOfRangeError))
+    }
+
+    "provide the ability to compose a resolver with a subsequent validator" in {
+      val resolver = resolveInt.thenValidate(satisfiesMax(9, outOfRangeError))
+
+      resolver("9") shouldBe Valid(9)
+      resolver("10") shouldBe Invalid(List(outOfRangeError))
+      resolver("xx") shouldBe Invalid(List(notIntegerError))
+    }
+
+    "provide the ability to map a valid result" in {
+      val resolver = resolveInt.map((v => -v))
+
+      resolver("2") shouldBe Valid(-2)
+      resolver("xx") shouldBe Invalid(List(notIntegerError))
+    }
+
+  }
+
+}

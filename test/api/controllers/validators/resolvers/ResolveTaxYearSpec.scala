@@ -161,20 +161,6 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
       }
     }
 
-    "return the expected error" when {
-      val resolver = ResolveTaxYearMinMax(minimumTaxYear -> maximumTaxYear, minError = BadRequestError, maxError = InvalidTaxYearParameterError)
-
-      "given a tax year earlier than the minimum and a non-default MtdError" in {
-        val result: Validated[Seq[MtdError], TaxYear] = resolver("2020-21")
-        result shouldBe Invalid(List(BadRequestError))
-      }
-
-      "given a tax year later than the maximum and a non-default MtdError" in {
-        val result: Validated[Seq[MtdError], TaxYear] = resolver("2025-26")
-        result shouldBe Invalid(List(InvalidTaxYearParameterError))
-      }
-    }
-
     "ResolveTaxYearMinMax" should {
       "return no errors when given an optional valid tax year" in {
         val result: Validated[Seq[MtdError], Option[TaxYear]] = resolver(Some("2021-22"))
@@ -194,34 +180,6 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
       "return no errors when given no tax year" in {
         val result: Validated[Seq[MtdError], Option[TaxYear]] = resolver(None)
         result shouldBe Valid(None)
-      }
-    }
-  }
-
-  "ResolveTysTaxYear" should {
-    "return no errors" when {
-
-      val validTaxYear = "2023-24"
-
-      "given a valid tax year that's above or equal to TaxYear.tysTaxYear" in {
-        ResolveTysTaxYear(validTaxYear) shouldBe Valid(TaxYear.fromMtd(validTaxYear))
-      }
-
-      "given a valid tax year in an Option" in {
-        val result: Validated[Seq[MtdError], Option[TaxYear]] = ResolveTysTaxYear(Option(validTaxYear))
-        result shouldBe Valid(Some(TaxYear.fromMtd(validTaxYear)))
-      }
-
-      "given an empty Option" in {
-        val result: Validated[Seq[MtdError], Option[TaxYear]] = ResolveTysTaxYear(None)
-        result shouldBe Valid(None)
-      }
-
-    }
-
-    "return an error" when {
-      "given a valid tax year but below TaxYear.tysTaxYear" in {
-        ResolveTysTaxYear("2021-22") shouldBe Invalid(List(InvalidTaxYearParameterError))
       }
     }
   }

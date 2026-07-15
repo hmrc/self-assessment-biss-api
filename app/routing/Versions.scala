@@ -28,20 +28,22 @@ object Version {
       .getOrElse(throw new Exception("Missing or unsupported version found in request accept header"))
 
   object VersionWrites extends Writes[Version] {
-
-    def writes(version: Version): JsValue = version match {
-      case Version3 => Json.toJson(Version3.name)
-    }
-
+    def writes(version: Version): JsValue = version.asJson
   }
 
   object VersionReads extends Reads[Version] {
 
+    /** @param version
+      *   expecting a JsString e.g. "1.0"
+      */
     override def reads(version: JsValue): JsResult[Version] =
-      version.validate[String].flatMap {
-        case Version3.name => JsSuccess(Version3)
-        case _             => JsError("Unrecognised version")
-      }
+      version
+        .validate[String]
+        .flatMap(name =>
+          Versions.getFrom(name) match {
+            case Left(_)        => JsError("Version not recognised")
+            case Right(version) => JsSuccess(version)
+          })
 
   }
 
@@ -50,6 +52,8 @@ object Version {
 
 sealed trait Version {
   val name: String
+  lazy val asJson: JsValue = Json.toJson(name)
+
   override def toString: String = name
 }
 

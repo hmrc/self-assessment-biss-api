@@ -16,11 +16,11 @@
 
 package api.controllers.validators
 
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
+import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import cats.data.Validated
-import cats.data.Validated.Invalid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
@@ -53,13 +53,14 @@ class ValidatorSpec extends UnitSpec with MockFactory {
   private class TestValidator(nino: String = "AA123456A", taxYear: String = "2023-24", jsonBody: JsValue = validBody)
       extends Validator[TestParsedRequest] {
 
-    private val jsonResolver = new ResolveJsonObject[TestParsedRequestBody]
+    private def resolveBody(body: JsValue): Validated[Seq[MtdError], TestParsedRequestBody] =
+      body.asOpt[TestParsedRequestBody].fold(Invalid(List(RuleIncorrectBody)))(Valid(_))
 
     def validate: Validated[Seq[MtdError], TestParsedRequest] =
       (
         ResolveNino(nino),
         ResolveTaxYear(taxYear),
-        jsonResolver(jsonBody, RuleIncorrectOrEmptyBodyError)
+        resolveBody(jsonBody)
       ).mapN(TestParsedRequest.apply) andThen TestRulesValidator.validateBusinessRules
 
   }
@@ -82,6 +83,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
   private object RuleValue1Invalid extends MtdError("RULE_VALUE_1_INVALID", "value1 can only be 'value 1'", BAD_REQUEST)
   private object RuleValue2Invalid extends MtdError("RULE_VALUE_2_INVALID", "value2 can only be true", BAD_REQUEST)
+  private object RuleIncorrectBody extends MtdError("RULE_INCORRECT_BODY", "A non-matching body was submitted", BAD_REQUEST)
 
   "validateAndWrapResult()" should {
 
@@ -119,7 +121,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validator = new TestValidator(jsonBody = jsonRequestBody)
         val result    = validator.validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectBody))
       }
     }
   }

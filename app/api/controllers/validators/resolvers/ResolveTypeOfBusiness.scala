@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,23 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.MtdError
+import api.models.errors.{MtdError, TypeOfBusinessFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import v3.retrieveBiss.model.domain.TypeOfBusiness
 
 import scala.util.{Failure, Success, Try}
 
-object ResolveBoolean extends Resolver[String, Boolean] {
+object ResolveTypeOfBusiness {
 
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Boolean] =
+  def apply(value: String): Validated[Seq[MtdError], TypeOfBusiness] = {
     Try {
-      value.toBoolean
+      TypeOfBusiness.parser(value)
     } match {
-      case Success(result) => Valid(result)
-      case Failure(_)      => Invalid(List(requireError(error, path)))
+      case Success(result: TypeOfBusiness) => Valid(result)
+      case Failure(_)                      => Invalid(List(TypeOfBusinessFormatError))
+
     }
+  }
 
 }

@@ -18,55 +18,91 @@ package routing
 
 import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json.*
+import play.api.mvc.{Headers, RequestHeader}
 import play.api.test.FakeRequest
+import routing.Version.VersionReads
 import support.UnitSpec
 
 class VersionSpec extends UnitSpec {
 
-  "serialized to Json" must {
-    "return the expected Json output" in {
-      val version: Version = Version3
-      val expected         = Json.parse(""" "3.0" """)
-      val result           = Json.toJson(version)
-      result shouldBe expected
+  "Versions" when {
+    "retrieved from a request header" should {
+      "return Version for valid header" in {
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
+      }
+
+      "return InvalidHeader when the version header is missing" in {
+        Versions.getFromRequest(FakeRequest().withHeaders()) shouldBe Left(InvalidHeader)
+      }
+
+      "return VersionNotFound for unrecognised version" in {
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.0.0+json"))) shouldBe Left(VersionNotFound)
+      }
+
+      "return InvalidHeader for a header format that doesn't match regex" in {
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "invalidHeaderFormat"))) shouldBe Left(InvalidHeader)
+      }
     }
   }
 
-  "deserialized from Json" must {
+  "Version" when {
+    "serialized to Json" should {
+      "return the expected Json output" in {
+        val version: Version = Version3
 
-    "return Version3 for '3.0'" in {
-      val json   = Json.parse(""""3.0"""")
-      val result = Json.fromJson[Version](json)
-      result shouldBe JsSuccess(Version3)
+        val result = Json.toJson(version)
+        result shouldBe JsString("3.0")
+      }
+    }
+  }
+
+  "Version.apply(RequestHeader)" when {
+
+    def mockRequestHeader(keyValue: (String, String)): RequestHeader = {
+      val (k, v)  = keyValue
+      val header  = mock[RequestHeader]
+      val headers = Headers(k -> v)
+
+      (() => header.headers: Headers).expects().returning(headers)
+      header
     }
 
-    "fail with JsError for unknown version" in {
-      val json   = Json.parse(""""4.0"""")
-      val result = Json.fromJson[Version](json)
-      result shouldBe JsError("Unrecognised version")
+    "given a valid Accept header" should {
+      "return the expected API Version" in {
+        val header = mockRequestHeader(ACCEPT -> "application/vnd.hmrc.3.0+json")
+        val result = Version(header)
+        result shouldBe Version3
+      }
     }
 
-    "fail with JsError if not a string" in {
-      val json   = Json.parse("123")
-      val result = Json.fromJson[Version](json)
+    "given an invalid Accept header" should {
+      "throw the expected exception (code shouldn't have reached this point)" in {
+        val header = mockRequestHeader(ACCEPT -> "not-a-valid-request-header")
+        the[Exception] thrownBy Version(header) should have message "Missing or unsupported version found in request accept header"
+      }
+    }
+  }
+
+  "VersionReads" should {
+    "successfully read Version3" in {
+      val versionJson: JsValue      = JsString(Version3.name)
+      val result: JsResult[Version] = VersionReads.reads(versionJson)
+
+      result shouldEqual JsSuccess(Version3)
+    }
+
+    "return error for unrecognised version" in {
+      val versionJson: JsValue      = JsString("UnknownVersion")
+      val result: JsResult[Version] = VersionReads.reads(versionJson)
+
       result shouldBe a[JsError]
     }
   }
 
-  "Versions" when {
-    "retrieved from a request header" should {
-      "return Version3 for valid header" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
-      }
-      "return InvalidHeader when the version header is missing" in {
-        Versions.getFromRequest(FakeRequest().withHeaders()) shouldBe Left(InvalidHeader)
-      }
-      "return VersionNotFound for unrecognised version" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.5.0+json"))) shouldBe Left(VersionNotFound)
-      }
-      "return InvalidHeader for a header format that doesn't match regex" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "invalidHeaderFormat"))) shouldBe Left(InvalidHeader)
-      }
+  "toString" should {
+    "return the version name" in {
+      val result = Version3.toString
+      result shouldBe Version3.name
     }
   }
 
