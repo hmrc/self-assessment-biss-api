@@ -74,6 +74,8 @@ trait AppConfig {
 
   def apiStatus(version: Version): String
 
+  def controlledAccessEnabled: Boolean
+
   def featureSwitches: Configuration
 
   def endpointsEnabled(version: Version): Boolean
@@ -116,6 +118,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
+  val controlledAccessEnabled: Boolean             = config.getBoolean("api.controlled-access.enabled")
 
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
 

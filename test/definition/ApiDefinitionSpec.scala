@@ -17,13 +17,14 @@
 package definition
 
 import definition.APIStatus.ALPHA
+import definition.APIAccessType.PUBLIC
 import play.api.libs.json.{JsValue, Json}
 import routing.Version3
 import support.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 
-  val apiVersion: APIVersion       = APIVersion(Version3, ALPHA, endpointsEnabled = false)
+  val apiVersion: APIVersion       = APIVersion(Version3, ALPHA, PUBLIC, endpointsEnabled = false)
   val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", Seq("e"), Seq(apiVersion), Some(false))
   val definition: Definition       = Definition(apiDefinition)
 
@@ -31,6 +32,7 @@ class ApiDefinitionSpec extends UnitSpec {
        |{
        | "version": "3.0",
        |"status": "ALPHA",
+       |"access": "PUBLIC",
        |"endpointsEnabled": false
        |}
        |""".stripMargin)

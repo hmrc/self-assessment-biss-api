@@ -44,6 +44,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |      {
        |        "version":"3.0",
        |        "status":"BETA",
+       |        "access":"PUBLIC",
        |        "endpointsEnabled":true
        |      }
        |    ]
