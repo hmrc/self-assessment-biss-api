@@ -1,4 +1,4 @@
-self-assessment-biss-api
+Self Assessment BISS API
 ========================
 
 [![Apache-2.0 license](http://img.shields.io/badge/license-Apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
@@ -14,6 +14,7 @@ expenditure for a specified self-employment, UK property business, or foreign pr
 - [Service Manager V2](https://github.com/hmrc/sm2)
 
 ## Development Setup
+
 Run the microservice from the console using: `sbt run` (starts on port 9785 by default)
 
 Start the service manager profile:
@@ -22,8 +23,7 @@ Start the service manager profile:
 sm2 -start SELF_ASSESSMENT_BISS
 ```
 
-
-## Run Tests
+## Running Tests
 
 Run unit tests: `sbt test`
 
@@ -64,4 +64,4 @@ Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-
 
 ## License
 
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)
