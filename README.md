@@ -23,7 +23,7 @@ Start the service manager profile:
 sm2 -start SELF_ASSESSMENT_BISS
 ```
 
-## Running Tests
+## Run Tests
 
 Run unit tests: `sbt test`
 
