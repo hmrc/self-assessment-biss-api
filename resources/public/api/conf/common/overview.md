@@ -1,4 +1,4 @@
-HMRC is no longer accepting production credential access requests for new 2026–27 quarterly update products, 
+> HMRC is no longer accepting production credential access requests for new 2026–27 quarterly update products, 
 as the market window for these products has now closed.
 
 Use the Business Income Source Summary API to retrieve a year-to-date summary of income and expenditure for a 
