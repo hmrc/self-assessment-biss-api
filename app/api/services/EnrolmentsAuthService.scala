@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
           Future.successful(Right(UserDetails(mtdId, "Organisation", None)))
         case Some(Agent) ~ authorisedEnrolments =>
           authFunction
-            .authorised(EnrolmentsAuthService.mtdEnrolmentPredicate(mtdId)) {
+            .authorised(EnrolmentsAuthService.mtdEnrolmentPredicate(mtdId).or(EnrolmentsAuthService.newEnrolmentPredicate(mtdId))) {
               Future.successful(agentDetails(mtdId, authorisedEnrolments, "Agent"))
             }
             .recoverWith {
@@ -99,10 +99,20 @@ object EnrolmentsAuthService {
   private[services] def authorisationEnabledPredicate(mtdId: String): Predicate =
     (Individual and ConfidenceLevel.L250 and mtdEnrolmentPredicate(mtdId)) or
       (Organisation and ConfidenceLevel.L250 and mtdEnrolmentPredicate(mtdId)) or
+      (Individual and ConfidenceLevel.L250 and newEnrolmentPredicate(mtdId)) or
+      (Organisation and ConfidenceLevel.L250 and newEnrolmentPredicate(mtdId)) or
       (Agent and Enrolment("HMRC-AS-AGENT"))
 
   private[services] def authorisationDisabledPredicate(mtdId: String): Predicate =
-    mtdEnrolmentPredicate(mtdId) or (Agent and Enrolment("HMRC-AS-AGENT"))
+    mtdEnrolmentPredicate(mtdId) or
+      newEnrolmentPredicate(mtdId) or
+      (Agent and Enrolment("HMRC-AS-AGENT"))
+
+  private[services] def newEnrolmentPredicate(mtdId: String): Enrolment = {
+    Enrolment("NEW-ENROLMENT")
+      .withIdentifier("MTDITID", mtdId)
+      .withDelegatedAuthRule("mtd-it-auth")
+  }
 
   private[services] def mtdEnrolmentPredicate(mtdId: String): Enrolment = {
     Enrolment("HMRC-MTD-IT")

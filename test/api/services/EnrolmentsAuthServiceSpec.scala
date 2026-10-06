@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,7 @@ package api.services
 import api.models.auth.UserDetails
 import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
-import api.services.EnrolmentsAuthService.{
-  authorisationDisabledPredicate,
-  authorisationEnabledPredicate,
-  mtdEnrolmentPredicate,
-  supportingAgentAuthPredicate
-}
+import api.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate, mtdEnrolmentPredicate, newEnrolmentPredicate, supportingAgentAuthPredicate}
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
@@ -46,6 +41,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
       behave like authService(
         authValidationEnabled = true,
         authorisationEnabledPredicate(mtdId),
+        newEnrolmentPredicate(mtdId),
         mtdEnrolmentPredicate(mtdId),
         supportingAgentAuthPredicate(mtdId)
       )
@@ -55,6 +51,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
       behave like authService(
         authValidationEnabled = false,
         authorisationDisabledPredicate(mtdId),
+        newEnrolmentPredicate(mtdId),
         mtdEnrolmentPredicate(mtdId),
         supportingAgentAuthPredicate(mtdId)
       )
@@ -63,17 +60,19 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
     def authService(
         authValidationEnabled: Boolean,
         initialPredicate: Predicate,
-        primaryAgentPredicate: Predicate,
+        newAgentPredicate: Predicate,
+        mtdAgentPredicate: Predicate,
         supportingAgentPredicate: Predicate
     ): Unit = {
       behave like authorisedIndividual(authValidationEnabled, initialPredicate)
       behave like authorisedOrganisation(authValidationEnabled, initialPredicate)
 
       behave like authorisedAgentsMissingArn(authValidationEnabled, initialPredicate)
-      behave like authorisedPrimaryAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate)
-      behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate, supportingAgentPredicate)
+      behave like authorisedPrimaryAgent(authValidationEnabled, initialPredicate, mtdAgentPredicate)
+      behave like authorisedPrimaryAgent(authValidationEnabled, initialPredicate, newAgentPredicate)
+      behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, newAgentPredicate, supportingAgentPredicate)
 
-      behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+      behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, newAgentPredicate)
 
       behave like disallowUsersWithoutEnrolments(authValidationEnabled, initialPredicate)
       behave like disallowWhenNoBearerToken(authValidationEnabled, initialPredicate)
@@ -134,7 +133,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
         initialPredicate: Predicate,
         primaryAgentPredicate: Predicate
     ): Unit =
-      "allow authorised Primary agents with ARN" in new Test {
+      s"allow authorised Primary agent '${(primaryAgentPredicate.toJson \ "enrolment").as[String]}' with ARN" in new Test {
         val arn = "123567890"
         val enrolments: Enrolments = Enrolments(
           Set(
