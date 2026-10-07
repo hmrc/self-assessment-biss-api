@@ -41,7 +41,8 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
   private val response: RetrieveBissResponse = Def1_RetrieveBissResponse(
     total = Total(100.00, 50.0, None, None, None),
     profit = Profit(0, 0, Some(35.00)),
-    loss = Loss(100.0, 0.0),
+    loss = Loss(100.0, 0.0, None),
+    foreignTaxPaid = None,
     outstandingBusinessIncome = Some(35.00)
   )
 

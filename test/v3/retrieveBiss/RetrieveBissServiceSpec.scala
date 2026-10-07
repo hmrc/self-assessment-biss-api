@@ -41,8 +41,9 @@ class RetrieveBissServiceSpec extends ServiceSpec {
   private val response: Def1_RetrieveBissResponse = Def1_RetrieveBissResponse(
     total = Total(income = 100.00, 120.00, None, None, None),
     profit = Profit(0.00, 0.00, None),
-    loss = Loss(20.0, 0.0),
-    None
+    loss = Loss(20.0, 0.0, None),
+    foreignTaxPaid = None,
+    outstandingBusinessIncome = None
   )
 
   implicit val loggingContext: EndpointLogContext = EndpointLogContext("controller", "endpoint")

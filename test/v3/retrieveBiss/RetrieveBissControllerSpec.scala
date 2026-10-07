@@ -43,7 +43,8 @@ class RetrieveBissControllerSpec
     Def1_RetrieveBissResponse(
       Total(income = 100.00, expenses = 50.0, None, None, None),
       Profit(net = 0.0, taxable = 0.0, Some(35.00)),
-      Loss(net = 50.0, taxable = 0.0),
+      Loss(net = 50.0, taxable = 0.0, adjusted = None),
+      foreignTaxPaid = None,
       outstandingBusinessIncome = Some(35.00)
     )
 

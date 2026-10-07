@@ -19,13 +19,18 @@ package v3.retrieveBiss.def1.model.response
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Loss(net: BigDecimal, taxable: BigDecimal)
+case class Loss(
+    net: BigDecimal,
+    taxable: BigDecimal,
+    adjusted: Option[BigDecimal]
+)
 
 object Loss {
 
   implicit val reads: Reads[Loss] = (
     (JsPath \ "netLoss").read[BigDecimal] and
-      (JsPath \ "taxableLoss").read[BigDecimal]
+      (JsPath \ "taxableLoss").read[BigDecimal] and
+      (JsPath \ "adjustedLoss").readNullable[BigDecimal]
   )(Loss.apply)
 
   implicit val writes: OWrites[Loss] = Json.writes[Loss]

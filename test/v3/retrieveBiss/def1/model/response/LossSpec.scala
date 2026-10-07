@@ -25,7 +25,8 @@ class LossSpec extends UnitSpec {
     """
       |{
       |  "net": 0.00,
-      |  "taxable": 35.00
+      |  "taxable": 35.00,
+      |  "adjusted": 25.00
       |}
     """.stripMargin
   )
@@ -34,12 +35,13 @@ class LossSpec extends UnitSpec {
     """
       |{
       |  "netLoss": 0,
-      |  "taxableLoss": 35.00
+      |  "taxableLoss": 35.00,
+      |  "adjustedLoss": 25.00
       |}
     """.stripMargin
   )
 
-  private val model: Loss = Loss(net = 0, taxable = 35.00)
+  private val model: Loss = Loss(net = 0, taxable = 35.00, adjusted = Some(25.00))
 
   "Loss" should {
 

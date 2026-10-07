@@ -13,7 +13,9 @@
   },
   "loss": {
     "net": 0.01,
-    "taxable": 35.10
+    "taxable": 35.10,
+    "adjusted": 25.01
   },
+  "foreignTaxPaid": 15.00,
   "outstandingBusinessIncome": 35.01
 }
