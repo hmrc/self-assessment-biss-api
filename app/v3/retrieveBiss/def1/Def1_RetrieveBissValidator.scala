@@ -45,7 +45,7 @@ class Def1_RetrieveBissValidator(nino: String, typeOfBusiness: String, taxYear: 
 
   private def validateWithTypeOfBusinessAndTaxYear(parsed: RetrieveBissRequestData): Validated[Seq[MtdError], RetrieveBissRequestData] = {
     (parsed.typeOfBusiness, parsed.taxYear.year) match {
-      case (`uk-property-fhl` | `foreign-property-fhl-eea`, year) if year >= TypeOfBusiness.fhlPropertyMinimumTaxYear.year =>
+      case (`uk-property-fhl` | `foreign-property-fhl-eea`, year) if year > TypeOfBusiness.fhlPropertyMaximumTaxYear.year =>
         Invalid(List(TypeOfBusinessFormatError))
 
       case (`foreign-property-fhl-eea` | `foreign-property`, year) if year < foreignPropertyMinimumTaxYear.year =>
