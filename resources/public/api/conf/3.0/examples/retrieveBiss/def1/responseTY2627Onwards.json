@@ -16,6 +16,6 @@
     "taxable": 35.10,
     "adjusted": 30.01
   },
-  "outstandingBusinessIncome": 35.01,
-  "outstandingBusinessLoss": 30.01
+  "foreignTaxPaid":30.01,
+  "outstandingBusinessIncome": 35.01
 }
