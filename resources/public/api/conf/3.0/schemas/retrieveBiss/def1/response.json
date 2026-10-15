@@ -107,13 +107,33 @@
           "minimum": 0,
           "maximum": 99999999999.99,
           "multipleOf": 0.01
+        },
+        {{#if (enabled 'r23_cl531_docs')}}
+        "adjusted": {
+          "description": "{{#unless (releasedInProduction 'r23_cl531_docs')}}[Test only] {{/unless}}The adjusted loss for the income source. The value must be between 0 and 99999999999.99 up to 2 decimal places. This field will only be returned for tax year 2026-27 and onwards.",
+          "type": "number",
+          "example": 30.00,
+          "minimum": 0,
+          "maximum": 99999999999.99,
+          "multipleOf": 0.01
         }
+        {{/if}}
       },
       "required": [
         "net",
         "taxable"
       ]
     },
+    {{#if (enabled 'r23_cl531_docs')}}
+    "foreignTaxPaid": {
+      "description": "{{#unless (releasedInProduction 'r23_cl531_docs')}}[Test only] {{/unless}}The amount of foreign tax paid in pounds sterling.The value must be between 0 and 99999999999.99 up to 2 decimal places. This field will only be returned for tax year 2026-27 onwards and is applicable only to foreign property.",
+      "type": "number",
+      "example": 30.00,
+      "minimum": 0,
+      "maximum": 99999999999.99,
+      "multipleOf": 0.01
+    },
+    {{/if}}
     "outstandingBusinessIncome": {
       "description": "Any other business income not included in other fields. The value must be between 0 and 99999999999.99 up to 2 decimal places. This field will only be returned for tax year 2025-26 and onwards.",
       "type": "number",
