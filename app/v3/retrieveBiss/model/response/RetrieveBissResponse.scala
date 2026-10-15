@@ -30,7 +30,11 @@ object RetrieveBissResponse {
 
 }
 
-case class Def1_RetrieveBissResponse(total: Total, profit: Profit, loss: Loss, outstandingBusinessIncome: Option[BigDecimal])
+case class Def1_RetrieveBissResponse(total: Total,
+                                     profit: Profit,
+                                     loss: Loss,
+                                     foreignTaxPaid: Option[BigDecimal],
+                                     outstandingBusinessIncome: Option[BigDecimal])
     extends RetrieveBissResponse
 
 object Def1_RetrieveBissResponse {
@@ -39,6 +43,7 @@ object Def1_RetrieveBissResponse {
     JsPath.read[Total] and
       JsPath.read[Profit] and
       JsPath.read[Loss] and
+      (JsPath \ "foreignTaxPaid").readNullable[BigDecimal] and
       (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal]
   )(Def1_RetrieveBissResponse.apply)
 

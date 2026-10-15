@@ -43,7 +43,8 @@ class RetrieveBissControllerSpec
     Def1_RetrieveBissResponse(
       Total(income = 100.00, expenses = 50.0, None, None, None),
       Profit(net = 0.0, taxable = 0.0, Some(35.00)),
-      Loss(net = 50.0, taxable = 0.0),
+      Loss(net = 50.0, taxable = 0.0, Some(35.00)),
+      foreignTaxPaid = Some(35.00),
       outstandingBusinessIncome = Some(35.00)
     )
 
@@ -54,13 +55,15 @@ class RetrieveBissControllerSpec
       |  },
       |  "loss": {
       |    "net": 50.0,
-      |    "taxable": 0.00
+      |    "taxable": 0.00,
+      |    "adjusted": 35.00
       |  },
       |  "profit": {
       |    "net": 0.00,
       |    "taxable": 0.00,
       |    "adjusted": 35.00
       |  },
+      |  "foreignTaxPaid": 35.00,
       |  "outstandingBusinessIncome": 35.00
       |}""".stripMargin)
 
