@@ -20,7 +20,7 @@ Run the microservice from the console using: `sbt run` (starts on port 9785 by d
 Start the service manager profile:
 
 ```bash
-sm2 -start SELF_ASSESSMENT_BISS
+sm2 -start SELF_ASSESSMENT_BISS_API
 ```
 
 ## Run Tests
