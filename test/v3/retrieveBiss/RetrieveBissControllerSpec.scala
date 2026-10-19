@@ -41,8 +41,8 @@ class RetrieveBissControllerSpec
 
   val response: RetrieveBissResponse =
     Def1_RetrieveBissResponse(
-      Total(income = 100.00, expenses = 50.0, None, None, None),
-      Profit(net = 0.0, taxable = 0.0, Some(35.00)),
+      Total(income = 100.00, expenses = 50.0, additions = None, deductions = None, accountingAdjustments = None),
+      Profit(net = 0.0, taxable = 0.0, adjusted = Some(35.00)),
       Loss(net = 50.0, taxable = 0.0, Some(35.00)),
       foreignTaxPaid = Some(35.00),
       outstandingBusinessIncome = Some(35.00)
