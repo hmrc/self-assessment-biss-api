@@ -107,9 +107,9 @@
           "minimum": 0,
           "maximum": 99999999999.99,
           "multipleOf": 0.01
-        },
+        }
         {{#if (enabled 'r23_cl531_docs')}}
-        "adjusted": {
+        ,"adjusted": {
           "description": "{{#unless (releasedInProduction 'r23_cl531_docs')}}[Test only] {{/unless}}The adjusted loss for the income source. The value must be between 0 and 99999999999.99 up to 2 decimal places. This field will only be returned for tax year 2026-27 and onwards.",
           "type": "number",
           "example": 30.00,
