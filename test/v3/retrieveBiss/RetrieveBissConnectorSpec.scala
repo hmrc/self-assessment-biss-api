@@ -24,7 +24,6 @@ import uk.gov.hmrc.http.StringContextOps
 import v3.retrieveBiss.model.response.*
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
-import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import java.net.URL
 import scala.concurrent.Future

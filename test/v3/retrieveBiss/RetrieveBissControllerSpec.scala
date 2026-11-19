@@ -24,10 +24,9 @@ import config.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v3.retrieveBiss.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.response.{Loss, Profit, RetrieveBissResponse, Total}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
-import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -17,8 +17,7 @@
 package v3.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import v3.retrieveBiss.model.response.{Loss, Profit, Total}
-import v3.retrieveBiss.model.response.RetrieveBissResponse
+import v3.retrieveBiss.model.response.{Loss, Profit, RetrieveBissResponse, Total}
 
 trait RetrieveBissFixture {
 

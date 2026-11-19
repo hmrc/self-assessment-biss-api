@@ -21,10 +21,9 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.retrieveBiss.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.response.{Loss, Profit, RetrieveBissResponse, Total}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
-import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import scala.concurrent.Future
 
