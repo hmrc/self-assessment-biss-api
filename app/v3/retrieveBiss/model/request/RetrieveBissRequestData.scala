@@ -19,12 +19,4 @@ package v3.retrieveBiss.model.request
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 
-sealed trait RetrieveBissRequestData {
-  val nino: Nino
-  val typeOfBusiness: TypeOfBusiness
-  val taxYear: TaxYear
-  val businessId: BusinessId
-}
-
-case class Def1_RetrieveBissRequestData(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)
-    extends RetrieveBissRequestData
+case class RetrieveBissRequestData(nino: Nino, typeOfBusiness: TypeOfBusiness, taxYear: TaxYear, businessId: BusinessId)

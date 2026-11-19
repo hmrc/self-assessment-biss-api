@@ -24,10 +24,10 @@ import config.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.response.{Loss, Profit, Total}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
-import v3.retrieveBiss.model.request.Def1_RetrieveBissRequestData
-import v3.retrieveBiss.model.response.{Def1_RetrieveBissResponse, RetrieveBissResponse}
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
+import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class RetrieveBissControllerSpec
     with MockAppConfig {
 
   val response: RetrieveBissResponse =
-    Def1_RetrieveBissResponse(
+    RetrieveBissResponse(
       Total(income = 100.00, expenses = 50.0, additions = None, deductions = None, accountingAdjustments = None),
       Profit(net = 0.0, taxable = 0.0, adjusted = Some(35.00)),
       Loss(net = 50.0, taxable = 0.0, Some(35.00)),
@@ -72,7 +72,7 @@ class RetrieveBissControllerSpec
   private val businessId     = "someBusinessId"
 
   private val requestData =
-    Def1_RetrieveBissRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
+    RetrieveBissRequestData(Nino(nino), TypeOfBusiness.`uk-property-fhl`, TaxYear.fromMtd(taxYear), BusinessId(businessId))
 
   "retrieveBiss" should {
     "return successful response with status OK" when {

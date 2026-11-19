@@ -18,35 +18,23 @@ package v3.retrieveBiss.model.response
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
 
-sealed trait RetrieveBissResponse
+case class RetrieveBissResponse(total: Total,
+                                profit: Profit,
+                                loss: Loss,
+                                foreignTaxPaid: Option[BigDecimal],
+                                outstandingBusinessIncome: Option[BigDecimal])
 
 object RetrieveBissResponse {
 
-  implicit val writes: OWrites[RetrieveBissResponse] = { case def1: Def1_RetrieveBissResponse =>
-    Json.toJsObject(def1)
-  }
-
-}
-
-case class Def1_RetrieveBissResponse(total: Total,
-                                     profit: Profit,
-                                     loss: Loss,
-                                     foreignTaxPaid: Option[BigDecimal],
-                                     outstandingBusinessIncome: Option[BigDecimal])
-    extends RetrieveBissResponse
-
-object Def1_RetrieveBissResponse {
-
-  implicit val reads: Reads[Def1_RetrieveBissResponse] = (
+  implicit val reads: Reads[RetrieveBissResponse] = (
     JsPath.read[Total] and
       JsPath.read[Profit] and
       JsPath.read[Loss] and
       (JsPath \ "foreignTaxPaid").readNullable[BigDecimal] and
       (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal]
-  )(Def1_RetrieveBissResponse.apply)
+  )(RetrieveBissResponse.apply)
 
-  implicit val writes: OWrites[Def1_RetrieveBissResponse] = Json.writes[Def1_RetrieveBissResponse]
+  implicit val writes: OWrites[RetrieveBissResponse] = Json.writes[RetrieveBissResponse]
 
 }

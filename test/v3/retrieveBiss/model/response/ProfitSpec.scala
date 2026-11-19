@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1.model.response
+package v3.retrieveBiss.model.response
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class LossSpec extends UnitSpec {
+class ProfitSpec extends UnitSpec {
 
   private val json: JsValue = Json.parse(
     """
@@ -34,23 +34,23 @@ class LossSpec extends UnitSpec {
   private val downstreamJson: JsValue = Json.parse(
     """
       |{
-      |  "netLoss": 0,
-      |  "taxableLoss": 35.00,
-      |  "adjustedLoss": 35.00
+      |  "netProfit": 0,
+      |  "taxableProfit": 35.00,
+      |  "adjustedProfit": 35.00
       |}
     """.stripMargin
   )
 
-  private val model: Loss = Loss(net = 0, taxable = 35.00, adjusted = Some(35.00))
+  private val model: Profit = Profit(net = 0, taxable = 35.00, adjusted = Some(35.00))
 
-  "Loss" should {
+  "Profit" should {
 
     "write correctly to json" in {
       Json.toJson(model) shouldBe json
     }
 
     "read correctly from a json" in {
-      downstreamJson.as[Loss] shouldBe model
+      downstreamJson.as[Profit] shouldBe model
     }
   }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1.model.response
+package v3.retrieveBiss.model.response
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

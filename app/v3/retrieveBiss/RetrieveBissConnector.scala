@@ -23,8 +23,8 @@ import config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v3.retrieveBiss.downstreamUriBuilder.RetrieveBissDownstreamUriBuilder
-import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
-import v3.retrieveBiss.model.response.{Def1_RetrieveBissResponse, RetrieveBissResponse}
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
+import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,20 +39,13 @@ class RetrieveBissConnector @Inject() (val http: HttpClientV2, val appConfig: Ap
     import request.*
     val incomeSourceType: IncomeSourceType = typeOfBusiness.toIncomeSourceType(taxYear.year)
 
-    request match {
-      case def1: Def1_RetrieveBissRequestData =>
-        import def1.*
+    val uriBuilder: RetrieveBissDownstreamUriBuilder[RetrieveBissResponse] =
+      RetrieveBissDownstreamUriBuilder.downstreamUriFor(taxYear)
 
-        val uriBuilder: RetrieveBissDownstreamUriBuilder[Def1_RetrieveBissResponse] =
-          RetrieveBissDownstreamUriBuilder.downstreamUriFor(taxYear)
+    val (downstreamUri, queryParams): (DownstreamUri[RetrieveBissResponse], Seq[(String, String)]) =
+      uriBuilder.buildUri(nino, businessId, incomeSourceType, taxYear)
 
-        val (downstreamUri, queryParams): (DownstreamUri[Def1_RetrieveBissResponse], Seq[(String, String)]) =
-          uriBuilder.buildUri(nino, businessId, incomeSourceType, taxYear)
-
-        val response: Future[DownstreamOutcome[Def1_RetrieveBissResponse]] = get(downstreamUri, queryParams)
-
-        response
-    }
+    get(downstreamUri, queryParams)
   }
 
 }

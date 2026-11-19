@@ -18,7 +18,6 @@ package v3.retrieveBiss
 
 import api.controllers.validators.Validator
 import support.UnitSpec
-import v3.retrieveBiss.def1.Def1_RetrieveBissValidator
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
 
 class RetrieveBissValidatorFactorySpec extends UnitSpec {
@@ -34,7 +33,7 @@ class RetrieveBissValidatorFactorySpec extends UnitSpec {
     "return the parsed domain object" in {
       val result: Validator[RetrieveBissRequestData] = validatorFactory.validator(validNino, validTypeOfBusiness, validTaxYear, validBusinessId)
 
-      result shouldBe a[Def1_RetrieveBissValidator]
+      result shouldBe a[RetrieveBissValidator]
     }
   }
 

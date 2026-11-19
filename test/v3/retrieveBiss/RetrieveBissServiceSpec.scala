@@ -21,24 +21,24 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v3.retrieveBiss.def1.model.response.{Loss, Profit, Total}
+import v3.retrieveBiss.model.response.{Loss, Profit, Total}
 import v3.retrieveBiss.model.domain.TypeOfBusiness
-import v3.retrieveBiss.model.request.Def1_RetrieveBissRequestData
-import v3.retrieveBiss.model.response.Def1_RetrieveBissResponse
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
+import v3.retrieveBiss.model.response.RetrieveBissResponse
 
 import scala.concurrent.Future
 
 class RetrieveBissServiceSpec extends ServiceSpec {
 
   // WLOG
-  private def requestData(taxYear: String): Def1_RetrieveBissRequestData = Def1_RetrieveBissRequestData(
+  private def requestData(taxYear: String): RetrieveBissRequestData = RetrieveBissRequestData(
     nino = Nino("AA123456A"),
     typeOfBusiness = TypeOfBusiness.`foreign-property`,
     taxYear = TaxYear.fromMtd(taxYear),
     businessId = BusinessId("XAIS12345678910")
   )
 
-  private val response: Def1_RetrieveBissResponse = Def1_RetrieveBissResponse(
+  private val response: RetrieveBissResponse = RetrieveBissResponse(
     total = Total(income = 100.00, 120.00, None, None, None),
     profit = Profit(0.00, 0.00, None),
     loss = Loss(20.0, 0.0, Some(35.00)),
