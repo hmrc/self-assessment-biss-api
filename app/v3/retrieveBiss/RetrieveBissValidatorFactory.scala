@@ -17,7 +17,6 @@
 package v3.retrieveBiss
 
 import api.controllers.validators.Validator
-import v3.retrieveBiss.def1.Def1_RetrieveBissValidator
 import v3.retrieveBiss.model.request.RetrieveBissRequestData
 
 import javax.inject.Singleton
@@ -26,6 +25,6 @@ import javax.inject.Singleton
 class RetrieveBissValidatorFactory {
 
   def validator(nino: String, typeOfBusiness: String, taxYear: String, businessId: String): Validator[RetrieveBissRequestData] =
-    new Def1_RetrieveBissValidator(nino, typeOfBusiness, taxYear, businessId)
+    new RetrieveBissValidator(nino, typeOfBusiness, taxYear, businessId)
 
 }

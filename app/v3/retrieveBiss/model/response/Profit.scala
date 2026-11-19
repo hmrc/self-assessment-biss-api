@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1.model.response
+package v3.retrieveBiss.model.response
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Loss(net: BigDecimal, taxable: BigDecimal, adjusted: Option[BigDecimal])
+case class Profit(net: BigDecimal, taxable: BigDecimal, adjusted: Option[BigDecimal])
 
-object Loss {
+object Profit {
 
-  implicit val reads: Reads[Loss] = (
-    (JsPath \ "netLoss").read[BigDecimal] and
-      (JsPath \ "taxableLoss").read[BigDecimal] and
-      (JsPath \ "adjustedLoss").readNullable[BigDecimal]
-  )(Loss.apply)
+  implicit val reads: Reads[Profit] = (
+    (JsPath \ "netProfit").read[BigDecimal] and
+      (JsPath \ "taxableProfit").read[BigDecimal] and
+      (JsPath \ "adjustedProfit").readNullable[BigDecimal]
+  )(Profit.apply)
 
-  implicit val writes: OWrites[Loss] = Json.writes[Loss]
-
+  implicit val writes: OWrites[Profit] = Json.writes[Profit]
 }
