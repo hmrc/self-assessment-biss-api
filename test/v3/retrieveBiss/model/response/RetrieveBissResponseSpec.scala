@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1.model.response
+package v3.retrieveBiss.model.response
 
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.fixtures.RetrieveBissFixture
-import v3.retrieveBiss.model.response.Def1_RetrieveBissResponse
 
 class RetrieveBissResponseSpec extends UnitSpec with RetrieveBissFixture {
 
@@ -33,11 +32,11 @@ class RetrieveBissResponseSpec extends UnitSpec with RetrieveBissFixture {
     }
 
     "read correctly from a json" in {
-      downstreamResponseJsonFull.as[Def1_RetrieveBissResponse] shouldBe responseFull
+      downstreamResponseJsonFull.as[RetrieveBissResponse] shouldBe responseFull
     }
 
     "read correctly from a minimal json" in {
-      downstreamResponseJsonMin.as[Def1_RetrieveBissResponse] shouldBe responseMin
+      downstreamResponseJsonMin.as[RetrieveBissResponse] shouldBe responseMin
     }
   }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1
+package v3.retrieveBiss
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear, ResolveTypeOfBusiness}
@@ -25,13 +25,12 @@ import cats.data.Validated.*
 import cats.implicits.*
 import v3.retrieveBiss.model.domain.TypeOfBusiness
 import v3.retrieveBiss.model.domain.TypeOfBusiness.*
-import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class Def1_RetrieveBissValidator(nino: String, typeOfBusiness: String, taxYear: String, businessId: String)
-    extends Validator[RetrieveBissRequestData] {
+class RetrieveBissValidator(nino: String, typeOfBusiness: String, taxYear: String, businessId: String) extends Validator[RetrieveBissRequestData] {
 
   private val foreignPropertyMinimumTaxYear = TaxYear.fromMtd("2019-20")
 
@@ -41,7 +40,7 @@ class Def1_RetrieveBissValidator(nino: String, typeOfBusiness: String, taxYear: 
       ResolveTypeOfBusiness(typeOfBusiness),
       ResolveTaxYear(taxYear),
       ResolveBusinessId(businessId)
-    ).mapN(Def1_RetrieveBissRequestData.apply) andThen validateWithTypeOfBusinessAndTaxYear
+    ).mapN(RetrieveBissRequestData.apply) andThen validateWithTypeOfBusinessAndTaxYear
 
   private def validateWithTypeOfBusinessAndTaxYear(parsed: RetrieveBissRequestData): Validated[Seq[MtdError], RetrieveBissRequestData] = {
     (parsed.typeOfBusiness, parsed.taxYear.year) match {

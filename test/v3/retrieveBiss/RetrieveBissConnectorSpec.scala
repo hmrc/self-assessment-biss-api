@@ -21,10 +21,9 @@ import api.models.domain.*
 import api.models.downstream.IncomeSourceType
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v3.retrieveBiss.def1.model.response.*
+import v3.retrieveBiss.model.response.*
 import v3.retrieveBiss.model.domain.TypeOfBusiness
-import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
-import v3.retrieveBiss.model.response.{Def1_RetrieveBissResponse, RetrieveBissResponse}
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
 
 import java.net.URL
 import scala.concurrent.Future
@@ -38,7 +37,7 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
   private def taxYearAsDownstream(taxYear: String): String    = taxYearMtd(taxYear).asDownstream
 
   // WLOG
-  private val response: RetrieveBissResponse = Def1_RetrieveBissResponse(
+  private val response: RetrieveBissResponse = RetrieveBissResponse(
     total = Total(100.00, 50.0, None, None, None),
     profit = Profit(0, 0, Some(35.00)),
     loss = Loss(100.0, 0.0, Some(35.00)),
@@ -60,7 +59,7 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
             val expectedUrl: URL = url"$baseUrl/income-tax/income-sources/nino/$nino/$incomeSourceType/${taxYearAsDownstream(taxYear)}/biss"
 
             val request: RetrieveBissRequestData =
-              Def1_RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+              RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 
             val expected: Right[Nothing, ResponseWrapper[RetrieveBissResponse]] = Right(ResponseWrapper(correlationId, response))
 
@@ -96,7 +95,7 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
             val expectedUrl: URL = url"${urlPrefix(taxYear)}/$nino/$businessId/$incomeSourceType/biss"
 
             val request: RetrieveBissRequestData =
-              Def1_RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+              RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 
             val expected: Right[Nothing, ResponseWrapper[RetrieveBissResponse]] = Right(ResponseWrapper(correlationId, response))
 
@@ -116,7 +115,7 @@ class RetrieveBissConnectorSpec extends ConnectorSpec {
         ).foreach { case (taxYear, typeOfBusiness, incomeSourceType) =>
           s"type of business is $typeOfBusiness and tax year is $taxYear (TYS)" in new HipTest with Test {
             val request: RetrieveBissRequestData =
-              Def1_RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
+              RetrieveBissRequestData(Nino(nino), typeOfBusiness, taxYearMtd(taxYear), BusinessId(businessId))
 
             intercept[IllegalArgumentException] {
               await(connector.retrieveBiss(request))

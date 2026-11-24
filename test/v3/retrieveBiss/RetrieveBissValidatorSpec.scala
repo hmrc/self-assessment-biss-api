@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v3.retrieveBiss.def1
+package v3.retrieveBiss
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.*
 import support.UnitSpec
 import v3.retrieveBiss.model.domain.TypeOfBusiness
-import v3.retrieveBiss.model.request.{Def1_RetrieveBissRequestData, RetrieveBissRequestData}
+import v3.retrieveBiss.model.request.RetrieveBissRequestData
 
-class Def1_RetrieveBissValidatorSpec extends UnitSpec {
+class RetrieveBissValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -37,10 +37,10 @@ class Def1_RetrieveBissValidatorSpec extends UnitSpec {
   private def validator(nino: String = validNino,
                         typeOfBusiness: String = "uk-property",
                         taxYear: String = "2025-26",
-                        businessId: String = validBusinessId): Def1_RetrieveBissValidator =
-    new Def1_RetrieveBissValidator(nino, typeOfBusiness, taxYear, businessId)
+                        businessId: String = validBusinessId): RetrieveBissValidator =
+    new RetrieveBissValidator(nino, typeOfBusiness, taxYear, businessId)
 
-  "Def1_RetrieveBissValidator" should {
+  "RetrieveBissValidator" should {
     "return the parsed domain object" when {
       def validTest(typeOfBusiness: String, taxYear: String): Unit =
         s"a valid request for type of business $typeOfBusiness and tax year $taxYear is provided" in {
@@ -48,7 +48,7 @@ class Def1_RetrieveBissValidatorSpec extends UnitSpec {
             validator(typeOfBusiness = typeOfBusiness, taxYear = taxYear).validateAndWrapResult()
 
           result shouldBe Right(
-            Def1_RetrieveBissRequestData(
+            RetrieveBissRequestData(
               parsedNino,
               parsedTypeOfBusiness(typeOfBusiness),
               parsedTaxYear(taxYear),
